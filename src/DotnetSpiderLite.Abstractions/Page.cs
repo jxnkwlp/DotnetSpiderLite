@@ -23,7 +23,7 @@ namespace DotnetSpiderLite.Abstractions
 
         public bool Skip { get; set; }
 
-        public ResutItems ResutItems { get; private set; }
+        public ResultItems ResutItems { get; private set; }
 
 
         public HashSet<Request> TargetRequests { get; } = new HashSet<Request>();
@@ -31,7 +31,7 @@ namespace DotnetSpiderLite.Abstractions
         public Page(Response response)
         {
             this.Response = response;
-            ResutItems = new ResutItems(this);
+            ResutItems = new ResultItems(this);
 
         }
 

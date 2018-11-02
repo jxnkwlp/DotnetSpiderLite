@@ -7,9 +7,11 @@ namespace DotnetSpiderLite.Abstractions
     /// <summary>
     ///  页面解析的数据结果
     /// </summary>
-    public class ResutItems : Dictionary<string, object>, IDictionary<string, object>
+    public class ResultItems : Dictionary<string, object>, IDictionary<string, object>
     {
-        public ResutItems(Page page)
+        public Page Page { get; private set; }
+
+        public ResultItems(Page page)
         {
 
         }

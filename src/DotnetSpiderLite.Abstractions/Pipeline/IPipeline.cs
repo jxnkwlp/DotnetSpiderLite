@@ -12,5 +12,7 @@ namespace DotnetSpiderLite.Abstractions.Pipeline
     {
         ILogger Logger { get; set; }
 
+        void Process(IList<ResultItems> resultItems);
+
     }
 }
