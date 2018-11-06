@@ -13,40 +13,39 @@ namespace DotnetSpiderLite.Abstractions.Downloader
 
 
         public ILogger Logger { get; set; }
-         
+
         public void Dispose()
         {
             throw new NotImplementedException();
         }
 
-        public Task DownloadAsync(DownloadContext context)
+        public async Task<Response> DownloadAsync(Request request)
         {
             // before 
             if (_beforeDownloadHandles != null)
             {
                 foreach (var handle in _beforeDownloadHandles)
                 {
-                    handle.Handle(context);
+                    handle.Handle(request);
                 }
             }
 
-            // 
-            DownloadHandleAsync(context);
+            // handle 
+            var response = await HandleDownloadAsync(request);
 
             // after 
             if (_afterDownloadHandles != null)
             {
                 foreach (var handle in _afterDownloadHandles)
                 {
-                    handle.Handle(context);
+                    handle.Handle(response);
                 }
             }
 
-
-            return Task.CompletedTask;
+            return response;
         }
 
-        public abstract Task DownloadHandleAsync(DownloadContext context);
+
 
 
         public void AddAfterDownloadHandle(IAfterDownloadHandle handle)
@@ -58,5 +57,7 @@ namespace DotnetSpiderLite.Abstractions.Downloader
         {
             _beforeDownloadHandles.Add(handle);
         }
+
+        public abstract Task<Response> HandleDownloadAsync(Request request);
     }
 }

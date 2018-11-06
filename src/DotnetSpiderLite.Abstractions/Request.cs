@@ -8,8 +8,6 @@ namespace DotnetSpiderLite.Abstractions
 {
     public class Request
     {
-        public DownloadContext DownloadContext { get; private set; }
-
         public string Referer { get; set; }
         public string Connection { get; set; }
         public string AcceptLanguage { get; set; } = "zh-CN,zh;q=0.9,en;q=0.8";
@@ -35,9 +33,8 @@ namespace DotnetSpiderLite.Abstractions
 
 
 
-        public Request(DownloadContext context, Uri uri)
+        public Request(Uri uri)
         {
-            this.DownloadContext = context;
             this.Uri = uri;
         }
     }

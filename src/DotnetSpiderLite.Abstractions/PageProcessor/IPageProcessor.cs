@@ -16,6 +16,18 @@ namespace DotnetSpiderLite.Abstractions.PageProcessor
 
         //IPageExtraction PageExtraction { get; set; }
 
+        /// <summary>
+        ///  解析 
+        /// </summary>
+        /// <param name="page"></param>
+        /// <returns></returns>
+        IEnumerable<Request> ExtractRequest(Page page);
+
+        /// <summary>
+        ///  处理
+        /// </summary>
+        /// <param name="page"></param>
+        /// <returns></returns>
         Task Process(Page page);
 
     }

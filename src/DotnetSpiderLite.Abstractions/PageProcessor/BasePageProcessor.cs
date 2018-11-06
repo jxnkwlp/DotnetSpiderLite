@@ -8,28 +8,22 @@ using DotnetSpiderLite.Abstractions.Logs;
 
 namespace DotnetSpiderLite.Abstractions.PageProcessor
 {
-    public abstract class BasePageProcessor : IPageProcessor, IPageExtract
+    public abstract class BasePageProcessor : IPageProcessor
     {
         public ILogger Logger { get; set; }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
-            throw new NotImplementedException();
-        }
-
-        public virtual IEnumerable<Request> Extract(Page page)
-        {
-            return null;
         }
 
         public Task Process(Page page)
         {
-            var requests = Extract(page);
-
-            if (requests == null)
+            var requests = ExtractRequest(page);
+            if (requests != null)
             {
                 foreach (var item in requests)
                 {
+                    page.AddTargetRequest(item);
                 }
             }
 
@@ -41,5 +35,10 @@ namespace DotnetSpiderLite.Abstractions.PageProcessor
 
 
         public abstract Task Handle(Page page);
+
+        public virtual IEnumerable<Request> ExtractRequest(Page page)
+        {
+            return null;
+        }
     }
 }

@@ -8,8 +8,7 @@ namespace DotnetSpiderLite.Abstractions
 {
     public class Response
     {
-        public DownloadContext DownloadContext { get; private set; }
-
+        public Request Request { get; private set; }
 
         public Stream Body { get; set; }
 
@@ -19,9 +18,9 @@ namespace DotnetSpiderLite.Abstractions
 
 
 
-        public Response(DownloadContext downloadContext)
+        public Response(Request request)
         {
-            this.DownloadContext = downloadContext;
+            this.Request = request;
         }
     }
 }

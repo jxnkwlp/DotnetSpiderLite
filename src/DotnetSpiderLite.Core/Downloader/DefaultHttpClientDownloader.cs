@@ -1,4 +1,5 @@
-﻿using DotnetSpiderLite.Abstractions.Downloader;
+﻿using DotnetSpiderLite.Abstractions;
+using DotnetSpiderLite.Abstractions.Downloader;
 using DotnetSpiderLite.Abstractions.Logs;
 using System;
 using System.Collections.Generic;
@@ -12,30 +13,31 @@ namespace DotnetSpiderLite.Core.Downloader
     {
         private static HttpClient _httpClient = new HttpClient();
 
-        public override async Task DownloadHandleAsync(DownloadContext context)
+        public override async Task<Response> HandleDownloadAsync(Request request)
         {
             HttpResponseMessage responseMessage = null;
 
-            if (context.Request.Method == "GET")
+            if (request.Method == "GET")
             {
-                responseMessage = await _httpClient.GetAsync(context.Request.Uri);
+                responseMessage = await _httpClient.GetAsync(request.Uri);
             }
             else
             {
-                if (context.Request.Body != null)
-                    responseMessage = await _httpClient.PostAsync(context.Request.Uri, new StreamContent(context.Request.Body));
+                if (request.Body != null)
+                    responseMessage = await _httpClient.PostAsync(request.Uri, new StreamContent(request.Body));
                 else
-                    responseMessage = await _httpClient.PostAsync(context.Request.Uri, null);
+                    responseMessage = await _httpClient.PostAsync(request.Uri, null);
             }
 
+            var response = new Response(request);
+
+            response.StatusCode = (int)responseMessage.StatusCode;
+            response.ContentType = responseMessage.Content.Headers.ContentType.ToString();
+
+            response.Body = await responseMessage.Content.ReadAsStreamAsync();
 
 
-            context.Response.StatusCode = (int)responseMessage.StatusCode;
-            context.Response.ContentType = responseMessage.Content.Headers.ContentType.ToString();
-
-            context.Response.Body = await responseMessage.Content.ReadAsStreamAsync();
-
+            return response;
         }
-
     }
 }

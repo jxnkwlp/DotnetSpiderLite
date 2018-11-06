@@ -5,7 +5,8 @@ using System;
 using System.Threading.Tasks;
 
 using DotnetSpiderLite.HtmlAgilityPack;
-
+using System.Collections.Generic;
+using DotnetSpiderLite.AngleSharps;
 
 namespace ConsoleApp1
 {
@@ -15,9 +16,9 @@ namespace ConsoleApp1
         {
             Console.WriteLine("Hello World!");
 
-            Spider spider = new Spider();
+            Spider spider = Spider.Create("https://github.com/jxnkwlp");
 
-            spider.AddRequest("https://github.com/jxnkwlp");
+            spider.PageExtracter = new AngleSharpHtmlExtracter();
 
             spider.AddPageProcessors(new GithubProfileProcessor());
 
@@ -29,11 +30,36 @@ namespace ConsoleApp1
         {
             public override Task Handle(Page page)
             {
-                page.AddResultItem("author", page.SelectSingle("//div[@class='p-nickname vcard-username d-block']"));
-                page.AddResultItem("name", page.SelectSingle("//span[@class='p-name vcard-fullname d-block"));
+                try
+                {
+                    page.AddResultItem("author", page.SelectSingle("//div[@class='p-nickname vcard-username d-block']"));
+                    page.AddResultItem("name", page.SelectSingle("//span[@class='p-name vcard-fullname d-block']"));
+
+                }
+                catch (Exception)
+                {
+                }
 
                 return Task.CompletedTask;
             }
         }
+
+
+        public class CNBlogProcessor : BasePageProcessor
+        {
+            public override IEnumerable<Request> ExtractRequest(Page page)
+            {
+
+
+                return base.ExtractRequest(page);
+            }
+
+            public override Task Handle(Page page)
+            {
+                return Task.CompletedTask;
+            }
+
+        }
+
     }
 }

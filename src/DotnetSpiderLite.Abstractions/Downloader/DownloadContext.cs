@@ -1,15 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Text;
 
-namespace DotnetSpiderLite.Abstractions.Downloader
-{
-    public class DownloadContext
-    {
-        public Request Request { get; set; }
-        public Response Response { get; set; }
+//namespace DotnetSpiderLite.Abstractions.Downloader
+//{
+//    public class DownloadContext
+//    {
+//        public Request Request { get; set; }
+//        public Response Response { get; set; }
 
-        // Cookie
 
-    }
-}
+//        public static DownloadContext NewContext(Uri uri)
+//        {
+//            var context = new DownloadContext();
+
+//            context.Request = new Request(context, uri);
+
+//            return context;
+//        }
+
+//        // Cookie
+
+//    }
+//}

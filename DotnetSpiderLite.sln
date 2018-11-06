@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2048
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpiderLite.Core", "src\DotnetSpiderLite.Core\DotnetSpiderLite.Core.csproj", "{1C7B04D9-BBB1-4046-BDCA-4B0331C76F00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSpiderLite.Core", "src\DotnetSpiderLite.Core\DotnetSpiderLite.Core.csproj", "{1C7B04D9-BBB1-4046-BDCA-4B0331C76F00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpiderLite.Abstractions", "src\DotnetSpiderLite.Abstractions\DotnetSpiderLite.Abstractions.csproj", "{8D6D2F56-5CDA-434A-9796-A0021A4B03FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSpiderLite.Abstractions", "src\DotnetSpiderLite.Abstractions\DotnetSpiderLite.Abstractions.csproj", "{8D6D2F56-5CDA-434A-9796-A0021A4B03FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{C3943B30-9BB3-45DE-8C0B-1AE30B7A4D6D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{C3943B30-9BB3-45DE-8C0B-1AE30B7A4D6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp2", "ConsoleApp2\ConsoleApp2.csproj", "{C249DFAF-C42C-47BD-A5F7-A5D4ADEE3ECE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp2", "ConsoleApp2\ConsoleApp2.csproj", "{C249DFAF-C42C-47BD-A5F7-A5D4ADEE3ECE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpiderLite.HtmlAgilityPack", "src\DotnetSpiderLite.HtmlAgilityPack\DotnetSpiderLite.HtmlAgilityPack.csproj", "{62D722D3-17D9-46FC-AFB2-75EDF69504EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSpiderLite.HtmlAgilityPack", "src\DotnetSpiderLite.HtmlAgilityPack\DotnetSpiderLite.HtmlAgilityPack.csproj", "{62D722D3-17D9-46FC-AFB2-75EDF69504EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpiderLite.AngleSharp", "src\DotnetSpiderLite.AngleSharp\DotnetSpiderLite.AngleSharp.csproj", "{C87B2694-E320-453D-A599-04FED0C26ACE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{62D722D3-17D9-46FC-AFB2-75EDF69504EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62D722D3-17D9-46FC-AFB2-75EDF69504EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62D722D3-17D9-46FC-AFB2-75EDF69504EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C87B2694-E320-453D-A599-04FED0C26ACE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C87B2694-E320-453D-A599-04FED0C26ACE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C87B2694-E320-453D-A599-04FED0C26ACE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C87B2694-E320-453D-A599-04FED0C26ACE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

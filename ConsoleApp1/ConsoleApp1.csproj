@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\src\DotnetSpiderLite.AngleSharp\DotnetSpiderLite.AngleSharp.csproj" />
     <ProjectReference Include="..\src\DotnetSpiderLite.Core\DotnetSpiderLite.Core.csproj" />
     <ProjectReference Include="..\src\DotnetSpiderLite.HtmlAgilityPack\DotnetSpiderLite.HtmlAgilityPack.csproj" />
   </ItemGroup>

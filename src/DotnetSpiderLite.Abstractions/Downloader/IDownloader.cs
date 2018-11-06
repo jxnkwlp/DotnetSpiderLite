@@ -14,7 +14,7 @@ namespace DotnetSpiderLite.Abstractions.Downloader
         ILogger Logger { get; set; }
 
 
-        Task DownloadAsync(DownloadContext context);
+        Task<Response> DownloadAsync(Request request);
 
         void AddBeforeDownloadHandle(IBeforeDownloadHandle handle);
 

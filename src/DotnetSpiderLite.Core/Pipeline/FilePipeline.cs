@@ -21,7 +21,7 @@ namespace DotnetSpiderLite.Core.Pipeline
                     string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", "files", $"{Guid.NewGuid():N}.dsd");
                     using (StreamWriter printWriter = new StreamWriter(File.OpenWrite(filePath), Encoding.UTF8))
                     {
-                        printWriter.WriteLine("url:\t" + resultItem.Page.Response.DownloadContext.Request.Uri);
+                        printWriter.WriteLine("url:\t" + resultItem.Page.Response.Request.Uri);
 
                         foreach (var entry in resultItem)
                         {

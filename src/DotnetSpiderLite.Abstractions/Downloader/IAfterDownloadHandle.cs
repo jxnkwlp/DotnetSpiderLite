@@ -6,7 +6,7 @@ namespace DotnetSpiderLite.Abstractions.Downloader
 {
     public interface IAfterDownloadHandle
     {
-        void Handle(DownloadContext context);
+        void Handle(Response response);
 
     }
 }

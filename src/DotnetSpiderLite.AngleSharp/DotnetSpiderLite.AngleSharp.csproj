@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+		<TargetFramework></TargetFramework>
+		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+		<AssemblyName>DotnetSpiderLite.AngleSharp</AssemblyName>
+		<RootNamespace>DotnetSpiderLite.AngleSharps</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AngleSharp" Version="0.9.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DotnetSpiderLite.Abstractions\DotnetSpiderLite.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>
