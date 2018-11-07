@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DotnetSpiderLite.Core.Scheduler
+namespace DotnetSpiderLite.Scheduler
 {
     public class SampleQueueScheduler : IScheduler
     {

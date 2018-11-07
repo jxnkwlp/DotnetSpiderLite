@@ -1,8 +1,5 @@
-﻿using DotnetSpiderLite.Abstractions.Extraction;
-using DotnetSpiderLite.Abstractions.Logs;
+﻿using DotnetSpiderLite.Abstractions.Logs;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DotnetSpiderLite.Abstractions.PageProcessor
@@ -16,12 +13,12 @@ namespace DotnetSpiderLite.Abstractions.PageProcessor
 
         //IPageExtraction PageExtraction { get; set; }
 
-        /// <summary>
-        ///  解析 
-        /// </summary>
-        /// <param name="page"></param>
-        /// <returns></returns>
-        IEnumerable<Request> ExtractRequest(Page page);
+        ///// <summary>
+        /////  解析 
+        ///// </summary>
+        ///// <param name="page"></param>
+        ///// <returns></returns>
+        //IEnumerable<Request> ExtractRequest(Page page);
 
         /// <summary>
         ///  处理

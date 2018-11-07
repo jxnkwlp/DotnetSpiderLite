@@ -1,12 +1,8 @@
-﻿using DotnetSpiderLite.Abstractions;
+﻿using DotnetSpiderLite;
+using DotnetSpiderLite.Abstractions;
 using DotnetSpiderLite.Abstractions.PageProcessor;
-using DotnetSpiderLite.Core;
 using System;
 using System.Threading.Tasks;
-
-using DotnetSpiderLite.HtmlAgilityPack;
-using System.Collections.Generic;
-using DotnetSpiderLite.AngleSharps;
 
 namespace ConsoleApp1
 {
@@ -16,11 +12,12 @@ namespace ConsoleApp1
         {
             Console.WriteLine("Hello World!");
 
-            Spider spider = Spider.Create("https://github.com/jxnkwlp");
+            //Spider spider = Spider.Create("https://github.com/jxnkwlp"); 
+            //spider.AddPageProcessors(new GithubProfileProcessor());  
 
-            spider.PageExtracter = new AngleSharpHtmlExtracter();
 
-            spider.AddPageProcessors(new GithubProfileProcessor());
+            Spider spider = Spider.Create("https://www.cnblogs.com/");
+            spider.AddPageProcessors(new CNBlogProcessor());
 
             spider.Run();
 
@@ -28,17 +25,16 @@ namespace ConsoleApp1
 
         public class GithubProfileProcessor : BasePageProcessor
         {
-            public override Task Handle(Page page)
+            public override Task HandlePage(Page page)
             {
-                try
-                {
-                    page.AddResultItem("author", page.SelectSingle("//div[@class='p-nickname vcard-username d-block']"));
-                    page.AddResultItem("name", page.SelectSingle("//span[@class='p-name vcard-fullname d-block']"));
+                var httpStatusCode = page.Response.StatusCode;
 
-                }
-                catch (Exception)
-                {
-                }
+                //page.AddResultItem("author", page.SelectSingle("//div[@class='p-nickname vcard-username']"));
+                //page.AddResultItem("name", page.SelectSingle("//span[@class='p-name vcard-fullname']"));
+
+                page.AddResultItem("author", page.SelectSingleByCss(".p-nickname.vcard-username"));
+                page.AddResultItem("name", page.SelectSingleByCss(".p-name.vcard-fullname"));
+
 
                 return Task.CompletedTask;
             }
@@ -47,15 +43,30 @@ namespace ConsoleApp1
 
         public class CNBlogProcessor : BasePageProcessor
         {
-            public override IEnumerable<Request> ExtractRequest(Page page)
+            public override Task HandlePage(Page page)
             {
+                if (page.SelectSingleByCss("#post_list") != null)
+                {
+                    // 列表页面 
+                    var list = page.SelectAllByCss("#post_list .post_item");
 
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        var title = page.SelectSingleByCss("#post_list .post_item:eq(" + i + ") .titlelnk");
 
-                return base.ExtractRequest(page);
-            }
+                        var href = title.Attributes["href"];
 
-            public override Task Handle(Page page)
-            {
+                        Console.WriteLine(title.InnerHtml + " " + href);
+
+                        page.AddTargetRequest(href);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine(page.Response.Request.Uri);
+
+                }
+
                 return Task.CompletedTask;
             }
 

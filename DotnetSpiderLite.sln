@@ -13,7 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp2", "ConsoleApp2\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSpiderLite.HtmlAgilityPack", "src\DotnetSpiderLite.HtmlAgilityPack\DotnetSpiderLite.HtmlAgilityPack.csproj", "{62D722D3-17D9-46FC-AFB2-75EDF69504EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpiderLite.AngleSharp", "src\DotnetSpiderLite.AngleSharp\DotnetSpiderLite.AngleSharp.csproj", "{C87B2694-E320-453D-A599-04FED0C26ACE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSpiderLite.AngleSharp", "src\DotnetSpiderLite.AngleSharp\DotnetSpiderLite.AngleSharp.csproj", "{C87B2694-E320-453D-A599-04FED0C26ACE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpiderLite.NLog", "src\DotnetSpiderLite.NLog\DotnetSpiderLite.NLog.csproj", "{1BCEA906-B869-4297-870C-2D6B8D695E34}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{9AF7B736-0F55-454B-9C9A-3F3CE8D9AD2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,9 +49,18 @@ Global
 		{C87B2694-E320-453D-A599-04FED0C26ACE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C87B2694-E320-453D-A599-04FED0C26ACE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C87B2694-E320-453D-A599-04FED0C26ACE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BCEA906-B869-4297-870C-2D6B8D695E34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BCEA906-B869-4297-870C-2D6B8D695E34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BCEA906-B869-4297-870C-2D6B8D695E34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BCEA906-B869-4297-870C-2D6B8D695E34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{62D722D3-17D9-46FC-AFB2-75EDF69504EB} = {9AF7B736-0F55-454B-9C9A-3F3CE8D9AD2D}
+		{C87B2694-E320-453D-A599-04FED0C26ACE} = {9AF7B736-0F55-454B-9C9A-3F3CE8D9AD2D}
+		{1BCEA906-B869-4297-870C-2D6B8D695E34} = {9AF7B736-0F55-454B-9C9A-3F3CE8D9AD2D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {111A217F-E8E4-442F-8B1C-263774BF635F}

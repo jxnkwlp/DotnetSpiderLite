@@ -48,12 +48,12 @@ namespace DotnetSpiderLite.Abstractions.Downloader
 
 
 
-        public void AddAfterDownloadHandle(IAfterDownloadHandle handle)
+        public virtual void AddAfterDownloadHandle(IAfterDownloadHandle handle)
         {
             _afterDownloadHandles.Add(handle);
         }
 
-        public void AddBeforeDownloadHandle(IBeforeDownloadHandle handle)
+        public virtual void AddBeforeDownloadHandle(IBeforeDownloadHandle handle)
         {
             _beforeDownloadHandles.Add(handle);
         }

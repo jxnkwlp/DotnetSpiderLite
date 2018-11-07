@@ -1,21 +1,20 @@
-﻿using DotnetSpiderLite.Abstractions.Downloader;
+﻿using DotnetSpiderLite.Abstractions;
+using DotnetSpiderLite.Abstractions.Downloader;
+using DotnetSpiderLite.Abstractions.Logs;
 using DotnetSpiderLite.Abstractions.PageProcessor;
 using DotnetSpiderLite.Abstractions.Pipeline;
 using DotnetSpiderLite.Abstractions.Scheduler;
-using DotnetSpiderLite.Core.Downloader;
+using DotnetSpiderLite.Downloader;
+using DotnetSpiderLite.Logs;
+using DotnetSpiderLite.Pipeline;
+using DotnetSpiderLite.Scheduler;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
-using DotnetSpiderLite.Abstractions;
-using System.IO.MemoryMappedFiles;
-using DotnetSpiderLite.Core.Scheduler;
-using DotnetSpiderLite.Core.Pipeline;
-using DotnetSpiderLite.Abstractions.Extraction;
 
-namespace DotnetSpiderLite.Core
+namespace DotnetSpiderLite
 {
     /// <summary>
     ///  main
@@ -35,6 +34,10 @@ namespace DotnetSpiderLite.Core
 
         public int ThreadNumber { get => _threadNumber; set => _threadNumber = value; }
 
+
+        public ILogger Logger { get; private set; }
+
+
         public IList<IPipeline> Pipelines { get; private set; } = new List<IPipeline>();
 
         public IList<IPageProcessor> PageProcessors { get; private set; } = new List<IPageProcessor>();
@@ -44,7 +47,7 @@ namespace DotnetSpiderLite.Core
         public IDownloader Downloader { get => _downloader; set => _downloader = value; }
 
 
-        public IPageHtmlExtracter PageExtracter { get; set; }
+        //public IHtmlExtracter PageExtracter { get; set; }
 
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
@@ -110,6 +113,10 @@ namespace DotnetSpiderLite.Core
             this.PageProcessors.Add(pageProcessor);
         }
 
+        public void AddLog(ILoggerFactory loggerFactory)
+        {
+            this.Logger = loggerFactory.GetLogger(typeof(Spider));
+        }
 
         public void Run()
         {
@@ -170,6 +177,11 @@ namespace DotnetSpiderLite.Core
             if (_init) return;
             _init = true;
 
+            if (this.Logger == null)
+                this.Logger = new ConsoleLogger();
+
+            WriteInfo();
+
             if (this.Scheduler == null)
                 this.Scheduler = new SampleQueueScheduler();
 
@@ -197,15 +209,6 @@ namespace DotnetSpiderLite.Core
 
             if (page.Retry) { }
 
-            if (page.TargetRequests != null && page.TargetRequests.Count > 0)
-            {
-                foreach (var item in page.TargetRequests)
-                {
-                    // 添加到 队列 
-                    this.Scheduler.Enqueue(item);
-                }
-
-            }
 
             // 页面处理程序
             foreach (var processor in PageProcessors)
@@ -216,6 +219,17 @@ namespace DotnetSpiderLite.Core
                 }
                 catch (Exception ex)
                 {
+                    this.Logger?.Error(ex.Message);
+                }
+            }
+
+
+            if (page.TargetRequests != null && page.TargetRequests.Count > 0)
+            {
+                foreach (var item in page.TargetRequests)
+                {
+                    // 添加到 队列 
+                    this.Scheduler.Enqueue(item);
                 }
             }
 
@@ -238,7 +252,7 @@ namespace DotnetSpiderLite.Core
                 var response = await this.Downloader.DownloadAsync(new Request(uri));
 
                 var page = new Page(response);
-                page.PageExtracter = this.PageExtracter;
+                //page.HtmlExtracter = this.PageExtracter;
 
                 return page;
             }
@@ -323,6 +337,20 @@ namespace DotnetSpiderLite.Core
         //}
 
         #endregion
+
+
+        void WriteInfo()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("================================================");
+            sb.AppendLine("== Dotnet Spider Lite An open source crawler  ==");
+            sb.AppendLine("== Power by C#                                ==");
+            sb.AppendLine("== Author : jxnkwlp                           ==");
+            sb.AppendLine("================================================");
+
+            this.Logger?.Info(sb.ToString());
+        }
 
     }
 }

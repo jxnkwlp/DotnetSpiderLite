@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework></TargetFramework>
 		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+		<RootNamespace>DotnetSpiderLite</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>

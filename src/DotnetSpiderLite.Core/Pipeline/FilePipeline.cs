@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DotnetSpiderLite.Core.Pipeline
+namespace DotnetSpiderLite.Pipeline
 {
     public class FilePipeline : BasePipeline
     {

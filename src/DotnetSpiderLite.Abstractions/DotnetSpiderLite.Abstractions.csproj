@@ -5,4 +5,20 @@
 		<TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Dom\**" />
+    <Compile Remove="Extraction\**" />
+    <Compile Remove="Html\**" />
+    <EmbeddedResource Remove="Dom\**" />
+    <EmbeddedResource Remove="Extraction\**" />
+    <EmbeddedResource Remove="Html\**" />
+    <None Remove="Dom\**" />
+    <None Remove="Extraction\**" />
+    <None Remove="Html\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Html\HtmlElement.cs" />
+  </ItemGroup>
+
 </Project>

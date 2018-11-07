@@ -1,10 +1,6 @@
-﻿using System;
+﻿using DotnetSpiderLite.Abstractions.Logs;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using DotnetSpiderLite.Abstractions.Downloader;
-using DotnetSpiderLite.Abstractions.Extraction;
-using DotnetSpiderLite.Abstractions.Logs;
 
 namespace DotnetSpiderLite.Abstractions.PageProcessor
 {
@@ -18,27 +14,13 @@ namespace DotnetSpiderLite.Abstractions.PageProcessor
 
         public Task Process(Page page)
         {
-            var requests = ExtractRequest(page);
-            if (requests != null)
-            {
-                foreach (var item in requests)
-                {
-                    page.AddTargetRequest(item);
-                }
-            }
-
-
-            Handle(page);
+            HandlePage(page);
 
             return Task.CompletedTask;
         }
 
 
-        public abstract Task Handle(Page page);
+        public abstract Task HandlePage(Page page);
 
-        public virtual IEnumerable<Request> ExtractRequest(Page page)
-        {
-            return null;
-        }
     }
 }

@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DotnetSpiderLite.Core.Downloader
+namespace DotnetSpiderLite.Downloader
 {
     public class DefaultHttpClientDownloader : BaseDownloader
     {
@@ -39,5 +39,7 @@ namespace DotnetSpiderLite.Core.Downloader
 
             return response;
         }
+
+
     }
 }

@@ -1,15 +1,15 @@
-﻿using DotnetSpiderLite.Abstractions.Downloader;
-using DotnetSpiderLite.Abstractions.Extraction;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 
 namespace DotnetSpiderLite.Abstractions
 {
+    /// <summary>
+    ///  表示一个页面 
+    /// </summary>
     public class Page
     {
-        public IPageHtmlExtracter PageExtracter { get; set; }
+        //public IHtmlExtracter HtmlExtracter { get; set; }
 
         public Response Response { get; private set; }
 

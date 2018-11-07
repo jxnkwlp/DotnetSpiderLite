@@ -18,7 +18,7 @@ namespace DotnetSpiderLite.Abstractions
 
         public Encoding Encoding { get; set; } = Encoding.UTF8;
 
-        public string Method { get; set; }
+        public string Method { get; set; } = "GET";
 
 
         public Uri Uri { get; }
@@ -36,6 +36,7 @@ namespace DotnetSpiderLite.Abstractions
         public Request(Uri uri)
         {
             this.Uri = uri;
+            this.Method = "GET";
         }
     }
 }
