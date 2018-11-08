@@ -4,9 +4,12 @@ using System.Text;
 
 namespace DotnetSpiderLite.Abstractions.Html
 {
-    public interface IHtmlElement //: IHtmlElementQuery
+    /// <summary>
+    ///  表示一个 html 元素节点
+    /// </summary>
+    public interface IHtmlElement : IHtmlElementSelector
     {
-        // IEnumerable<IHtmlElement> Children { get; set; }
+        IEnumerable<IHtmlElement> Children { get; set; }
 
         string InnerHtml { get; set; }
 

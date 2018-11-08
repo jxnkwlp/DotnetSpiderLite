@@ -17,7 +17,7 @@ namespace DotnetSpiderLite.Scheduler
 
         public ILogger Logger { get; set; }
 
-        public Request Dequeue()
+        public Request Pull()
         {
             if (_queue.TryDequeue(out Request item))
                 return item;
@@ -29,7 +29,7 @@ namespace DotnetSpiderLite.Scheduler
         {
         }
 
-        public void Enqueue(Request request)
+        public void Push(Request request)
         {
             _queue.Enqueue(request);
         }

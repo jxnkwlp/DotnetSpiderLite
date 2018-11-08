@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework></TargetFramework>
-		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
 		<RootNamespace>DotnetSpiderLite</RootNamespace>
 	</PropertyGroup>
 
@@ -20,8 +20,8 @@
 		<Reference Include="System.Net.Http" />
 		<Reference Include="Microsoft.CSharp" />
 	</ItemGroup>
-	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-		<PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+	
+	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' "> 
 	</ItemGroup>
 
 </Project>

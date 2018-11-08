@@ -11,7 +11,7 @@ namespace ConsoleApp2
             Console.WriteLine("Hello World!");
 
             //var site = new Site { CycleRetryTimes = 3, SleepTime = 300 };
-            var spider = Spider.Create(new GithubProfileProcessor()).AddRequest("https://github.com/zlzforever");
+            var spider = Spider.Create(new GithubProfileProcessor()).AddRequest("https://github.com/zlzforever", null);
             spider.ThreadNum = 5;
             spider.Run();
 
@@ -31,5 +31,5 @@ namespace ConsoleApp2
 
     }
 
-    
+
 }

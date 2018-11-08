@@ -9,9 +9,17 @@ namespace DotnetSpiderLite.Abstractions.Scheduler
     {
         ILogger Logger { get; set; }
 
-        void Enqueue(Request request);
+        /// <summary>
+        ///  放进一个
+        /// </summary>
+        /// <param name="request"></param>
+        void Push(Request request);
 
-        Request Dequeue();
+        /// <summary>
+        ///  拉取一个
+        /// </summary>
+        /// <returns></returns>
+        Request Pull();
 
     }
 }

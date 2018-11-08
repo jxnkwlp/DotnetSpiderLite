@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DotnetSpiderLite.Abstractions.Html;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,7 +10,7 @@ namespace DotnetSpiderLite.Abstractions
     /// </summary>
     public class Page
     {
-        //public IHtmlExtracter HtmlExtracter { get; set; }
+        public IHtmlElementSelector Selector { get; private set; }
 
         public Response Response { get; private set; }
 
@@ -40,6 +41,11 @@ namespace DotnetSpiderLite.Abstractions
             Init();
         }
 
+        public Page(Response response, IHtmlElementSelector elementSelector) : this(response)
+        {
+            this.Selector = elementSelector;
+        }
+
         private void Init()
         {
             var bytes = new byte[Response.Body.Length];
@@ -65,8 +71,9 @@ namespace DotnetSpiderLite.Abstractions
             this.ResutItems[key] = value;
         }
 
-
-
-
+        public void SetSelector(IHtmlElementSelector htmlElementSelector)
+        {
+            this.Selector = htmlElementSelector;
+        }
     }
 }

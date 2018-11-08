@@ -18,7 +18,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Html\HtmlElement.cs" />
+    <Compile Include="Extraction\IHtmlExtracter.cs" />
+    <Compile Include="Html\IHtmlElement.cs" />
+    <Compile Include="Html\IHtmlElementSelector.cs" />
+    <Compile Include="Html\IHtmlElementSelectorFactory.cs" />
+    <Compile Include="Html\IHtmlQuery.cs" />
+    <Compile Include="Html\HtmlSelectorPathType.cs" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,6 @@
 ﻿using DotnetSpiderLite.Abstractions;
 using DotnetSpiderLite.Abstractions.Downloader;
+using DotnetSpiderLite.Abstractions.Html;
 using DotnetSpiderLite.Abstractions.Logs;
 using DotnetSpiderLite.Abstractions.PageProcessor;
 using DotnetSpiderLite.Abstractions.Pipeline;
@@ -10,6 +11,7 @@ using DotnetSpiderLite.Pipeline;
 using DotnetSpiderLite.Scheduler;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +28,7 @@ namespace DotnetSpiderLite
         private IDownloader _downloader = new DefaultHttpClientDownloader();
         private SpiderState _spiderState = SpiderState.Init;
         private int _threadNumber = 1;
+
 
         public SpiderState State => _spiderState;
 
@@ -46,6 +49,8 @@ namespace DotnetSpiderLite
         public IScheduler Scheduler { get => _scheduler; set => _scheduler = value; }
         public IDownloader Downloader { get => _downloader; set => _downloader = value; }
 
+
+        public IHtmlElementSelectorFactory SelectorFactory { get; private set; }
 
         //public IHtmlExtracter PageExtracter { get; set; }
 
@@ -93,30 +98,56 @@ namespace DotnetSpiderLite
             return Create(new Uri(url));
         }
 
-        public void AddRequest(string url, Dictionary<string, string> exts = null)
+        public Spider AddRequest(string url, Dictionary<string, string> exts = null)
         {
-            this.Scheduler.Enqueue(new Request(new Uri(url)));
+            this.Scheduler.Push(new Request(new Uri(url)));
+            return this;
         }
 
-        public void AddRequest(Uri uri, Dictionary<string, string> exts = null)
+        public Spider AddRequest(Uri uri, Dictionary<string, string> exts = null)
         {
-            this.Scheduler.Enqueue(new Request(uri));
+            this.Scheduler.Push(new Request(uri));
+            return this;
         }
 
-        public void AddPipelines(IPipeline pipeline)
+        public Spider AddPipelines(IPipeline pipeline)
         {
             this.Pipelines.Add(pipeline);
+            return this;
         }
 
-        public void AddPageProcessors(IPageProcessor pageProcessor)
+        public Spider AddPageProcessors(IPageProcessor pageProcessor)
         {
             this.PageProcessors.Add(pageProcessor);
+            return this;
         }
 
-        public void AddLog(ILoggerFactory loggerFactory)
+        public Spider SetLogFactory(ILoggerFactory loggerFactory)
         {
             this.Logger = loggerFactory.GetLogger(typeof(Spider));
+            return this;
         }
+
+        public Spider SetScheduler(IScheduler scheduler)
+        {
+            this.Scheduler = scheduler;
+            return this;
+        }
+
+        public Spider SetDownloader(IDownloader downloader)
+        {
+            this.Downloader = downloader;
+            return this;
+        }
+
+
+
+        //public Spider SetHtmlElementQuery(IHtmlElementSelector htmlElementQuery)
+        //{
+        //    this.HtmlQuery = htmlElementQuery;
+        //    return this;
+        //}
+
 
         public void Run()
         {
@@ -142,7 +173,7 @@ namespace DotnetSpiderLite
                     while (_spiderState == SpiderState.Running)
                     {
                         // 取出 
-                        var request = Scheduler.Dequeue();
+                        var request = Scheduler.Pull();
 
                         if (request == null)
                         {
@@ -178,10 +209,18 @@ namespace DotnetSpiderLite
             _init = true;
 
             if (this.Logger == null)
-                this.Logger = new ConsoleLogger();
+                this.Logger = LogManager.GetLogger(typeof(Spider));
 
-            WriteInfo();
+            WelcomeInfo();
 
+            InitComponents();
+
+
+
+        }
+
+        private void InitComponents()
+        {
             if (this.Scheduler == null)
                 this.Scheduler = new SampleQueueScheduler();
 
@@ -191,6 +230,34 @@ namespace DotnetSpiderLite
             if (this.Pipelines.Count == 0)
                 this.Pipelines.Add(new ConsolePipeline());
 
+
+            InitHtmlQuery();
+        }
+
+        private void InitHtmlQuery()
+        {
+            if (this.SelectorFactory != null)
+                return;
+
+            TryLoadHtmlAgilityPackHtmlSelectorFactory();
+
+        }
+
+        private void TryLoadHtmlAgilityPackHtmlSelectorFactory()
+        {
+            try
+            {
+                var ass = Assembly.Load("DotnetSpiderLite.HtmlAgilityPack");
+                var type = ass.GetType("DotnetSpiderLite.HtmlAgilityPack.HtmlElementSelectorFactory");
+
+                var typeObj = Activator.CreateInstance(type);
+
+                this.SelectorFactory = typeObj as IHtmlElementSelectorFactory;
+            }
+            catch (Exception)
+            {
+                this.Logger.Info("Can't load HtmlAgilityPack.HtmlElementSelectorFactory ");
+            }
         }
 
         private async Task RunCore(Request request)
@@ -229,7 +296,7 @@ namespace DotnetSpiderLite
                 foreach (var item in page.TargetRequests)
                 {
                     // 添加到 队列 
-                    this.Scheduler.Enqueue(item);
+                    this.Scheduler.Push(item);
                 }
             }
 
@@ -245,19 +312,28 @@ namespace DotnetSpiderLite
         }
 
 
+
+
         private async Task<Page> HandleDownloadAsync(Uri uri)
         {
+            this.Logger?.Trace($"Start download url: {uri} ");
+
             try
             {
                 var response = await this.Downloader.DownloadAsync(new Request(uri));
 
                 var page = new Page(response);
-                //page.HtmlExtracter = this.PageExtracter;
+
+                if (SelectorFactory != null)
+                    page.SetSelector(SelectorFactory.GetSelector(page.Html));
 
                 return page;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                this.Logger?.Error("Handle download url faild.");
+                this.Logger?.Error($"URL:{uri}");
+                this.Logger?.Error("Message", ex);
             }
 
             return null;
@@ -339,14 +415,15 @@ namespace DotnetSpiderLite
         #endregion
 
 
-        void WriteInfo()
+        void WelcomeInfo()
         {
             StringBuilder sb = new StringBuilder();
 
             sb.AppendLine("================================================");
+            sb.AppendLine("==                                            ==");
+            sb.AppendLine("== Welcome to Dotnet Spider Lite              ==");
             sb.AppendLine("== Dotnet Spider Lite An open source crawler  ==");
-            sb.AppendLine("== Power by C#                                ==");
-            sb.AppendLine("== Author : jxnkwlp                           ==");
+            sb.AppendLine("==                                            ==");
             sb.AppendLine("================================================");
 
             this.Logger?.Info(sb.ToString());

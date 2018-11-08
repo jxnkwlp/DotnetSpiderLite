@@ -1,5 +1,6 @@
 ﻿using DotnetSpiderLite;
 using DotnetSpiderLite.Abstractions;
+using DotnetSpiderLite.Abstractions.Html;
 using DotnetSpiderLite.Abstractions.PageProcessor;
 using System;
 using System.Threading.Tasks;
@@ -23,40 +24,40 @@ namespace ConsoleApp1
 
         }
 
-        public class GithubProfileProcessor : BasePageProcessor
-        {
-            public override Task HandlePage(Page page)
-            {
-                var httpStatusCode = page.Response.StatusCode;
+        //public class GithubProfileProcessor : BasePageProcessor
+        //{
+        //    public override Task HandlePage(Page page)
+        //    {
+        //        var httpStatusCode = page.Response.StatusCode;
 
-                //page.AddResultItem("author", page.SelectSingle("//div[@class='p-nickname vcard-username']"));
-                //page.AddResultItem("name", page.SelectSingle("//span[@class='p-name vcard-fullname']"));
+        //        //page.AddResultItem("author", page.SelectSingle("//div[@class='p-nickname vcard-username']"));
+        //        //page.AddResultItem("name", page.SelectSingle("//span[@class='p-name vcard-fullname']"));
 
-                page.AddResultItem("author", page.SelectSingleByCss(".p-nickname.vcard-username"));
-                page.AddResultItem("name", page.SelectSingleByCss(".p-name.vcard-fullname"));
+        //        page.AddResultItem("author", page.SelectSingleByCss(".p-nickname.vcard-username"));
+        //        page.AddResultItem("name", page.SelectSingleByCss(".p-name.vcard-fullname"));
 
 
-                return Task.CompletedTask;
-            }
-        }
+        //        return Task.CompletedTask;
+        //    }
+        //}
 
 
         public class CNBlogProcessor : BasePageProcessor
         {
             public override Task HandlePage(Page page)
             {
-                if (page.SelectSingleByCss("#post_list") != null)
+                var listEle = page.Selector.SelectorAll(".post_item", HtmlSelectorPathType.Css);
+
+                // 列表页面 
+                if (listEle != null && listEle.Count > 0)
                 {
-                    // 列表页面 
-                    var list = page.SelectAllByCss("#post_list .post_item");
-
-                    for (int i = 0; i < list.Count; i++)
+                    foreach (var item in listEle)
                     {
-                        var title = page.SelectSingleByCss("#post_list .post_item:eq(" + i + ") .titlelnk");
-
+                        var title = item.Selector(".titlelnk", HtmlSelectorPathType.Css);
                         var href = title.Attributes["href"];
 
-                        Console.WriteLine(title.InnerHtml + " " + href);
+                        Console.WriteLine($"title:{title.InnerHtml}");
+                        Console.WriteLine($"href:{href}");
 
                         page.AddTargetRequest(href);
                     }
@@ -64,8 +65,29 @@ namespace ConsoleApp1
                 else
                 {
                     Console.WriteLine(page.Response.Request.Uri);
-
                 }
+
+                //if (page.SelectSingleByCss("#post_list") != null)
+                //{
+                //    // 列表页面 
+                //    var list = page.SelectAllByCss("#post_list .post_item");
+
+                //    for (int i = 0; i < list.Count; i++)
+                //    {
+                //        var title = page.SelectSingleByCss("#post_list .post_item:eq(" + i + ") .titlelnk");
+
+                //        var href = title.Attributes["href"];
+
+                //        Console.WriteLine(title.InnerHtml + " " + href);
+
+                //        page.AddTargetRequest(href);
+                //    }
+                //}
+                //else
+                //{
+                //    Console.WriteLine(page.Response.Request.Uri);
+
+                //}
 
                 return Task.CompletedTask;
             }

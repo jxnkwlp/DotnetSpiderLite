@@ -10,15 +10,15 @@ namespace DotnetSpiderLite.NLogs
     public class NLogLogger : ILogger
     {
         NLog.Logger _logger = NLog.LogManager.GetLogger("spider");
-
+         
         public void Debug(string message)
         {
             _logger.Debug(message);
         }
 
-        public void Error(string message)
+        public void Error(string message, Exception ex = null)
         {
-            _logger.Error(message);
+            _logger.Error(ex, message);
         }
 
         public void Info(string message)
