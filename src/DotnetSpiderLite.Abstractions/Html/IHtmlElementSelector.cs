@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotnetSpiderLite.Abstractions.Html
+namespace DotnetSpiderLite.Html
 {
     /// <summary>
     ///  html 查询器

@@ -1,8 +1,8 @@
-﻿using DotnetSpiderLite.Abstractions.Logs;
+﻿using DotnetSpiderLite.Logs;
 using System;
 using System.Threading.Tasks;
 
-namespace DotnetSpiderLite.Abstractions.PageProcessor
+namespace DotnetSpiderLite.PageProcessor
 {
     /// <summary>
     ///  页面处理器

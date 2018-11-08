@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotnetSpiderLite.Abstractions.Html
+namespace DotnetSpiderLite.Html
 {
     /// <summary>
     ///  查询路径类型

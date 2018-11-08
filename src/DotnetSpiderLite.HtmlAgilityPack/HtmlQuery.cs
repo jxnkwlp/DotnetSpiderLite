@@ -1,4 +1,4 @@
-﻿using DotnetSpiderLite.Abstractions.Html;
+﻿using DotnetSpiderLite.Html;
 using Fizzler.Systems.HtmlAgilityPack;
 using HtmlAgilityPack;
 using System;

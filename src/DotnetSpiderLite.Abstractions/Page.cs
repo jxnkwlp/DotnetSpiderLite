@@ -1,9 +1,9 @@
-﻿using DotnetSpiderLite.Abstractions.Html;
+﻿using DotnetSpiderLite.Html;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotnetSpiderLite.Abstractions
+namespace DotnetSpiderLite
 {
     /// <summary>
     ///  表示一个页面 

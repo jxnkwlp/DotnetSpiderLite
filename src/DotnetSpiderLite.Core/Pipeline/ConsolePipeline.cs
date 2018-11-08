@@ -1,6 +1,6 @@
-﻿using DotnetSpiderLite.Abstractions;
-using DotnetSpiderLite.Abstractions.Logs;
-using DotnetSpiderLite.Abstractions.Pipeline;
+﻿using DotnetSpiderLite;
+using DotnetSpiderLite.Logs;
+using DotnetSpiderLite.Pipeline;
 using System;
 using System.Collections.Generic;
 using System.Linq;

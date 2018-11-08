@@ -1,10 +1,10 @@
-﻿using DotnetSpiderLite.Abstractions.Downloader;
+﻿using DotnetSpiderLite.Downloader;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace DotnetSpiderLite.Abstractions
+namespace DotnetSpiderLite
 {
     public class Request
     {

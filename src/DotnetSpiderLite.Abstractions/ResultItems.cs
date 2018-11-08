@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotnetSpiderLite.Abstractions
+namespace DotnetSpiderLite
 {
     /// <summary>
     ///  页面解析的数据结果

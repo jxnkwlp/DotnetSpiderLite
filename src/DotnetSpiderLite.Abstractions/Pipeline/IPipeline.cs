@@ -1,9 +1,9 @@
-﻿using DotnetSpiderLite.Abstractions.Logs;
+﻿using DotnetSpiderLite.Logs;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotnetSpiderLite.Abstractions.Pipeline
+namespace DotnetSpiderLite.Pipeline
 {
     /// <summary>
     ///  数据管道

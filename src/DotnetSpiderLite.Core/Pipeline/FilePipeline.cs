@@ -1,5 +1,5 @@
-﻿using DotnetSpiderLite.Abstractions;
-using DotnetSpiderLite.Abstractions.Pipeline;
+﻿using DotnetSpiderLite;
+using DotnetSpiderLite.Pipeline;
 using System;
 using System.Collections;
 using System.Collections.Generic;

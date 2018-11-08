@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace DotnetSpiderLite.Abstractions.Pipeline
+namespace DotnetSpiderLite.Pipeline
 {
     public abstract class BaseFilePipeline : BasePipeline
     {

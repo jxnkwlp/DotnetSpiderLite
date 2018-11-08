@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using DotnetSpiderLite.Abstractions.Logs;
+using DotnetSpiderLite.Logs;
 
-namespace DotnetSpiderLite.Abstractions.Pipeline
+namespace DotnetSpiderLite.Pipeline
 {
     public abstract class BasePipeline : IPipeline
     {

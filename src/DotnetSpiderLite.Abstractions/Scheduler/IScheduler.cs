@@ -1,10 +1,13 @@
-﻿using DotnetSpiderLite.Abstractions.Logs;
+﻿using DotnetSpiderLite.Logs;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotnetSpiderLite.Abstractions.Scheduler
+namespace DotnetSpiderLite.Scheduler
 {
+    /// <summary>
+    ///  队列
+    /// </summary>
     public interface IScheduler : IDisposable
     {
         ILogger Logger { get; set; }

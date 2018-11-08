@@ -1,4 +1,4 @@
-﻿using DotnetSpiderLite.Abstractions.Logs;
+﻿using DotnetSpiderLite.Logs;
 using System;
 using System.Collections.Generic;
 using System.Linq;

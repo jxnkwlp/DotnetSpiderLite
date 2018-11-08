@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotnetSpiderLite.Abstractions.Html
+namespace DotnetSpiderLite.Html
 {
     /// <summary>
     ///  表示一个 html 元素节点

@@ -1,4 +1,4 @@
-﻿using DotnetSpiderLite.Abstractions.Html;
+﻿using DotnetSpiderLite.Html;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;

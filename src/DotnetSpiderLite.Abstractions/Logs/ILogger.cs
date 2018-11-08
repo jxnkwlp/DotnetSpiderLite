@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotnetSpiderLite.Abstractions.Logs
+namespace DotnetSpiderLite.Logs
 {
     /// <summary>
     ///  定义 logger 

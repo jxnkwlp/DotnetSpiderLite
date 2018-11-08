@@ -1,7 +1,7 @@
 ﻿using DotnetSpiderLite;
-using DotnetSpiderLite.Abstractions;
-using DotnetSpiderLite.Abstractions.Html;
-using DotnetSpiderLite.Abstractions.PageProcessor;
+using DotnetSpiderLite;
+using DotnetSpiderLite.Html;
+using DotnetSpiderLite.PageProcessor;
 using DotnetSpiderLite.Pipeline;
 using System;
 using System.Threading.Tasks;

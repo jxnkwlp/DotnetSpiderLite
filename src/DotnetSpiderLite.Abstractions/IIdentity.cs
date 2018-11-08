@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotnetSpiderLite.Abstractions
+namespace DotnetSpiderLite
 {
     public interface IIdentity
     {

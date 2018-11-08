@@ -1,4 +1,4 @@
-﻿//using DotnetSpiderLite.Abstractions;
+﻿//using DotnetSpiderLite;
 //using HtmlAgilityPack;
 //using System;
 

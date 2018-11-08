@@ -1,8 +1,8 @@
-﻿using DotnetSpiderLite.Abstractions.Logs;
+﻿using DotnetSpiderLite.Logs;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DotnetSpiderLite.Abstractions.PageProcessor
+namespace DotnetSpiderLite.PageProcessor
 {
     public abstract class BasePageProcessor : IPageProcessor
     {

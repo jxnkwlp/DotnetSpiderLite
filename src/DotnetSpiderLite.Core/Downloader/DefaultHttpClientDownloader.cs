@@ -1,6 +1,6 @@
-﻿using DotnetSpiderLite.Abstractions;
-using DotnetSpiderLite.Abstractions.Downloader;
-using DotnetSpiderLite.Abstractions.Logs;
+﻿using DotnetSpiderLite;
+using DotnetSpiderLite.Downloader;
+using DotnetSpiderLite.Logs;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;

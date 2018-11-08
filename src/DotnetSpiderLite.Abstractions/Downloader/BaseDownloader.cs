@@ -1,10 +1,10 @@
-﻿using DotnetSpiderLite.Abstractions.Logs;
+﻿using DotnetSpiderLite.Logs;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DotnetSpiderLite.Abstractions.Downloader
+namespace DotnetSpiderLite.Downloader
 {
     public abstract class BaseDownloader : IDownloader
     {

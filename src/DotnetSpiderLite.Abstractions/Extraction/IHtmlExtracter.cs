@@ -1,10 +1,10 @@
-﻿//using DotnetSpiderLite.Abstractions.Downloader;
-//using DotnetSpiderLite.Abstractions.Html;
+﻿//using DotnetSpiderLite.Downloader;
+//using DotnetSpiderLite.Html;
 //using System;
 //using System.Collections.Generic;
 //using System.Text;
 
-//namespace DotnetSpiderLite.Abstractions.Extraction
+//namespace DotnetSpiderLite.Extraction
 //{
 //    /// <summary>
 //    ///  页面解析

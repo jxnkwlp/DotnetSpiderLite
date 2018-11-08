@@ -1,10 +1,10 @@
-﻿using DotnetSpiderLite.Abstractions;
-using DotnetSpiderLite.Abstractions.Downloader;
-using DotnetSpiderLite.Abstractions.Html;
-using DotnetSpiderLite.Abstractions.Logs;
-using DotnetSpiderLite.Abstractions.PageProcessor;
-using DotnetSpiderLite.Abstractions.Pipeline;
-using DotnetSpiderLite.Abstractions.Scheduler;
+﻿using DotnetSpiderLite;
+using DotnetSpiderLite.Downloader;
+using DotnetSpiderLite.Html;
+using DotnetSpiderLite.Logs;
+using DotnetSpiderLite.PageProcessor;
+using DotnetSpiderLite.Pipeline;
+using DotnetSpiderLite.Scheduler;
 using DotnetSpiderLite.Downloader;
 using DotnetSpiderLite.Infrastructure;
 using DotnetSpiderLite.Logs;
