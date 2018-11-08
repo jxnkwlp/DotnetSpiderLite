@@ -13,9 +13,23 @@ namespace DotnetSpiderLite.Downloader
     {
         private static HttpClient _httpClient = new HttpClient();
 
+        public override IDownloader Clone()
+        {
+            return MemberwiseClone() as IDownloader;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            _httpClient.Dispose();
+        }
+
         public override async Task<Response> HandleDownloadAsync(Request request)
         {
             HttpResponseMessage responseMessage = null;
+
+            SetOptions(request);
 
             if (request.Method == "GET")
             {
@@ -40,6 +54,23 @@ namespace DotnetSpiderLite.Downloader
             return response;
         }
 
+
+        private void SetOptions(Request request)
+        {
+            _httpClient.DefaultRequestHeaders.en
+
+            if (request.Headers != null && request.Headers.Count > 0)
+            {
+                foreach (var item in request.Headers)
+                {
+                    if (_httpClient.DefaultRequestHeaders.Contains(item.Key))
+                        _httpClient.DefaultRequestHeaders.Remove(item.Key);
+
+                    _httpClient.DefaultRequestHeaders.TryAddWithoutValidation(item.Key, item.Value);
+                } 
+            }
+
+        }
 
     }
 }

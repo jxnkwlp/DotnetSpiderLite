@@ -30,6 +30,12 @@ namespace DotnetSpiderLite.Abstractions
         public ResultItems ResutItems { get; private set; }
 
 
+        /// <summary>
+        ///  extra info 
+        /// </summary>
+        public Dictionary<string, string> Extra { get; private set; } = new Dictionary<string, string>();
+
+
         public HashSet<Request> TargetRequests { get; } = new HashSet<Request>();
 
         public Page(Response response)

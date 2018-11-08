@@ -9,6 +9,9 @@ namespace DotnetSpiderLite.Abstractions.Pipeline
     {
         public ILogger Logger { get; set; }
 
+        /// <summary>
+        ///  dispose when you need.
+        /// </summary>
         public virtual void Dispose()
         {
         }

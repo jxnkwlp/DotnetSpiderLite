@@ -13,7 +13,7 @@ namespace DotnetSpiderLite.Abstractions
 
         public ResultItems(Page page)
         {
-
+            this.Page = page;
         }
     }
 }

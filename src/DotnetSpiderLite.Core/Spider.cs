@@ -6,6 +6,7 @@ using DotnetSpiderLite.Abstractions.PageProcessor;
 using DotnetSpiderLite.Abstractions.Pipeline;
 using DotnetSpiderLite.Abstractions.Scheduler;
 using DotnetSpiderLite.Downloader;
+using DotnetSpiderLite.Infrastructure;
 using DotnetSpiderLite.Logs;
 using DotnetSpiderLite.Pipeline;
 using DotnetSpiderLite.Scheduler;
@@ -21,41 +22,57 @@ namespace DotnetSpiderLite
     /// <summary>
     ///  main
     /// </summary>
-    public class Spider : IDisposable
+    public class Spider : IDisposable, IIdentity
     {
         private bool _init = false;
         private IScheduler _scheduler;
         private IDownloader _downloader = new DefaultHttpClientDownloader();
-        private SpiderState _spiderState = SpiderState.Init;
+        private SpiderStatus _spiderStatus = SpiderStatus.Init;
         private int _threadNumber = 1;
+        private int _exitWaitInterval = 10 * 1000;
+
+        private int _waitCountLimit = 1000;
 
 
-        public SpiderState State => _spiderState;
+        /// <summary> 
+        ///  sleep time before request url. default 0.1s
+        /// </summary>
+        public int SleepTime { get; set; } = 100;
+
+        /// <summary>
+        ///  sleep time when requests is empty . default 15s
+        /// </summary>
+        public int EmptySleepTime { get; set; } = 15 * 1000;
+
+
+        public SpiderStatus Status => _spiderStatus;
 
         public string Identity { get; set; }
 
-
         public int ThreadNumber { get => _threadNumber; set => _threadNumber = value; }
 
-
         public ILogger Logger { get; private set; }
-
 
         public IList<IPipeline> Pipelines { get; private set; } = new List<IPipeline>();
 
         public IList<IPageProcessor> PageProcessors { get; private set; } = new List<IPageProcessor>();
 
-
         public IScheduler Scheduler { get => _scheduler; set => _scheduler = value; }
+
         public IDownloader Downloader { get => _downloader; set => _downloader = value; }
 
 
         public IHtmlElementSelectorFactory SelectorFactory { get; private set; }
 
-        //public IHtmlExtracter PageExtracter { get; set; }
 
         public DateTime StartTime { get; set; }
+
         public DateTime EndTime { get; set; }
+
+
+
+        public event Action<Spider, bool> OnClosed;
+
 
 
         #region ctor
@@ -140,27 +157,27 @@ namespace DotnetSpiderLite
             return this;
         }
 
+        public Spider SetMaxThreadNumber(int value)
+        {
+            this.ThreadNumber = value;
+            return this;
+        }
 
 
-        //public Spider SetHtmlElementQuery(IHtmlElementSelector htmlElementQuery)
-        //{
-        //    this.HtmlQuery = htmlElementQuery;
-        //    return this;
-        //}
 
 
         public void Run()
         {
-            if (_spiderState == SpiderState.Running)
+            if (_spiderStatus == SpiderStatus.Running)
             {
                 return;
             }
 
-            _spiderState = SpiderState.Running;
+            _spiderStatus = SpiderStatus.Running;
 
-            while (_spiderState == SpiderState.Running || _spiderState == SpiderState.Paused)
+            while (_spiderStatus == SpiderStatus.Running || _spiderStatus == SpiderStatus.Paused)
             {
-                if (_spiderState == SpiderState.Paused)
+                if (_spiderStatus == SpiderStatus.Paused)
                 {
                     Thread.Sleep(10);
                     continue;
@@ -169,38 +186,73 @@ namespace DotnetSpiderLite
                 Parallel.For(0, _threadNumber, new ParallelOptions() { MaxDegreeOfParallelism = _threadNumber },
                     (index) =>
                 {
+                    int waitCount = 1;
 
-                    while (_spiderState == SpiderState.Running)
+                    while (_spiderStatus == SpiderStatus.Running)
                     {
                         // 取出 
                         var request = Scheduler.Pull();
 
                         if (request == null)
                         {
-                            _spiderState = SpiderState.Finished;
-                            break;
-                        }
+                            // 等待超时，退出
+                            if (waitCount > _waitCountLimit)
+                            {
+                                _spiderStatus = SpiderStatus.Finished;
+                                break;
+                            }
 
-                        try
-                        {
-                            RunCore(request).Wait();
+                            // 等待
+                            WaitNewRequest(ref waitCount);
+
                         }
-                        catch (Exception)
+                        else
                         {
+                            waitCount = 1;
+
+                            try
+                            {
+                                var downloader = this.Downloader.Clone();
+
+                                // 
+                                HandleRequestAsync(request, downloader).Wait();
+
+                                Thread.Sleep(SleepTime);
+                            }
+                            catch
+                            {
+                            }
+
                         }
                     }
-
-
-                    SafeDestroy();
 
                 });
 
 
-                this.Dispose(true);
             }
 
+            if (_spiderStatus == SpiderStatus.Finished)
+            {
+                _spiderStatus = SpiderStatus.Exited;
 
+                this.Closed();
+            }
         }
+
+
+
+
+        private void WaitNewRequest(ref int count)
+        {
+            Thread.Sleep(10);
+            ++count;
+        }
+
+
+
+
+
+
 
 
         private void Init()
@@ -215,20 +267,18 @@ namespace DotnetSpiderLite
 
             InitComponents();
 
-
-
         }
 
         private void InitComponents()
         {
             if (this.Scheduler == null)
-                this.Scheduler = new SampleQueueScheduler();
+                this.Scheduler = new SampleQueueScheduler() { Logger = this.Logger };
 
             if (this.Downloader == null)
-                this.Downloader = new DefaultHttpClientDownloader();
+                this.Downloader = new DefaultHttpClientDownloader() { Logger = this.Logger };
 
             if (this.Pipelines.Count == 0)
-                this.Pipelines.Add(new ConsolePipeline());
+                this.Pipelines.Add(new ConsolePipeline() { Logger = this.Logger });
 
 
             InitHtmlQuery();
@@ -236,6 +286,8 @@ namespace DotnetSpiderLite
 
         private void InitHtmlQuery()
         {
+            // TODO: 更优雅的方法 ???  
+
             if (this.SelectorFactory != null)
                 return;
 
@@ -260,10 +312,10 @@ namespace DotnetSpiderLite
             }
         }
 
-        private async Task RunCore(Request request)
+        private async Task HandleRequestAsync(Request request, IDownloader downloader)
         {
             // 下载页面 
-            var page = await HandleDownloadAsync(request.Uri);
+            var page = await HandleDownloadAsync(request, downloader);
 
             if (page == null)
                 return;
@@ -274,21 +326,16 @@ namespace DotnetSpiderLite
             if (page.Skip)
                 return;
 
-            if (page.Retry) { }
+            if (page.Retry)
+            {
+                // 添加到 队列 
+                this.Scheduler.Push(request);
+                return;
+            }
 
 
             // 页面处理程序
-            foreach (var processor in PageProcessors)
-            {
-                try
-                {
-                    await processor.Process(page);
-                }
-                catch (Exception ex)
-                {
-                    this.Logger?.Error(ex.Message);
-                }
-            }
+            HandlePageProcessors(page);
 
 
             if (page.TargetRequests != null && page.TargetRequests.Count > 0)
@@ -304,28 +351,65 @@ namespace DotnetSpiderLite
                 return;
 
             // 数据处理 
+            HandlePipelines(page);
+        }
+
+
+        private void HandlePageProcessors(Page page)
+        {
+            foreach (var processor in PageProcessors)
+            {
+                try
+                {
+                    processor.Process(page);
+                }
+                catch (Exception ex)
+                {
+                    this.Logger?.Error($"The processor of '{processor.GetType().FullName}' Process faild.");
+                    this.Logger?.Error(ex.Message);
+                }
+            }
+        }
+
+
+        private void HandlePipelines(Page page)
+        {
             foreach (var pipeline in Pipelines)
             {
-                pipeline.Process(new List<ResultItems> { page.ResutItems });
+                try
+                {
+                    pipeline.Process(new List<ResultItems> { page.ResutItems });
+                }
+                catch (Exception ex)
+                {
+                    this.Logger?.Error($"The pipeline of '{pipeline.GetType().FullName}' Process faild");
+                    this.Logger?.Error(ex.Message);
+                }
+
             }
 
         }
 
 
-
-
-        private async Task<Page> HandleDownloadAsync(Uri uri)
+        private async Task<Page> HandleDownloadAsync(Request request, IDownloader downloader)
         {
+            var uri = request.Uri;
             this.Logger?.Trace($"Start download url: {uri} ");
 
             try
             {
-                var response = await this.Downloader.DownloadAsync(new Request(uri));
+                var response = await downloader.DownloadAsync(new Request(uri));
 
                 var page = new Page(response);
+                page.Extra.Marge(request.Extra);
+                page.Extra["Downloader"] = downloader.GetType().FullName;
+                page.Extra["Identity"] = this.Identity;
 
                 if (SelectorFactory != null)
+                {
                     page.SetSelector(SelectorFactory.GetSelector(page.Html));
+                    page.Extra["Selector"] = page.Selector.GetType().FullName;
+                }
 
                 return page;
             }
@@ -339,14 +423,37 @@ namespace DotnetSpiderLite
             return null;
         }
 
+        private void Closed()
+        {
+            this.OnClosed?.Invoke(this, true);
+            this.Logger?.Info("Spider exit.");
+
+            SafeDestroy();
+        }
 
         private void SafeDestroy()
         {
+            foreach (var item in this.Pipelines)
+            {
+                item.Dispose();
+            }
+
+            foreach (var item in this.PageProcessors)
+            {
+                item.Dispose();
+            }
+
+            this.Downloader.Dispose();
+            this.Scheduler.Dispose();
+
 
         }
 
+
+
         #region IDisposable Support
         private bool disposedValue = false; // 要检测冗余调用
+
 
         protected virtual void Dispose(bool disposing)
         {
@@ -354,7 +461,7 @@ namespace DotnetSpiderLite
             {
                 if (disposing)
                 {
-                    // TODO: 释放托管状态(托管对象)。
+                    Closed();
                 }
 
                 // TODO: 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。
@@ -426,7 +533,9 @@ namespace DotnetSpiderLite
             sb.AppendLine("==                                            ==");
             sb.AppendLine("================================================");
 
-            this.Logger?.Info(sb.ToString());
+            Console.WriteLine(sb.ToString());
+
+            this.Logger?.Info("Spider starting... ");
         }
 
     }

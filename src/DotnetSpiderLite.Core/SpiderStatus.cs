@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DotnetSpiderLite
 {
-    public enum SpiderState
+    public enum SpiderStatus
     {
         Init = 1,
         Running = 2,

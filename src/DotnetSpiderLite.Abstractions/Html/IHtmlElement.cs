@@ -15,8 +15,9 @@ namespace DotnetSpiderLite.Abstractions.Html
 
         string OuterHtml { get; set; }
 
-        string TagName { get; set; }
+        string InnerText { get; set; }
 
+        string TagName { get; set; }
 
         string ClassName { get; set; }
 

@@ -71,7 +71,8 @@ namespace DotnetSpiderLite.HtmlAgilityPack
                 ID = node.Id,
                 InnerHtml = node.InnerHtml,
                 OuterHtml = node.OuterHtml,
-
+                InnerText = node.InnerText,
+                TagName = node.Name,
             };
             return ele;
         }

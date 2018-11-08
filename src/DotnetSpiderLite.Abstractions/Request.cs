@@ -24,10 +24,10 @@ namespace DotnetSpiderLite.Abstractions
         public Uri Uri { get; }
         public Stream Body { get; set; }
 
-        public Dictionary<string, object> Headers { get; private set; } = new Dictionary<string, object>();
+        public Dictionary<string, string> Headers { get; private set; } = new Dictionary<string, string>();
 
 
-        public readonly Dictionary<string, object> Properties = new Dictionary<string, object>();
+        public Dictionary<string, string> Extra { get; private set; } = new Dictionary<string, string>();
 
 
 

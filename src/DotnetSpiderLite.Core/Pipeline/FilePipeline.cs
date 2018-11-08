@@ -10,15 +10,30 @@ using System.Threading.Tasks;
 
 namespace DotnetSpiderLite.Pipeline
 {
-    public class FilePipeline : BasePipeline
+    public class FilePipeline : BaseFilePipeline
     {
+        public FilePipeline() : base("")
+        {
+        }
+
+        public FilePipeline(string target) : base(target)
+        {
+        }
+
         public override void Process(IList<ResultItems> resultItems)
         {
             try
             {
+                string filePath = Path.Combine(DataFolder, "files", DateTime.Now.ToString("yyyyMMdd"), $"{Guid.NewGuid():N}.dsd");
+
+                if (!Directory.Exists(Path.GetDirectoryName(filePath)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                }
+
+
                 foreach (var resultItem in resultItems)
                 {
-                    string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", "files", $"{Guid.NewGuid():N}.dsd");
                     using (StreamWriter printWriter = new StreamWriter(File.OpenWrite(filePath), Encoding.UTF8))
                     {
                         printWriter.WriteLine("url:\t" + resultItem.Page.Response.Request.Uri);
@@ -33,16 +48,12 @@ namespace DotnetSpiderLite.Pipeline
                                 {
                                     printWriter.WriteLine(o);
                                 }
-                                //resultItem.Request.AddCountOfResults(list.Count);
-                                //resultItem.Request.AddEffectedRows(list.Count);
 
                             }
                             else
                             {
                                 printWriter.WriteLine(entry.Key + ":\t" + entry.Value);
 
-                                //resultItem.Request.AddCountOfResults(1);
-                                //resultItem.Request.AddEffectedRows(1);
                             }
                         }
                     }

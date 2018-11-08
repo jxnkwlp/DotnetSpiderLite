@@ -25,7 +25,7 @@ namespace DotnetSpiderLite.Abstractions.PageProcessor
         /// </summary>
         /// <param name="page"></param>
         /// <returns></returns>
-        Task Process(Page page);
+        void Process(Page page);
 
     }
 }

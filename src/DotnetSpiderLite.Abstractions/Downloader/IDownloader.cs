@@ -9,7 +9,7 @@ namespace DotnetSpiderLite.Abstractions.Downloader
     /// <summary> 
     ///  Downloader 
     /// </summary>
-    public interface IDownloader : IDisposable
+    public interface IDownloader : IDisposable //, ICloneable
     {
         ILogger Logger { get; set; }
 
@@ -20,6 +20,8 @@ namespace DotnetSpiderLite.Abstractions.Downloader
 
         void AddAfterDownloadHandle(IAfterDownloadHandle handle);
 
+
+        IDownloader Clone();
 
     }
 }

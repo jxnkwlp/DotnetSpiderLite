@@ -2,6 +2,7 @@
 using DotnetSpiderLite.Abstractions;
 using DotnetSpiderLite.Abstractions.Html;
 using DotnetSpiderLite.Abstractions.PageProcessor;
+using DotnetSpiderLite.Pipeline;
 using System;
 using System.Threading.Tasks;
 
@@ -19,6 +20,10 @@ namespace ConsoleApp1
 
             Spider spider = Spider.Create("https://www.cnblogs.com/");
             spider.AddPageProcessors(new CNBlogProcessor());
+            //spider.AddPipelines(new FilePipeline());
+            spider.AddPipelines(new JsonFilePipeline());
+
+            spider.ThreadNumber = 10;
 
             spider.Run();
 
@@ -44,7 +49,7 @@ namespace ConsoleApp1
 
         public class CNBlogProcessor : BasePageProcessor
         {
-            public override Task HandlePage(Page page)
+            public override void HandlePage(Page page)
             {
                 var listEle = page.Selector.SelectorAll(".post_item", HtmlSelectorPathType.Css);
 
@@ -56,8 +61,7 @@ namespace ConsoleApp1
                         var title = item.Selector(".titlelnk", HtmlSelectorPathType.Css);
                         var href = title.Attributes["href"];
 
-                        Console.WriteLine($"title:{title.InnerHtml}");
-                        Console.WriteLine($"href:{href}");
+                        Console.WriteLine($"列表:{title.InnerHtml} {href}");
 
                         page.AddTargetRequest(href);
                     }
@@ -65,31 +69,17 @@ namespace ConsoleApp1
                 else
                 {
                     Console.WriteLine(page.Response.Request.Uri);
+
+                    var title = page.Selector.Selector(".postTitle a", HtmlSelectorPathType.Css);
+                    var body = page.Selector.Selector("#cnblogs_post_body", HtmlSelectorPathType.Css);
+
+                    page.AddResultItem("title", title?.InnerText?.Trim());
+                    page.AddResultItem("content", body?.InnerHtml?.Trim());
+
+
                 }
 
-                //if (page.SelectSingleByCss("#post_list") != null)
-                //{
-                //    // 列表页面 
-                //    var list = page.SelectAllByCss("#post_list .post_item");
 
-                //    for (int i = 0; i < list.Count; i++)
-                //    {
-                //        var title = page.SelectSingleByCss("#post_list .post_item:eq(" + i + ") .titlelnk");
-
-                //        var href = title.Attributes["href"];
-
-                //        Console.WriteLine(title.InnerHtml + " " + href);
-
-                //        page.AddTargetRequest(href);
-                //    }
-                //}
-                //else
-                //{
-                //    Console.WriteLine(page.Response.Request.Uri);
-
-                //}
-
-                return Task.CompletedTask;
             }
 
         }

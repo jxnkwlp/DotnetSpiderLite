@@ -12,15 +12,13 @@ namespace DotnetSpiderLite.Abstractions.PageProcessor
         {
         }
 
-        public Task Process(Page page)
+        public void Process(Page page)
         {
             HandlePage(page);
-
-            return Task.CompletedTask;
         }
 
 
-        public abstract Task HandlePage(Page page);
+        public abstract void HandlePage(Page page);
 
     }
 }

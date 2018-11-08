@@ -29,12 +29,12 @@ namespace DotnetSpiderLite.Logs
             Console.ForegroundColor = LoggerColor[level];
             if (message.Contains("\n"))
             {
-                Console.WriteLine($"[{_type.Name}]");
+                Console.WriteLine($"[{DateTime.Now} {level}][{_type.Name}]");
                 Console.WriteLine($"{message}");
             }
             else
             {
-                Console.WriteLine($"[{_type.Name}]{message}");
+                Console.WriteLine($"[{DateTime.Now} {level}][{_type.Name}]{message}");
             }
             Console.ResetColor();
         }

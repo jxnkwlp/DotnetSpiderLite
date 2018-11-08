@@ -17,6 +17,8 @@ namespace DotnetSpiderLite.Abstractions
         public int StatusCode { get; set; }
 
 
+        public Dictionary<string, string> Extra { get; private set; } = new Dictionary<string, string>();
+
 
         public Response(Request request)
         {

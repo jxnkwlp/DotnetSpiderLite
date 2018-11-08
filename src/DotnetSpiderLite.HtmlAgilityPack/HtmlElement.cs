@@ -12,13 +12,14 @@ namespace DotnetSpiderLite.HtmlAgilityPack
         HtmlQuery _htmlQuery = new HtmlQuery();
 
         public HtmlElement()
-        { 
+        {
         }
 
         public IEnumerable<IHtmlElement> Children { get; set; }
 
         public string InnerHtml { get; set; }
         public string OuterHtml { get; set; }
+        public string InnerText { get; set; }
         public string TagName { get; set; }
         public string ClassName { get; set; }
         public string ID { get; set; }

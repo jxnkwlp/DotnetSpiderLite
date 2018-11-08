@@ -14,9 +14,8 @@ namespace DotnetSpiderLite.Abstractions.Downloader
 
         public ILogger Logger { get; set; }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
-            throw new NotImplementedException();
         }
 
         public async Task<Response> DownloadAsync(Request request)
@@ -59,5 +58,6 @@ namespace DotnetSpiderLite.Abstractions.Downloader
         }
 
         public abstract Task<Response> HandleDownloadAsync(Request request);
+        public abstract IDownloader Clone();
     }
 }
