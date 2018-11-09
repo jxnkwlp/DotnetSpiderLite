@@ -21,10 +21,8 @@ namespace ConsoleApp1
             Spider spider = Spider.Create("https://www.cnblogs.com/");
             spider.AddPageProcessors(new CNBlogProcessor());
             //spider.AddPipelines(new FilePipeline());
-            //spider.AddPipelines(new JsonFilePipeline());
-
-            spider.ThreadNumber = 10;
-
+            //spider.AddPipelines(new JsonFilePipeline()); 
+            //spider.ThreadNumber = 10;
             spider.Run();
 
         }
@@ -74,12 +72,8 @@ namespace ConsoleApp1
                     var body = page.Selector.Selector("#cnblogs_post_body", HtmlSelectorPathType.Css);
 
                     page.AddResultItem("title", title?.InnerText?.Trim());
-                    //page.AddResultItem("content", body?.InnerHtml?.Trim());
-
-
+                    //page.AddResultItem("content", body?.InnerHtml?.Trim()); 
                 }
-
-
             }
 
         }
