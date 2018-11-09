@@ -57,7 +57,7 @@ namespace DotnetSpiderLite
             var bytes = new byte[Response.Body.Length];
             Response.Body.Read(bytes, 0, (int)Response.Body.Length);
 
-            this.Html = Encoding.UTF8.GetString(bytes);
+            this.Html = this.Response.Request.Encoding.GetString(bytes);
         }
 
 

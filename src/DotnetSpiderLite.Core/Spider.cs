@@ -1,13 +1,7 @@
-﻿using DotnetSpiderLite;
-using DotnetSpiderLite.Downloader;
+﻿using DotnetSpiderLite.Downloader;
 using DotnetSpiderLite.Html;
 using DotnetSpiderLite.Logs;
 using DotnetSpiderLite.PageProcessor;
-using DotnetSpiderLite.Pipeline;
-using DotnetSpiderLite.Scheduler;
-using DotnetSpiderLite.Downloader;
-using DotnetSpiderLite.Infrastructure;
-using DotnetSpiderLite.Logs;
 using DotnetSpiderLite.Pipeline;
 using DotnetSpiderLite.Scheduler;
 using System;
@@ -16,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace DotnetSpiderLite
 {
@@ -24,14 +19,17 @@ namespace DotnetSpiderLite
     /// </summary>
     public class Spider : IDisposable, IIdentity
     {
+        private bool disposedValue = false; // 要检测冗余调用
+        private int _resultItemsCacheCount = 10; // 默认10
         private bool _init = false;
         private IScheduler _scheduler;
         private IDownloader _downloader = new DefaultHttpClientDownloader();
         private SpiderStatus _spiderStatus = SpiderStatus.Init;
         private int _threadNumber = 1;
         private int _exitWaitInterval = 10 * 1000;
-
         private int _waitCountLimit = 1000;
+
+        private ConcurrentBag<ResultItems> _cacheResultItems = new ConcurrentBag<ResultItems>();
 
 
         /// <summary> 
@@ -63,6 +61,11 @@ namespace DotnetSpiderLite
 
 
         public IHtmlElementSelectorFactory SelectorFactory { get; private set; }
+
+
+
+        public int ResultItemsCacheCount { get => _resultItemsCacheCount; set => _resultItemsCacheCount = value; }
+
 
 
         public DateTime StartTime { get; set; }
@@ -240,6 +243,32 @@ namespace DotnetSpiderLite
         }
 
 
+        public void Contiune()
+        {
+            if (_spiderStatus != SpiderStatus.Paused)
+            {
+                Logger.Warn("Current status not paused.");
+            }
+            else
+            {
+                _spiderStatus = SpiderStatus.Paused;
+                Logger.Info("Spider contiune run.");
+            }
+        }
+
+        public void Pause()
+        {
+            if (_spiderStatus != SpiderStatus.Running)
+            {
+                Logger.Warn("Current status not running.");
+            }
+            else
+            {
+                _spiderStatus = SpiderStatus.Paused;
+                Logger.Info("Spider Paused.");
+            }
+        }
+
 
 
         private void WaitNewRequest(ref int count)
@@ -374,11 +403,26 @@ namespace DotnetSpiderLite
 
         private void HandlePipelines(Page page)
         {
+            if (this._resultItemsCacheCount > 0)
+            {
+                if (_cacheResultItems.Count < this._resultItemsCacheCount)
+                {
+                    _cacheResultItems.Add(page.ResutItems);
+                    return;
+                }
+            }
+            else
+            {
+                _cacheResultItems.Add(page.ResutItems);
+
+            }
+
+
             foreach (var pipeline in Pipelines)
             {
                 try
                 {
-                    pipeline.Process(new List<ResultItems> { page.ResutItems });
+                    pipeline.Process(_cacheResultItems.ToArray());
                 }
                 catch (Exception ex)
                 {
@@ -452,7 +496,6 @@ namespace DotnetSpiderLite
 
 
         #region IDisposable Support
-        private bool disposedValue = false; // 要检测冗余调用
 
 
         protected virtual void Dispose(bool disposing)

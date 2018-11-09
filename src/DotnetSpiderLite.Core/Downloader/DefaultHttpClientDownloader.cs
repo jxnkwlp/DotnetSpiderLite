@@ -57,8 +57,6 @@ namespace DotnetSpiderLite.Downloader
 
         private void SetOptions(Request request)
         {
-            _httpClient.DefaultRequestHeaders.en
-
             if (request.Headers != null && request.Headers.Count > 0)
             {
                 foreach (var item in request.Headers)
@@ -67,7 +65,7 @@ namespace DotnetSpiderLite.Downloader
                         _httpClient.DefaultRequestHeaders.Remove(item.Key);
 
                     _httpClient.DefaultRequestHeaders.TryAddWithoutValidation(item.Key, item.Value);
-                } 
+                }
             }
 
         }

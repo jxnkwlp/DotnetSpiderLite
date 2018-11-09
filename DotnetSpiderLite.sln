@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSpiderLite.HtmlAgilit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSpiderLite.AngleSharp", "src\DotnetSpiderLite.AngleSharp\DotnetSpiderLite.AngleSharp.csproj", "{C87B2694-E320-453D-A599-04FED0C26ACE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpiderLite.NLog", "src\DotnetSpiderLite.NLog\DotnetSpiderLite.NLog.csproj", "{1BCEA906-B869-4297-870C-2D6B8D695E34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSpiderLite.NLog", "src\DotnetSpiderLite.NLog\DotnetSpiderLite.NLog.csproj", "{1BCEA906-B869-4297-870C-2D6B8D695E34}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{9AF7B736-0F55-454B-9C9A-3F3CE8D9AD2D}"
 EndProject
