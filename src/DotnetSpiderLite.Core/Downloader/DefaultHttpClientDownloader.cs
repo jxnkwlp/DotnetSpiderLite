@@ -34,6 +34,12 @@ namespace DotnetSpiderLite.Downloader
             if (request.Method == "GET")
             {
                 responseMessage = await _httpClient.GetAsync(request.Uri);
+
+                if (!responseMessage.IsSuccessStatusCode)
+                {
+                    throw new DownloaderException();
+                }
+
             }
             else
             {

@@ -16,7 +16,7 @@ namespace DotnetSpiderLite.Monitor
         /// <summary>
         ///  上报爬虫状态
         /// </summary>
-        void Report(MonitorStatus monitor);
+        void Report(MonitorData data);
 
     }
 }

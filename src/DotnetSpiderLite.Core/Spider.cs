@@ -11,6 +11,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using DotnetSpiderLite.Monitor;
+using System.Runtime.CompilerServices;
+using System.Diagnostics;
 
 namespace DotnetSpiderLite
 {
@@ -30,6 +33,18 @@ namespace DotnetSpiderLite
         private int _waitCountLimit = 1000;
 
         private ConcurrentBag<ResultItems> _cacheResultItems = new ConcurrentBag<ResultItems>();
+
+        private long _downloaderCounts = 0;  // 次数
+        private long _downloaderCostTimes = 0; // 总时间
+        private long _downloadAvgSpeed = 0; // 速度
+
+        private long _processorCounts = 0;  // 次数
+        private long _processorCostTimes = 0; // 总时间
+        private long _processorAvgSpeed = 0; // 速度
+
+        private long _pipelineCounts = 0;  // 次数
+        private long _pipelineCostTimes = 0; // 总时间
+        private long _pipelineAvgSpeed = 0; // 速度
 
 
         /// <summary> 
@@ -67,6 +82,9 @@ namespace DotnetSpiderLite
         public int ResultItemsCacheCount { get => _resultItemsCacheCount; set => _resultItemsCacheCount = value; }
 
 
+        public IMonitor Monitor { get; private set; }
+
+        public ISchedulerMonitor SchedulerMonitor { get; private set; }
 
         public DateTime StartTime { get; set; }
 
@@ -148,9 +166,16 @@ namespace DotnetSpiderLite
             return this;
         }
 
-        public Spider SetScheduler(IScheduler scheduler)
+        public Spider SetScheduler(IScheduler scheduler, ISchedulerMonitor schedulerMonitor = null)
         {
             this.Scheduler = scheduler;
+            this.SchedulerMonitor = schedulerMonitor;
+            return this;
+        }
+
+        public Spider SetScheduler(IMonitor monitor)
+        {
+            this.Monitor = monitor;
             return this;
         }
 
@@ -234,6 +259,9 @@ namespace DotnetSpiderLite
 
             }
 
+
+            ReportMonitorStatus();
+
             if (_spiderStatus == SpiderStatus.Finished)
             {
                 _spiderStatus = SpiderStatus.Exited;
@@ -301,7 +329,16 @@ namespace DotnetSpiderLite
         private void InitComponents()
         {
             if (this.Scheduler == null)
-                this.Scheduler = new SampleQueueScheduler() { Logger = this.Logger };
+            {
+                var q = new SampleQueueScheduler() { Logger = this.Logger };
+                this.Scheduler = q;
+                this.SchedulerMonitor = q;
+            }
+
+            if (this.Monitor == null)
+            {
+                this.Monitor = new LogMonitor() { Logger = Logger };
+            }
 
             if (this.Downloader == null)
                 this.Downloader = new DefaultHttpClientDownloader() { Logger = this.Logger };
@@ -386,6 +423,8 @@ namespace DotnetSpiderLite
 
         private void HandlePageProcessors(Page page)
         {
+            var sw = Stopwatch.StartNew();
+
             foreach (var processor in PageProcessors)
             {
                 try
@@ -398,6 +437,8 @@ namespace DotnetSpiderLite
                     this.Logger?.Error(ex.Message);
                 }
             }
+
+            CalculateProcessorSpeed(sw.ElapsedMilliseconds);
         }
 
 
@@ -418,6 +459,9 @@ namespace DotnetSpiderLite
             }
 
 
+            var sw = Stopwatch.StartNew();
+
+
             foreach (var pipeline in Pipelines)
             {
                 try
@@ -432,6 +476,9 @@ namespace DotnetSpiderLite
 
             }
 
+            sw.Stop();
+            CalculatePipelineSpeed(sw.ElapsedMilliseconds);
+
         }
 
 
@@ -442,7 +489,12 @@ namespace DotnetSpiderLite
 
             try
             {
+                var sw = Stopwatch.StartNew();
+
                 var response = await downloader.DownloadAsync(new Request(uri));
+
+                sw.Stop();
+                CalculateDownloadSpeed(sw.ElapsedMilliseconds);
 
                 var page = new Page(response);
                 page.Extra.Marge(request.Extra);
@@ -455,17 +507,81 @@ namespace DotnetSpiderLite
                     page.Extra["Selector"] = page.Selector.GetType().FullName;
                 }
 
+                this.SchedulerMonitor?.IncreaseSuccessCount();
+
                 return page;
+            }
+            catch (DownloaderException ex)
+            {
+                // TODO 
+
+                this.SchedulerMonitor?.IncreaseErrorCount();
             }
             catch (Exception ex)
             {
                 this.Logger?.Error("Handle download url faild.");
                 this.Logger?.Error($"URL:{uri}");
                 this.Logger?.Error("Message", ex);
+
+                this.SchedulerMonitor?.IncreaseErrorCount();
             }
 
             return null;
         }
+
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        private void CalculateDownloadSpeed(long time)
+        {
+            _downloaderCounts++;
+            _downloaderCostTimes += time;
+            _downloadAvgSpeed = _downloaderCostTimes / _downloaderCounts;
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        private void CalculateProcessorSpeed(long time)
+        {
+            _processorCounts++;
+            _processorCostTimes += time;
+            _processorAvgSpeed = _processorCostTimes / _processorCounts;
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        private void CalculatePipelineSpeed(long time)
+        {
+            _pipelineCounts++;
+            _pipelineCostTimes += time;
+            _pipelineAvgSpeed = _pipelineCostTimes / _pipelineCounts;
+        }
+
+
+        private void ReportMonitorStatus()
+        {
+            var data = new MonitorData()
+            {
+                Identity = Identity,
+                NodeId = Identity,
+                Status = _spiderStatus.ToString(),
+                Thread = _threadNumber,
+
+                AvgDownloadSpeed = _downloadAvgSpeed,
+                AvgPipelineSpeed = _pipelineAvgSpeed,
+                AvgProcessorSpeed = _processorAvgSpeed,
+            };
+
+            if (SchedulerMonitor != null)
+            {
+                data.Error = SchedulerMonitor.ErrorRequestsCount;
+                data.Left = SchedulerMonitor.LeftRequestsCount;
+                data.Success = SchedulerMonitor.SuccessRequestsCount;
+                data.Total = SchedulerMonitor.TotalRequestsCount;
+            }
+
+            this.Monitor?.Report(data);
+        }
+
+
+
 
         private void Closed()
         {

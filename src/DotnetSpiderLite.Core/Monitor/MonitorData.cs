@@ -7,7 +7,7 @@ namespace DotnetSpiderLite.Monitor
     /// <summary>
     ///  监控状态 
     /// </summary>
-    public class MonitorStatus
+    public class MonitorData
     {
         /// <summary>
         /// 任务编号

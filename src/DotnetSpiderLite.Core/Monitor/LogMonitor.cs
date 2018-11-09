@@ -9,7 +9,7 @@ namespace DotnetSpiderLite.Monitor
     {
         public ILogger Logger { get; set; }
 
-        public void Report(MonitorStatus monitor)
+        public void Report(MonitorData monitor)
         {
             string msg = $"Left: {monitor.Left}, " +
                 $"Success: {monitor.Success}, " +
