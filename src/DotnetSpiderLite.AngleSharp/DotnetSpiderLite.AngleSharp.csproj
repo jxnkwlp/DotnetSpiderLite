@@ -5,7 +5,16 @@
 		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
 		<AssemblyName>DotnetSpiderLite.AngleSharp</AssemblyName>
 		<RootNamespace>DotnetSpiderLite.AngleSharps</RootNamespace>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<AssemblyVersion>1.0.0.4</AssemblyVersion>
+		<Version>$(AssemblyVersion)</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Html\**" />
+    <EmbeddedResource Remove="Html\**" />
+    <None Remove="Html\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="AngleSharpHtmlExtracter.cs" />
@@ -18,10 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DotnetSpiderLite.Abstractions\DotnetSpiderLite.Abstractions.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Html\" />
   </ItemGroup>
 
 </Project>

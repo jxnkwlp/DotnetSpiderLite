@@ -19,12 +19,23 @@ namespace ConsoleApp1
 
 
             Spider spider = Spider.Create("https://www.cnblogs.com/");
+            spider.UseNLog();
             spider.AddPageProcessors(new CNBlogProcessor());
             //spider.AddPipelines(new FilePipeline());
             //spider.AddPipelines(new JsonFilePipeline()); 
             //spider.ThreadNumber = 10;
-            spider.Run();
 
+            //spider.Run();
+            spider.Start();
+
+            spider.OnStatusChanged += Spider_OnStatusChanged;
+
+            Console.WriteLine("end main ");
+        }
+
+        private static void Spider_OnStatusChanged(Spider arg1, SpiderStatus arg2)
+        {
+            Console.WriteLine("status changed : " + arg2.ToString());
         }
 
         //public class GithubProfileProcessor : BasePageProcessor
@@ -71,7 +82,7 @@ namespace ConsoleApp1
                     var title = page.Selector.Selector(".postTitle a", HtmlSelectorPathType.Css);
                     var body = page.Selector.Selector("#cnblogs_post_body", HtmlSelectorPathType.Css);
 
-                    page.AddResultItem("title", title?.InnerText?.Trim());
+                    page.AddResultItem("内容title", title?.InnerText?.Trim());
                     //page.AddResultItem("content", body?.InnerHtml?.Trim()); 
                 }
             }

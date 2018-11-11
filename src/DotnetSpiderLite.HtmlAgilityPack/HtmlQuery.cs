@@ -1,11 +1,8 @@
 ﻿using DotnetSpiderLite.Html;
-using Fizzler.Systems.HtmlAgilityPack;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DotnetSpiderLite.HtmlAgilityPack
 {
@@ -32,7 +29,6 @@ namespace DotnetSpiderLite.HtmlAgilityPack
             {
                 throw new NotSupportedException();
             }
-
         }
 
         public IList<IHtmlElement> SelectorAll(string html, string path, HtmlSelectorPathType pathType = HtmlSelectorPathType.XPath)
@@ -58,8 +54,7 @@ namespace DotnetSpiderLite.HtmlAgilityPack
             }
         }
 
-
-        IHtmlElement Convent(HtmlNode node)
+        private IHtmlElement Convent(HtmlNode node)
         {
             if (node == null)
                 return null;
@@ -77,7 +72,7 @@ namespace DotnetSpiderLite.HtmlAgilityPack
             return ele;
         }
 
-        IList<IHtmlElement> Convent(HtmlNodeCollection nodes)
+        private IList<IHtmlElement> Convent(HtmlNodeCollection nodes)
         {
             if (nodes == null)
                 return null;
@@ -92,7 +87,7 @@ namespace DotnetSpiderLite.HtmlAgilityPack
             return result;
         }
 
-        IList<IHtmlElement> Convent(IEnumerable<HtmlNode> nodes)
+        private IList<IHtmlElement> Convent(IEnumerable<HtmlNode> nodes)
         {
             if (nodes == null)
                 return null;
@@ -106,6 +101,5 @@ namespace DotnetSpiderLite.HtmlAgilityPack
 
             return result;
         }
-
     }
 }

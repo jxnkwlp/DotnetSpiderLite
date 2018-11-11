@@ -3,11 +3,14 @@
 	<PropertyGroup>
 		<TargetFramework></TargetFramework>
 		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<AssemblyVersion>1.0.0.3</AssemblyVersion>
+		<Version>$(AssemblyVersion)</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="HtmlAgilityPack" Version="1.8.9" />
-		<PackageReference Include="Fizzler.Systems.HtmlAgilityPack" Version="1.2.0" />
+		<PackageReference Include="HtmlAgilityPack.CssSelectors" Version="1.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -14,7 +14,11 @@ namespace DotnetSpiderLite.PageProcessor
 
         public void Process(Page page)
         {
+            Logger?.Trace("Start Process...");
+
             HandlePage(page);
+
+            Logger?.Trace("End Process");
         }
 
 

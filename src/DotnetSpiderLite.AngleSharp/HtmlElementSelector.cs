@@ -1,13 +1,14 @@
 ﻿using DotnetSpiderLite.Html;
 using System.Collections.Generic;
 
-namespace DotnetSpiderLite.HtmlAgilityPack
+namespace DotnetSpiderLite.AngleSharps
 {
     public class HtmlElementSelector : IHtmlElementSelector
     {
-        private HtmlQuery _htmlQuery = new HtmlQuery();
+        HtmlQuery _htmlQuery = new HtmlQuery();
 
-        private string _html = string.Empty;
+        string _html = string.Empty;
+
 
         public HtmlElementSelector(string html)
         {
@@ -23,5 +24,6 @@ namespace DotnetSpiderLite.HtmlAgilityPack
         {
             return _htmlQuery.SelectorAll(_html, path, pathType);
         }
+
     }
 }

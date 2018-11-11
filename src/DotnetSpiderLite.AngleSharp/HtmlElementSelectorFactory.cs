@@ -1,6 +1,6 @@
 ﻿using DotnetSpiderLite.Html;
 
-namespace DotnetSpiderLite.HtmlAgilityPack
+namespace DotnetSpiderLite.AngleSharps
 {
     public class HtmlElementSelectorFactory : IHtmlElementSelectorFactory
     {

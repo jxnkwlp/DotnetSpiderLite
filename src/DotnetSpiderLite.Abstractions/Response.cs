@@ -10,6 +10,8 @@ namespace DotnetSpiderLite
     {
         public Request Request { get; private set; }
 
+        public Uri Uri { get; set; }
+
         public Stream Body { get; set; }
 
         public string ContentType { get; set; }

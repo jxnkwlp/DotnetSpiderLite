@@ -47,6 +47,10 @@ namespace DotnetSpiderLite
         private long _pipelineAvgSpeed = 0; // 速度
 
 
+        private Thread _thread;
+
+
+
         /// <summary> 
         ///  sleep time before request url. default 0.1s
         /// </summary>
@@ -58,7 +62,15 @@ namespace DotnetSpiderLite
         public int EmptySleepTime { get; set; } = 15 * 1000;
 
 
-        public SpiderStatus Status => _spiderStatus;
+        public SpiderStatus Status
+        {
+            get => _spiderStatus;
+            private set
+            {
+                _spiderStatus = value;
+                this.OnStatusChanged?.Invoke(this, _spiderStatus);
+            }
+        }
 
         public string Identity { get; set; }
 
@@ -86,15 +98,18 @@ namespace DotnetSpiderLite
 
         public ISchedulerMonitor SchedulerMonitor { get; private set; }
 
-        public DateTime StartTime { get; set; }
 
-        public DateTime EndTime { get; set; }
+        #region event
+
+        public event Action<Spider> OnClosed;
+        public event Action<Spider, SpiderStatus> OnStatusChanged;
+        public event Action<Spider> OnStarted;
+
+        public event Action<Spider, Type> OnError;
+        public event Action<Spider, Type> OnSuccess;
 
 
-
-        public event Action<Spider, bool> OnClosed;
-
-
+        #endregion
 
         #region ctor
 
@@ -192,20 +207,29 @@ namespace DotnetSpiderLite
         }
 
 
+        public void Start()
+        {
+            if (_thread != null && _thread.IsAlive)
+                return;
 
+            _thread = new Thread(Run);
+            _thread.Start();
+        }
 
         public void Run()
         {
-            if (_spiderStatus == SpiderStatus.Running)
+            if (Status == SpiderStatus.Running)
             {
                 return;
             }
 
-            _spiderStatus = SpiderStatus.Running;
+            this.OnStarted?.Invoke(this);
 
-            while (_spiderStatus == SpiderStatus.Running || _spiderStatus == SpiderStatus.Paused)
+            Status = SpiderStatus.Running;
+
+            while (Status == SpiderStatus.Running || Status == SpiderStatus.Paused)
             {
-                if (_spiderStatus == SpiderStatus.Paused)
+                if (Status == SpiderStatus.Paused)
                 {
                     Thread.Sleep(10);
                     continue;
@@ -216,7 +240,7 @@ namespace DotnetSpiderLite
                 {
                     int waitCount = 1;
 
-                    while (_spiderStatus == SpiderStatus.Running)
+                    while (Status == SpiderStatus.Running)
                     {
                         // 取出 
                         var request = Scheduler.Pull();
@@ -226,7 +250,7 @@ namespace DotnetSpiderLite
                             // 等待超时，退出
                             if (waitCount > _waitCountLimit)
                             {
-                                _spiderStatus = SpiderStatus.Finished;
+                                Status = SpiderStatus.Finished;
                                 break;
                             }
 
@@ -262,9 +286,9 @@ namespace DotnetSpiderLite
 
             ReportMonitorStatus();
 
-            if (_spiderStatus == SpiderStatus.Finished)
+            if (Status == SpiderStatus.Finished)
             {
-                _spiderStatus = SpiderStatus.Exited;
+                Status = SpiderStatus.Exited;
 
                 this.Closed();
             }
@@ -273,26 +297,26 @@ namespace DotnetSpiderLite
 
         public void Contiune()
         {
-            if (_spiderStatus != SpiderStatus.Paused)
+            if (Status != SpiderStatus.Paused)
             {
                 Logger.Warn("Current status not paused.");
             }
             else
             {
-                _spiderStatus = SpiderStatus.Paused;
+                Status = SpiderStatus.Paused;
                 Logger.Info("Spider contiune run.");
             }
         }
 
         public void Pause()
         {
-            if (_spiderStatus != SpiderStatus.Running)
+            if (Status != SpiderStatus.Running)
             {
                 Logger.Warn("Current status not running.");
             }
             else
             {
-                _spiderStatus = SpiderStatus.Paused;
+                Status = SpiderStatus.Paused;
                 Logger.Info("Spider Paused.");
             }
         }
@@ -316,6 +340,8 @@ namespace DotnetSpiderLite
         {
             if (_init) return;
             _init = true;
+
+            Logger?.Trace("Spider initialize...");
 
             if (this.Logger == null)
                 this.Logger = LogManager.GetLogger(typeof(Spider));
@@ -359,6 +385,8 @@ namespace DotnetSpiderLite
 
             TryLoadHtmlAgilityPackHtmlSelectorFactory();
 
+            if (this.SelectorFactory == null)
+                TryLoadAngleSharpHtmlSelectorFactory();
         }
 
         private void TryLoadHtmlAgilityPackHtmlSelectorFactory()
@@ -371,10 +399,31 @@ namespace DotnetSpiderLite
                 var typeObj = Activator.CreateInstance(type);
 
                 this.SelectorFactory = typeObj as IHtmlElementSelectorFactory;
+
+                this.Logger.Trace("Load type 'HtmlAgilityPack.HtmlElementSelectorFactory' ");
             }
             catch (Exception)
             {
-                this.Logger.Info("Can't load HtmlAgilityPack.HtmlElementSelectorFactory ");
+                this.Logger.Trace("Can't load type 'HtmlAgilityPack.HtmlElementSelectorFactory' ");
+            }
+        }
+
+        private void TryLoadAngleSharpHtmlSelectorFactory()
+        {
+            try
+            {
+                var ass = Assembly.Load("DotnetSpiderLite.AngleSharp");
+                var type = ass.GetType("DotnetSpiderLite.AngleSharps.HtmlElementSelectorFactory");
+
+                var typeObj = Activator.CreateInstance(type);
+
+                this.SelectorFactory = typeObj as IHtmlElementSelectorFactory;
+
+                this.Logger.Trace("Load type 'AngleSharp.HtmlElementSelectorFactory' ");
+            }
+            catch (Exception)
+            {
+                this.Logger.Trace("Can't load type 'AngleSharp.HtmlElementSelectorFactory' ");
             }
         }
 
@@ -430,9 +479,13 @@ namespace DotnetSpiderLite
                 try
                 {
                     processor.Process(page);
+
+                    this.OnSuccess?.Invoke(this, processor.GetType());
                 }
                 catch (Exception ex)
                 {
+                    this.OnError?.Invoke(this, processor.GetType());
+
                     this.Logger?.Error($"The processor of '{processor.GetType().FullName}' Process faild.");
                     this.Logger?.Error(ex.Message);
                 }
@@ -467,9 +520,13 @@ namespace DotnetSpiderLite
                 try
                 {
                     pipeline.Process(_cacheResultItems.ToArray());
+
+                    this.OnSuccess?.Invoke(this, pipeline.GetType());
                 }
                 catch (Exception ex)
                 {
+                    this.OnError?.Invoke(this, pipeline.GetType());
+
                     this.Logger?.Error($"The pipeline of '{pipeline.GetType().FullName}' Process faild");
                     this.Logger?.Error(ex.Message);
                 }
@@ -508,12 +565,15 @@ namespace DotnetSpiderLite
                 }
 
                 this.SchedulerMonitor?.IncreaseSuccessCount();
+                this.OnSuccess?.Invoke(this, typeof(IDownloader));
 
                 return page;
             }
             catch (DownloaderException ex)
             {
                 // TODO 
+
+                this.OnError?.Invoke(this, typeof(IDownloader));
 
                 this.SchedulerMonitor?.IncreaseErrorCount();
             }
@@ -522,6 +582,8 @@ namespace DotnetSpiderLite
                 this.Logger?.Error("Handle download url faild.");
                 this.Logger?.Error($"URL:{uri}");
                 this.Logger?.Error("Message", ex);
+
+                this.OnError?.Invoke(this, typeof(IDownloader));
 
                 this.SchedulerMonitor?.IncreaseErrorCount();
             }
@@ -561,7 +623,7 @@ namespace DotnetSpiderLite
             {
                 Identity = Identity,
                 NodeId = Identity,
-                Status = _spiderStatus.ToString(),
+                Status = Status.ToString(),
                 Thread = _threadNumber,
 
                 AvgDownloadSpeed = _downloadAvgSpeed,
@@ -585,7 +647,7 @@ namespace DotnetSpiderLite
 
         private void Closed()
         {
-            this.OnClosed?.Invoke(this, true);
+            this.OnClosed?.Invoke(this);
             this.Logger?.Info("Spider exit.");
 
             SafeDestroy();
@@ -606,6 +668,9 @@ namespace DotnetSpiderLite
             this.Downloader.Dispose();
             this.Scheduler.Dispose();
 
+#if !NETSTANDARD
+            _thread?.Abort();
+#endif
 
         }
 

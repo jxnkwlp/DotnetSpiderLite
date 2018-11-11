@@ -20,15 +20,20 @@ namespace DotnetSpiderLite.Downloader
 
         public async Task<Response> DownloadAsync(Request request)
         {
+            Logger?.Trace("Start Download...");
+
             // before 
             if (_beforeDownloadHandles != null)
             {
                 foreach (var handle in _beforeDownloadHandles)
                 {
+                    Logger?.Trace("Handle BeforeDownloads.");
+
                     handle.Handle(request);
                 }
             }
 
+            Logger?.Trace("Handle Download.");
             // handle 
             var response = await HandleDownloadAsync(request);
 
@@ -38,9 +43,13 @@ namespace DotnetSpiderLite.Downloader
             {
                 foreach (var handle in _afterDownloadHandles)
                 {
+                    Logger?.Trace("Handle AfterDownloads.");
+
                     handle.Handle(response);
                 }
             }
+
+            Logger?.Trace("End Download.");
 
             return response;
         }

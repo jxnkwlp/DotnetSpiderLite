@@ -34,12 +34,6 @@ namespace DotnetSpiderLite.Downloader
             if (request.Method == "GET")
             {
                 responseMessage = await _httpClient.GetAsync(request.Uri);
-
-                if (!responseMessage.IsSuccessStatusCode)
-                {
-                    throw new DownloaderException();
-                }
-
             }
             else
             {
@@ -49,13 +43,25 @@ namespace DotnetSpiderLite.Downloader
                     responseMessage = await _httpClient.PostAsync(request.Uri, null);
             }
 
+            if (responseMessage == null)
+            {
+                throw new DownloaderException();
+            }
+
+            this.Logger?.Trace("Download page Http Status : " + responseMessage.StatusCode);
+
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                throw new DownloaderException();
+            }
+
             var response = new Response(request);
 
             response.StatusCode = (int)responseMessage.StatusCode;
             response.ContentType = responseMessage.Content.Headers.ContentType.ToString();
 
             response.Body = await responseMessage.Content.ReadAsStreamAsync();
-
+            response.Uri = responseMessage.RequestMessage.RequestUri;
 
             return response;
         }

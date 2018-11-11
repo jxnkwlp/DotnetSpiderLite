@@ -1,11 +1,11 @@
 ﻿using DotnetSpiderLite.Html;
 using System.Collections.Generic;
 
-namespace DotnetSpiderLite.HtmlAgilityPack
+namespace DotnetSpiderLite.AngleSharps
 {
     public class HtmlElement : IHtmlElement
     {
-        private HtmlQuery _htmlQuery = new HtmlQuery();
+        HtmlQuery _htmlQuery = new HtmlQuery();
 
         public HtmlElement()
         {
