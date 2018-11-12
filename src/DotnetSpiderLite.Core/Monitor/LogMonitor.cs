@@ -15,9 +15,9 @@ namespace DotnetSpiderLite.Monitor
                 $"Success: {monitor.Success}, " +
                 $"Error: {monitor.Error}, " +
                 $"Total: {monitor.Total}, " +
-                $"Dowload: {monitor.AvgDownloadSpeed}, " +
-                $"Process: {monitor.AvgProcessorSpeed}, " +
-                $"Pipeline: {monitor.AvgPipelineSpeed}";
+                $"Dowload: {monitor.AvgDownloadSpeed} ms/per, " +
+                $"Process: {monitor.AvgProcessorSpeed} ms/per, " +
+                $"Pipeline: {monitor.AvgPipelineSpeed} ms/per";
 
             Logger?.Trace(msg);
         }

@@ -26,7 +26,7 @@ namespace DotnetSpiderLite
         private int _resultItemsCacheCount = 10; // 默认10
         private bool _init = false;
         private IScheduler _scheduler;
-        private IDownloader _downloader = new DefaultHttpClientDownloader();
+        private IDownloader _downloader;
         private SpiderStatus _spiderStatus = SpiderStatus.Init;
         private int _threadNumber = 1;
         private int _exitWaitInterval = 10 * 1000;
@@ -49,7 +49,7 @@ namespace DotnetSpiderLite
 
         private Thread _thread;
 
-
+        private bool _useHttpClientDownloader = false;
 
         /// <summary> 
         ///  sleep time before request url. default 0.1s
@@ -82,9 +82,9 @@ namespace DotnetSpiderLite
 
         public IList<IPageProcessor> PageProcessors { get; private set; } = new List<IPageProcessor>();
 
-        public IScheduler Scheduler { get => _scheduler; set => _scheduler = value; }
+        public IScheduler Scheduler { get => _scheduler; private set => _scheduler = value; }
 
-        public IDownloader Downloader { get => _downloader; set => _downloader = value; }
+        public IDownloader Downloader { get => _downloader; private set => _downloader = value; }
 
 
         public IHtmlElementSelectorFactory SelectorFactory { get; private set; }
@@ -134,7 +134,6 @@ namespace DotnetSpiderLite
         }
 
         #endregion
-
 
         #region Public Methods
 
@@ -200,11 +199,22 @@ namespace DotnetSpiderLite
             return this;
         }
 
+        public Spider UseHttpClientDownloader()
+        {
+            this._useHttpClientDownloader = true;
+
+            return this;
+        }
+
         public Spider SetMaxThreadNumber(int value)
         {
             this.ThreadNumber = value;
             return this;
         }
+
+
+
+
 
 
         public void Start()
@@ -367,7 +377,12 @@ namespace DotnetSpiderLite
             }
 
             if (this.Downloader == null)
-                this.Downloader = new DefaultHttpClientDownloader() { Logger = this.Logger };
+            {
+                if (_useHttpClientDownloader)
+                    this.Downloader = new DefaultHttpClientDownloader() { Logger = this.Logger };
+                else
+                    this.Downloader = new DefaultDownloader() { Logger = Logger };
+            }
 
             if (this.Pipelines.Count == 0)
                 this.Pipelines.Add(new ConsolePipeline() { Logger = this.Logger });
@@ -548,7 +563,7 @@ namespace DotnetSpiderLite
             {
                 var sw = Stopwatch.StartNew();
 
-                var response = await downloader.DownloadAsync(new Request(uri));
+                var response = await downloader.DownloadAsync(request);
 
                 sw.Stop();
                 CalculateDownloadSpeed(sw.ElapsedMilliseconds);
@@ -750,12 +765,12 @@ namespace DotnetSpiderLite
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.AppendLine("================================================");
-            sb.AppendLine("==                                            ==");
-            sb.AppendLine("== Welcome to Dotnet Spider Lite              ==");
-            sb.AppendLine("== Dotnet Spider Lite An open source crawler  ==");
-            sb.AppendLine("==                                            ==");
-            sb.AppendLine("================================================");
+            sb.AppendLine("==================================================");
+            sb.AppendLine("===                                            ===");
+            sb.AppendLine("=== Welcome to Dotnet Spider Lite              ===");
+            sb.AppendLine("=== Dotnet Spider Lite An open source crawler  ===");
+            sb.AppendLine("===                                            ===");
+            sb.AppendLine("==================================================");
 
             Console.WriteLine(sb.ToString());
 

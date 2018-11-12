@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DotnetSpiderLite.Infrastructure;
+using System.Runtime.CompilerServices;
 
 namespace DotnetSpiderLite.Scheduler
 {
@@ -16,6 +17,7 @@ namespace DotnetSpiderLite.Scheduler
     /// </summary>
     public class SampleQueueScheduler : IScheduler, ISchedulerMonitor
     {
+        private HashSet<string> _allUrls = new HashSet<string>();
         private ConcurrentQueue<Request> _queue = new ConcurrentQueue<Request>();
         private readonly object _lock = new object();
         private long _count = 0;
@@ -54,8 +56,17 @@ namespace DotnetSpiderLite.Scheduler
         {
         }
 
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void Push(Request request)
         {
+            if (_allUrls.Contains(request.Uri.ToString()))
+            {
+                return;
+            }
+
+            _allUrls.Add(request.Uri.ToString());
+
             _queue.Enqueue(request);
             _count++;
         }

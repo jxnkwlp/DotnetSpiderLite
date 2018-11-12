@@ -1,6 +1,7 @@
 ﻿using DotnetSpiderLite.Html;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace DotnetSpiderLite
@@ -54,16 +55,22 @@ namespace DotnetSpiderLite
 
         private void Init()
         {
-            var bytes = new byte[Response.Body.Length];
-            Response.Body.Read(bytes, 0, (int)Response.Body.Length);
+            //var bytes = new byte[Response.Body.Length];
+            //Response.Body.Read(bytes, 0, (int)Response.Body.Length);
 
-            this.Html = this.Response.Request.Encoding.GetString(bytes);
+            //this.Html = this.Response.Request.Encoding.GetString(bytes);
+
+            using (StreamReader sr = new StreamReader(Response.Body, this.Response.Request.Encoding))
+            {
+                this.Html = sr.ReadToEnd();
+            }
+
         }
 
 
-        public void AddTargetRequest(string url)
+        public void AddTargetRequest(string url, string referer = null)
         {
-            this.TargetRequests.Add(new Request(new Uri(url)));
+            this.TargetRequests.Add(new Request(new Uri(url)) { Referer = referer });
         }
 
         public void AddTargetRequest(Request request)

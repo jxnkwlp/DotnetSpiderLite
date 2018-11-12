@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text;
 
 namespace DotnetSpiderLite
@@ -25,21 +26,50 @@ namespace DotnetSpiderLite
 
 
         public Uri Uri { get; }
-        public Stream Body { get; set; }
+
+        public byte[] Body { get; set; }
 
         public Dictionary<string, string> Headers { get; private set; } = new Dictionary<string, string>();
-
 
         public Dictionary<string, string> Extra { get; private set; } = new Dictionary<string, string>();
 
 
+        public CookieContainer CookieContainer { get; private set; }
 
+        public string CookieHeader
+        {
+            get
+            {
+                if (CookieContainer == null)
+                    return null;
+
+                return CookieContainer.GetCookieHeader(this.Uri);
+            }
+        }
 
 
         public Request(Uri uri)
         {
             this.Uri = uri;
             this.Method = "GET";
+            this.CookieContainer = DownloaderCookieContainer.Instance;
+        }
+
+
+        public void AddCookie(string name, string value)
+        {
+            CookieContainer.Add(this.Uri, new Cookie(name, value));
+        }
+
+        public void AddCookie(Cookie cookie)
+        {
+            CookieContainer.Add(this.Uri, cookie);
+        }
+
+
+        public override string ToString()
+        {
+            return $"{this.Method.ToUpper()} {this.Uri}";
         }
     }
 }

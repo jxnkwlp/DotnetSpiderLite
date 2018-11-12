@@ -11,7 +11,13 @@ namespace DotnetSpiderLite.Downloader
 {
     public class DefaultHttpClientDownloader : BaseDownloader
     {
-        private static HttpClient _httpClient = new HttpClient();
+        private static MyHttpClientHandler _myHttpClientHandler = new MyHttpClientHandler();
+
+        private static HttpClient _httpClient = new HttpClient(_myHttpClientHandler);
+
+        static DefaultHttpClientDownloader()
+        {
+        }
 
         public override IDownloader Clone()
         {
@@ -38,7 +44,7 @@ namespace DotnetSpiderLite.Downloader
             else
             {
                 if (request.Body != null)
-                    responseMessage = await _httpClient.PostAsync(request.Uri, new StreamContent(request.Body));
+                    responseMessage = await _httpClient.PostAsync(request.Uri, new ByteArrayContent(request.Body));
                 else
                     responseMessage = await _httpClient.PostAsync(request.Uri, null);
             }
@@ -61,7 +67,10 @@ namespace DotnetSpiderLite.Downloader
             response.ContentType = responseMessage.Content.Headers.ContentType.ToString();
 
             response.Body = await responseMessage.Content.ReadAsStreamAsync();
-            response.Uri = responseMessage.RequestMessage.RequestUri;
+            response.ResponseUri = responseMessage.RequestMessage.RequestUri;
+            response.ContentLength = (await responseMessage.Content.ReadAsStringAsync()).Length;
+
+            response.ResponseCookies = _myHttpClientHandler.CookieContainer.GetCookies(request.Uri); 
 
             return response;
         }
@@ -82,5 +91,14 @@ namespace DotnetSpiderLite.Downloader
 
         }
 
+    }
+
+    class MyHttpClientHandler : HttpClientHandler
+    {
+        public MyHttpClientHandler()
+        {
+            this.UseCookies = true;
+            this.CookieContainer = DownloaderCookieContainer.Instance;
+        }
     }
 }

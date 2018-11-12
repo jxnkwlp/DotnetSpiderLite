@@ -16,7 +16,7 @@
 
 	<ItemGroup>
 		<Folder Include="PageProcessor\" />
-		<Folder Include="Helper\" />
+		<Folder Include="Extensions\" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
