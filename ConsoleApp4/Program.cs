@@ -32,6 +32,8 @@ namespace ConsoleApp4
             Console.WriteLine("http://a.com/ => " + FormatCookies(cc.GetCookies(new Uri("http://a.com/"))));
 
 
+
+
         }
 
         static string FormatCookies(CookieCollection cookieCollection)

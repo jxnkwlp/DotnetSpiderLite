@@ -52,7 +52,7 @@ namespace DotnetSpiderLite
         private bool _useHttpClientDownloader = false;
 
         /// <summary> 
-        ///  sleep time before request url. default 0.1s
+        ///  sleep time before request url. default 100ms
         /// </summary>
         public int SleepTime { get; set; } = 100;
 
@@ -196,6 +196,24 @@ namespace DotnetSpiderLite
         public Spider SetDownloader(IDownloader downloader)
         {
             this.Downloader = downloader;
+            return this;
+        }
+
+        public Spider AddDownloadBeforeHandle(IDownloadBeforeHandle handle)
+        {
+            if (this.Downloader != null)
+            {
+                this.Downloader.AddDownloadBeforeHandle(handle);
+            }
+            return this;
+        }
+
+        public Spider AddDownloadAfterHandle(IDownloadAfterHandle handle)
+        {
+            if (this.Downloader != null)
+            {
+                this.Downloader.AddDownloadAfterHandle(handle);
+            }
             return this;
         }
 
@@ -445,27 +463,47 @@ namespace DotnetSpiderLite
         private async Task HandleRequestAsync(Request request, IDownloader downloader)
         {
             // 下载页面 
-            var page = await HandleDownloadAsync(request, downloader);
+            var response = await HandleDownloadAsync(request, downloader);
 
-            if (page == null)
+            if (response == null)
                 return;
+
+            var page = new Page(response);
+            page.Extra.Marge(request.Extra);
+            page.Extra["Downloader"] = downloader.GetType().FullName;
+            page.Extra["Identity"] = this.Identity;
+
+            if (SelectorFactory != null)
+            {
+                page.SetSelector(SelectorFactory.GetSelector(page.Html));
+                page.Extra["Selector"] = page.Selector.GetType().FullName;
+            }
 
             if (string.IsNullOrEmpty(page.Html))
                 return;
 
+
+            // 页面处理程序
+            HandlePageProcessors(page);
+
+
             if (page.Skip)
                 return;
 
+            // 重试处理
             if (page.Retry)
             {
+                if (page.MaxRetryCount > 0 && request.GetRetryCount() > page.MaxRetryCount)
+                {
+                    return;
+                }
+
+                request.IncrementRetryCount();
+
                 // 添加到 队列 
                 this.Scheduler.Push(request);
                 return;
             }
-
-
-            // 页面处理程序
-            HandlePageProcessors(page);
 
 
             if (page.TargetRequests != null && page.TargetRequests.Count > 0)
@@ -554,7 +592,7 @@ namespace DotnetSpiderLite
         }
 
 
-        private async Task<Page> HandleDownloadAsync(Request request, IDownloader downloader)
+        private async Task<Response> HandleDownloadAsync(Request request, IDownloader downloader)
         {
             var uri = request.Uri;
             this.Logger?.Trace($"Start download url: {uri} ");
@@ -568,21 +606,10 @@ namespace DotnetSpiderLite
                 sw.Stop();
                 CalculateDownloadSpeed(sw.ElapsedMilliseconds);
 
-                var page = new Page(response);
-                page.Extra.Marge(request.Extra);
-                page.Extra["Downloader"] = downloader.GetType().FullName;
-                page.Extra["Identity"] = this.Identity;
-
-                if (SelectorFactory != null)
-                {
-                    page.SetSelector(SelectorFactory.GetSelector(page.Html));
-                    page.Extra["Selector"] = page.Selector.GetType().FullName;
-                }
-
                 this.SchedulerMonitor?.IncreaseSuccessCount();
                 this.OnSuccess?.Invoke(this, typeof(IDownloader));
 
-                return page;
+                return response;
             }
             catch (DownloaderException ex)
             {

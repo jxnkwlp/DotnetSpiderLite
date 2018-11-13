@@ -28,10 +28,17 @@ namespace ConsoleApp3
 
             spider.AddPageProcessors(new Processor2());
 
+            // spider.AddRequest($"https://weixin.sogou.com/weixin?type=2&ie=utf8&query=马云");
 
-            spider.AddRequest("https://weixin.sogou.com/weixin?type=2&ie=utf8&query=马云");
+            for (int i = 1; i <= 3; i++)
+            {
+                spider.AddRequest($"https://weixin.sogou.com/weixin?type=2&ie=utf8&page={i}&query=马云");
+            }
 
 
+
+            spider.SleepTime = 2000; // 2s
+            // spider.EmptySleepTime = 60; // 60s
 
             spider.Run();
             //spider.Start();
@@ -52,6 +59,17 @@ namespace ConsoleApp3
     {
         public override void HandlePage(Page page)
         {
+            if (page.Response.ResponseUri.AbsolutePath == "/antispider/")
+            {
+
+                // 验证码识别
+
+                Console.WriteLine("验证码识别...");
+
+                page.Retry = true;
+                return;
+            }
+
             if (page.Response.ResponseUri.ToString() == "https://weixin.sogou.com/")
             {
                 Console.WriteLine("页面已回到主页面：" + page.Response.ResponseUri);
@@ -77,8 +95,14 @@ namespace ConsoleApp3
             }
 
 
-            // 页码
-            page.Selector.SelectorAll("#pagebar_container a", HtmlSelectorPathType.Css);
+            //// 页码
+            //var pageLinks = page.Selector.SelectorAll("#pagebar_container a", HtmlSelectorPathType.Css);
+
+            //foreach (var item in pageLinks)
+            //{
+            //    string pageUrl = "https://weixin.sogou.com/weixin" + item.Attributes["href"];
+            //    page.AddTargetRequest(pageUrl, page.Response.ResponseUri.ToString());
+            //}
 
 
             var list = page.Selector.SelectorAll(".news-box .news-list li", HtmlSelectorPathType.Css);
@@ -87,7 +111,6 @@ namespace ConsoleApp3
                 var titleEle = item.Selector(".txt-box h3 a", HtmlSelectorPathType.Css);
 
                 Console.WriteLine("title:" + titleEle?.InnerText + " href:" + titleEle?.Attributes["href"]);
-
 
             }
 

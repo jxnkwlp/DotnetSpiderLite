@@ -24,7 +24,6 @@ namespace DotnetSpiderLite
 
         public string Method { get; set; } = "GET";
 
-
         public Uri Uri { get; }
 
         public byte[] Body { get; set; }
@@ -71,5 +70,13 @@ namespace DotnetSpiderLite
         {
             return $"{this.Method.ToUpper()} {this.Uri}";
         }
+
+
+
+        //public virtual string GetIdentity()
+        //{
+
+        //}
+
     }
 }

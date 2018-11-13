@@ -60,12 +60,14 @@ namespace DotnetSpiderLite.Scheduler
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void Push(Request request)
         {
-            if (_allUrls.Contains(request.Uri.ToString()))
+            var requestIdentity = request.GetIdentity();
+
+            if (_allUrls.Contains(requestIdentity))
             {
                 return;
             }
 
-            _allUrls.Add(request.Uri.ToString());
+            _allUrls.Add(requestIdentity);
 
             _queue.Enqueue(request);
             _count++;

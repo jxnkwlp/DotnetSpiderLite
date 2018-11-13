@@ -4,8 +4,9 @@ using System.Text;
 
 namespace DotnetSpiderLite.Downloader
 {
-    public interface IBeforeDownloadHandle
+    public interface IDownloadAfterHandle
     {
-        void Handle(Request request);
+        void Handle(Response response);
+
     }
 }

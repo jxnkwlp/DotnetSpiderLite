@@ -8,8 +8,8 @@ namespace DotnetSpiderLite.Downloader
 {
     public abstract class BaseDownloader : IDownloader
     {
-        private IList<IBeforeDownloadHandle> _beforeDownloadHandles = new List<IBeforeDownloadHandle>();
-        private IList<IAfterDownloadHandle> _afterDownloadHandles = new List<IAfterDownloadHandle>();
+        private IList<IDownloadBeforeHandle> _beforeHandles = new List<IDownloadBeforeHandle>();
+        private IList<IDownloadAfterHandle> _afterHandles = new List<IDownloadAfterHandle>();
 
 
         public ILogger Logger { get; set; }
@@ -23,9 +23,9 @@ namespace DotnetSpiderLite.Downloader
             Logger?.Trace("Start Download...");
 
             // before 
-            if (_beforeDownloadHandles != null)
+            if (_beforeHandles?.Count > 0)
             {
-                foreach (var handle in _beforeDownloadHandles)
+                foreach (var handle in _beforeHandles)
                 {
                     Logger?.Trace("Handle BeforeDownloads.");
 
@@ -39,9 +39,9 @@ namespace DotnetSpiderLite.Downloader
 
 
             // after 
-            if (_afterDownloadHandles != null)
+            if (_afterHandles?.Count > 0)
             {
-                foreach (var handle in _afterDownloadHandles)
+                foreach (var handle in _afterHandles)
                 {
                     Logger?.Trace("Handle AfterDownloads.");
 
@@ -49,25 +49,22 @@ namespace DotnetSpiderLite.Downloader
                 }
             }
 
-            Logger?.Trace("End Download.");
+            Logger?.Trace("Download completed.");
 
             return response;
         }
 
-
-
-
-        public virtual void AddAfterDownloadHandle(IAfterDownloadHandle handle)
-        {
-            _afterDownloadHandles.Add(handle);
-        }
-
-        public virtual void AddBeforeDownloadHandle(IBeforeDownloadHandle handle)
-        {
-            _beforeDownloadHandles.Add(handle);
-        }
-
         public abstract Task<Response> HandleDownloadAsync(Request request);
         public abstract IDownloader Clone();
+
+        public void AddDownloadBeforeHandle(IDownloadBeforeHandle handle)
+        {
+            this._beforeHandles.Add(handle);
+        }
+
+        public void AddDownloadAfterHandle(IDownloadAfterHandle handle)
+        {
+            this._afterHandles.Add(handle);
+        }
     }
 }

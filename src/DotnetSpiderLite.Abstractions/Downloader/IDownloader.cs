@@ -16,9 +16,9 @@ namespace DotnetSpiderLite.Downloader
 
         Task<Response> DownloadAsync(Request request);
 
-        void AddBeforeDownloadHandle(IBeforeDownloadHandle handle);
+        void AddDownloadBeforeHandle(IDownloadBeforeHandle handle);
 
-        void AddAfterDownloadHandle(IAfterDownloadHandle handle);
+        void AddDownloadAfterHandle(IDownloadAfterHandle handle);
 
 
         IDownloader Clone();
