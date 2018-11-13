@@ -6,7 +6,7 @@
 		<RootNamespace>DotnetSpiderLite</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-		<AssemblyVersion>1.0.0.5</AssemblyVersion>
+		<AssemblyVersion>1.0.0.12</AssemblyVersion>
 		<Version>$(AssemblyVersion)</Version>
 	</PropertyGroup>
 

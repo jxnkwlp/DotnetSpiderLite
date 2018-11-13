@@ -59,11 +59,13 @@ namespace DotnetSpiderLite.Downloader
 
         public void AddDownloadBeforeHandle(IDownloadBeforeHandle handle)
         {
+            handle.Logger = this.Logger;
             this._beforeHandles.Add(handle);
         }
 
         public void AddDownloadAfterHandle(IDownloadAfterHandle handle)
         {
+            handle.Logger = this.Logger;
             this._afterHandles.Add(handle);
         }
     }

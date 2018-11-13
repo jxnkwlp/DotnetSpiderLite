@@ -115,13 +115,10 @@ namespace DotnetSpiderLite
 
         protected Spider() : this(null, null, null)
         {
-            Init();
         }
 
         public Spider(string identity, IEnumerable<IPageProcessor> pageProcessors, IEnumerable<IPipeline> pipelines)
         {
-            Init();
-
             this.Identity = identity ?? Guid.NewGuid().ToString();
 
             if (pageProcessors != null)
@@ -164,12 +161,16 @@ namespace DotnetSpiderLite
 
         public Spider AddPipelines(IPipeline pipeline)
         {
+            pipeline.Logger = this.Logger;
+
             this.Pipelines.Add(pipeline);
             return this;
         }
 
         public Spider AddPageProcessors(IPageProcessor pageProcessor)
         {
+            pageProcessor.Logger = this.Logger;
+
             this.PageProcessors.Add(pageProcessor);
             return this;
         }
@@ -250,6 +251,10 @@ namespace DotnetSpiderLite
             {
                 return;
             }
+
+            Init();
+
+            this.Logger?.Info("已启动。");
 
             this.OnStarted?.Invoke(this);
 
@@ -340,14 +345,30 @@ namespace DotnetSpiderLite
         {
             if (Status != SpiderStatus.Running)
             {
-                Logger.Warn("Current status not running.");
+                Logger.Warn("当前不在运行状态");
             }
             else
             {
                 Status = SpiderStatus.Paused;
-                Logger.Info("Spider Paused.");
+                Logger.Info("已暂停");
             }
         }
+
+
+        public void Stop()
+        {
+            if (this.Status == SpiderStatus.Running || this.Status == SpiderStatus.Paused)
+            {
+                this.Status = SpiderStatus.Finished;
+                Logger.Trace("开始退出...");
+            }
+            else
+            {
+                Logger.Trace("正在退出...");
+            }
+        }
+
+
 
 
 
@@ -358,18 +379,12 @@ namespace DotnetSpiderLite
         }
 
 
-
-
-
-
-
-
         private void Init()
         {
             if (_init) return;
             _init = true;
 
-            Logger?.Trace("Spider initialize...");
+            Logger?.Info("正在初始化...");
 
             if (this.Logger == null)
                 this.Logger = LogManager.GetLogger(typeof(Spider));
