@@ -7,6 +7,9 @@ using System.Text;
 
 namespace DotnetSpiderLite
 {
+    /// <summary>
+    ///  http response 
+    /// </summary>
     public class Response
     {
         public Request Request { get; private set; }

@@ -37,7 +37,7 @@ namespace ConsoleApp3
 
 
 
-            spider.SleepTime = 2000; // 2s
+            spider.NewRequestSleepInterval = 2000; // 2s
             // spider.EmptySleepTime = 60; // 60s
 
             spider.Run();

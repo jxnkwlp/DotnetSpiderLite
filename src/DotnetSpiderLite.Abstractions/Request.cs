@@ -7,15 +7,18 @@ using System.Text;
 
 namespace DotnetSpiderLite
 {
+    /// <summary>
+    ///  http request 
+    /// </summary>
     public class Request
     {
         public string Referer { get; set; }
-        public string Connection { get; set; }
+        public bool KeepAlive { get; set; } = true;
         public string AcceptLanguage { get; set; } = "zh-CN,zh;q=0.9,en;q=0.8";
         public string AcceptEncoding { get; set; }
         public string Accept { get; set; } = "text/html";
         public string UserAgent { get; set; } = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36";
-        public string ContentType { get; set; }
+        public string ContentType { get; set; } = "text/html; charset=utf-8";
 
         /// <summary>
         ///  default UTF8

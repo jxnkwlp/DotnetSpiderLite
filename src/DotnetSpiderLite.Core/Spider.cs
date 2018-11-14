@@ -1,33 +1,30 @@
 ﻿using DotnetSpiderLite.Downloader;
 using DotnetSpiderLite.Html;
 using DotnetSpiderLite.Logs;
+using DotnetSpiderLite.Monitor;
 using DotnetSpiderLite.PageProcessor;
 using DotnetSpiderLite.Pipeline;
 using DotnetSpiderLite.Scheduler;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Concurrent;
-using DotnetSpiderLite.Monitor;
-using System.Runtime.CompilerServices;
-using System.Diagnostics;
 
 namespace DotnetSpiderLite
 {
     /// <summary>
-    ///  main
+    ///  Spider
     /// </summary>
     public class Spider : IDisposable, IIdentity
     {
         private bool disposedValue = false; // 要检测冗余调用
-        private int _resultItemsCacheCount = 10; // 默认10
+        private int _resultItemsCacheCount = 10; // default 10
         private bool _init = false;
-        private IScheduler _scheduler;
-        private IDownloader _downloader;
-        private SpiderStatus _spiderStatus = SpiderStatus.Init;
         private int _threadNumber = 1;
         private int _exitWaitInterval = 10 * 1000;
         private int _waitCountLimit = 1000;
@@ -46,22 +43,28 @@ namespace DotnetSpiderLite
         private long _pipelineCostTimes = 0; // 总时间
         private long _pipelineAvgSpeed = 0; // 速度
 
+        private ILogger _logger = LogManager.GetLogger(typeof(Spider));
+        private IScheduler _scheduler;
+        private IDownloader _downloader;
+        private SpiderStatus _spiderStatus = SpiderStatus.Init;
 
-        private Thread _thread;
+        // private Thread _thread;
 
         private bool _useHttpClientDownloader = false;
 
         /// <summary> 
-        ///  sleep time before request url. default 100ms
+        ///  sleep interval before request new url. default 100ms
         /// </summary>
-        public int SleepTime { get; set; } = 100;
+        public int NewRequestSleepInterval { get; set; } = 100;
 
         /// <summary>
-        ///  sleep time when requests is empty . default 15s
+        ///  wait interval before exit . default 15s
         /// </summary>
-        public int EmptySleepTime { get; set; } = 15 * 1000;
+        public int ExitWaitInterval { get; set; } = 15 * 1000;
 
-
+        /// <summary>
+        ///  running status
+        /// </summary>
         public SpiderStatus Status
         {
             get => _spiderStatus;
@@ -76,7 +79,7 @@ namespace DotnetSpiderLite
 
         public int ThreadNumber { get => _threadNumber; set => _threadNumber = value; }
 
-        public ILogger Logger { get; private set; }
+        public ILogger Logger { get => _logger; private set => _logger = value; }
 
         public IList<IPipeline> Pipelines { get; private set; } = new List<IPipeline>();
 
@@ -121,12 +124,13 @@ namespace DotnetSpiderLite
         {
             this.Identity = identity ?? Guid.NewGuid().ToString();
 
+            Init();
+
             if (pageProcessors != null)
                 this.PageProcessors = new List<IPageProcessor>(pageProcessors);
 
             if (pipelines != null)
                 this.Pipelines = new List<IPipeline>(pipelines);
-
 
         }
 
@@ -147,15 +151,15 @@ namespace DotnetSpiderLite
             return Create(new Uri(url));
         }
 
-        public Spider AddRequest(string url, Dictionary<string, string> exts = null)
+        public Spider AddRequest(string url, string referer = null, Dictionary<string, string> exts = null)
         {
-            this.Scheduler.Push(new Request(new Uri(url)));
+            this.Scheduler.Push(new Request(new Uri(url)) { Referer = referer });
             return this;
         }
 
-        public Spider AddRequest(Uri uri, Dictionary<string, string> exts = null)
+        public Spider AddRequest(Uri uri, string referer = null, Dictionary<string, string> exts = null)
         {
-            this.Scheduler.Push(new Request(uri));
+            this.Scheduler.Push(new Request(uri) { Referer = referer });
             return this;
         }
 
@@ -238,11 +242,7 @@ namespace DotnetSpiderLite
 
         public void Start()
         {
-            if (_thread != null && _thread.IsAlive)
-                return;
-
-            _thread = new Thread(Run);
-            _thread.Start();
+            Task.Factory.StartNew(Run);
         }
 
         public void Run()
@@ -252,9 +252,9 @@ namespace DotnetSpiderLite
                 return;
             }
 
-            Init();
+            InitStartBefore();
 
-            this.Logger?.Info("已启动。");
+            this.Logger?.Info("Start.");
 
             this.OnStarted?.Invoke(this);
 
@@ -302,7 +302,7 @@ namespace DotnetSpiderLite
                                 // 
                                 HandleRequestAsync(request, downloader).Wait();
 
-                                Thread.Sleep(SleepTime);
+                                Thread.Sleep(NewRequestSleepInterval);
                             }
                             catch
                             {
@@ -337,7 +337,7 @@ namespace DotnetSpiderLite
             else
             {
                 Status = SpiderStatus.Paused;
-                Logger.Info("Spider contiune run.");
+                Logger.Info("Contiuned.");
             }
         }
 
@@ -345,12 +345,12 @@ namespace DotnetSpiderLite
         {
             if (Status != SpiderStatus.Running)
             {
-                Logger.Warn("当前不在运行状态");
+                Logger.Warn("Current status not running.");
             }
             else
             {
                 Status = SpiderStatus.Paused;
-                Logger.Info("已暂停");
+                Logger.Info("Paused.");
             }
         }
 
@@ -360,15 +360,16 @@ namespace DotnetSpiderLite
             if (this.Status == SpiderStatus.Running || this.Status == SpiderStatus.Paused)
             {
                 this.Status = SpiderStatus.Finished;
-                Logger.Trace("开始退出...");
+                Logger.Trace("Try stop...");
             }
             else
             {
-                Logger.Trace("正在退出...");
+                Logger.Trace("Exited.");
             }
         }
 
 
+        #endregion
 
 
 
@@ -378,24 +379,25 @@ namespace DotnetSpiderLite
             ++count;
         }
 
-
+        /// <summary>
+        ///  初始化
+        /// </summary>
         private void Init()
         {
             if (_init) return;
             _init = true;
 
-            Logger?.Info("正在初始化...");
-
-            if (this.Logger == null)
-                this.Logger = LogManager.GetLogger(typeof(Spider));
+            InitDefaults();
 
             WelcomeInfo();
 
-            InitComponents();
-
+            Logger?.Info("Initializing...");
         }
 
-        private void InitComponents()
+        /// <summary>
+        ///  初始化默认值
+        /// </summary>
+        private void InitDefaults()
         {
             if (this.Scheduler == null)
             {
@@ -411,11 +413,18 @@ namespace DotnetSpiderLite
 
             if (this.Downloader == null)
             {
-                if (_useHttpClientDownloader)
-                    this.Downloader = new DefaultHttpClientDownloader() { Logger = this.Logger };
-                else
-                    this.Downloader = new DefaultDownloader() { Logger = Logger };
+                this.Downloader = new DefaultDownloader() { Logger = Logger };
             }
+        }
+
+
+        /// <summary>
+        ///  启动预处理
+        /// </summary>
+        private void InitStartBefore()
+        {
+            if (_useHttpClientDownloader)
+                this.Downloader = new DefaultHttpClientDownloader() { Logger = this.Logger };
 
             if (this.Pipelines.Count == 0)
                 this.Pipelines.Add(new ConsolePipeline() { Logger = this.Logger });
@@ -423,6 +432,8 @@ namespace DotnetSpiderLite
 
             InitHtmlQuery();
         }
+
+        #region HtmlQuery
 
         private void InitHtmlQuery()
         {
@@ -474,6 +485,9 @@ namespace DotnetSpiderLite
                 this.Logger.Trace("Can't load type 'AngleSharp.HtmlElementSelectorFactory' ");
             }
         }
+
+        #endregion
+
 
         private async Task HandleRequestAsync(Request request, IDownloader downloader)
         {
@@ -537,7 +551,6 @@ namespace DotnetSpiderLite
             HandlePipelines(page);
         }
 
-
         private void HandlePageProcessors(Page page)
         {
             var sw = Stopwatch.StartNew();
@@ -561,7 +574,6 @@ namespace DotnetSpiderLite
 
             CalculateProcessorSpeed(sw.ElapsedMilliseconds);
         }
-
 
         private void HandlePipelines(Page page)
         {
@@ -605,7 +617,6 @@ namespace DotnetSpiderLite
             CalculatePipelineSpeed(sw.ElapsedMilliseconds);
 
         }
-
 
         private async Task<Response> HandleDownloadAsync(Request request, IDownloader downloader)
         {
@@ -725,10 +736,6 @@ namespace DotnetSpiderLite
             this.Downloader.Dispose();
             this.Scheduler.Dispose();
 
-#if !NETSTANDARD
-            _thread?.Abort();
-#endif
-
         }
 
 
@@ -800,7 +807,7 @@ namespace DotnetSpiderLite
         //    }
         //}
 
-        #endregion
+
 
 
         void WelcomeInfo()

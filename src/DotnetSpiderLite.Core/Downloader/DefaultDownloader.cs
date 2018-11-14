@@ -25,7 +25,7 @@ namespace DotnetSpiderLite.Downloader
             webRequest.UseDefaultCredentials = true;
             webRequest.Referer = request.Referer;
             webRequest.UserAgent = request.UserAgent;
-            webRequest.KeepAlive = true;
+            webRequest.KeepAlive = request.KeepAlive;
             webRequest.CookieContainer = DownloaderCookieContainer.Instance;
 
 

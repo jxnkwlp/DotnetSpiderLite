@@ -7,7 +7,7 @@ using System.Text;
 namespace DotnetSpiderLite
 {
     /// <summary>
-    ///  表示一个页面 
+    ///  define an response page  
     /// </summary>
     public class Page
     {

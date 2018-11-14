@@ -4,6 +4,9 @@ using System.Text;
 
 namespace DotnetSpiderLite
 {
+    /// <summary>
+    ///  identity 
+    /// </summary>
     public interface IIdentity
     {
         /// <summary>
