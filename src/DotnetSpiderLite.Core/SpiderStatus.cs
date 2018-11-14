@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace DotnetSpiderLite
 {
+    /// <summary>
+    ///  爬虫状态
+    /// </summary>
     public enum SpiderStatus
     {
         Init = 1,

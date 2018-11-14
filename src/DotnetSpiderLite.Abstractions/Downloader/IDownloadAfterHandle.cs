@@ -5,6 +5,9 @@ using System.Text;
 
 namespace DotnetSpiderLite.Downloader
 {
+    /// <summary>
+    ///  下载器后置处理 
+    /// </summary>
     public interface IDownloadAfterHandle
     {
         ILogger Logger { get; set; }

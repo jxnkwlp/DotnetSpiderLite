@@ -5,7 +5,7 @@ using System.Text;
 namespace DotnetSpiderLite.Logs
 {
     /// <summary>
-    ///  ILoggerFactory
+    ///  获取 ILogger 
     /// </summary>
     public interface ILoggerFactory
     {

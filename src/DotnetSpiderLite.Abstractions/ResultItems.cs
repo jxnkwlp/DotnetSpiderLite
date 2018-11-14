@@ -9,6 +9,9 @@ namespace DotnetSpiderLite
     /// </summary>
     public class ResultItems : Dictionary<string, object>, IDictionary<string, object>
     {
+        /// <summary>
+        ///  来源页面
+        /// </summary>
         public Page Page { get; private set; }
 
         public ResultItems(Page page)

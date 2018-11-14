@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 namespace DotnetSpiderLite
 {
     /// <summary>
-    ///  Spider
+    ///  爬虫 
     /// </summary>
     public class Spider : IDisposable, IIdentity
     {
@@ -254,7 +254,7 @@ namespace DotnetSpiderLite
 
             InitStartBefore();
 
-            this.Logger?.Info("Start.");
+            this.Logger.Info("已启动");
 
             this.OnStarted?.Invoke(this);
 
@@ -327,30 +327,35 @@ namespace DotnetSpiderLite
             }
         }
 
-
+        /// <summary>
+        ///  继续
+        /// </summary>
         public void Contiune()
         {
             if (Status != SpiderStatus.Paused)
             {
-                Logger.Warn("Current status not paused.");
+                Logger.Warn("当前状态无法继续。");
             }
             else
             {
-                Status = SpiderStatus.Paused;
-                Logger.Info("Contiuned.");
+                Status = SpiderStatus.Running;
+                Logger.Info("继续运行。");
             }
         }
 
+        /// <summary>
+        ///  暂停
+        /// </summary>
         public void Pause()
         {
             if (Status != SpiderStatus.Running)
             {
-                Logger.Warn("Current status not running.");
+                Logger.Warn("当前状态无法暂停。");
             }
             else
             {
                 Status = SpiderStatus.Paused;
-                Logger.Info("Paused.");
+                Logger.Info("已暂停。");
             }
         }
 
@@ -360,11 +365,11 @@ namespace DotnetSpiderLite
             if (this.Status == SpiderStatus.Running || this.Status == SpiderStatus.Paused)
             {
                 this.Status = SpiderStatus.Finished;
-                Logger.Trace("Try stop...");
+                Logger.Trace("正在停止...");
             }
             else
             {
-                Logger.Trace("Exited.");
+                Logger.Trace("已退出。");
             }
         }
 
@@ -391,7 +396,7 @@ namespace DotnetSpiderLite
 
             WelcomeInfo();
 
-            Logger?.Info("Initializing...");
+            Logger.Info("正在初始化...");
         }
 
         /// <summary>
@@ -504,11 +509,11 @@ namespace DotnetSpiderLite
 
             if (SelectorFactory != null)
             {
-                page.SetSelector(SelectorFactory.GetSelector(page.Html));
+                page.SetSelector(SelectorFactory.GetSelector(page.Content));
                 page.Extra["Selector"] = page.Selector.GetType().FullName;
             }
 
-            if (string.IsNullOrEmpty(page.Html))
+            if (string.IsNullOrEmpty(page.Content))
                 return;
 
 
@@ -567,8 +572,7 @@ namespace DotnetSpiderLite
                 {
                     this.OnError?.Invoke(this, processor.GetType());
 
-                    this.Logger?.Error($"The processor of '{processor.GetType().FullName}' Process faild.");
-                    this.Logger?.Error(ex.Message);
+                    this.Logger.Error($"处理器'{processor.GetType().FullName}'执行失败。", ex);
                 }
             }
 
@@ -607,8 +611,7 @@ namespace DotnetSpiderLite
                 {
                     this.OnError?.Invoke(this, pipeline.GetType());
 
-                    this.Logger?.Error($"The pipeline of '{pipeline.GetType().FullName}' Process faild");
-                    this.Logger?.Error(ex.Message);
+                    this.Logger.Error($"管道'{pipeline.GetType().FullName}'执行失败。", ex);
                 }
 
             }
@@ -621,7 +624,7 @@ namespace DotnetSpiderLite
         private async Task<Response> HandleDownloadAsync(Request request, IDownloader downloader)
         {
             var uri = request.Uri;
-            this.Logger?.Trace($"Start download url: {uri} ");
+            this.Logger.Trace($"下载器开始请求URL：{uri} ");
 
             try
             {
@@ -647,9 +650,7 @@ namespace DotnetSpiderLite
             }
             catch (Exception ex)
             {
-                this.Logger?.Error("Handle download url faild.");
-                this.Logger?.Error($"URL:{uri}");
-                this.Logger?.Error("Message", ex);
+                this.Logger.Error($"下载失败。URL：{uri}" + ex);
 
                 this.OnError?.Invoke(this, typeof(IDownloader));
 
@@ -716,7 +717,7 @@ namespace DotnetSpiderLite
         private void Closed()
         {
             this.OnClosed?.Invoke(this);
-            this.Logger?.Info("Spider exit.");
+            this.Logger.Info("正在停止...");
 
             SafeDestroy();
         }
@@ -823,7 +824,7 @@ namespace DotnetSpiderLite
 
             Console.WriteLine(sb.ToString());
 
-            this.Logger?.Info("Spider starting... ");
+            this.Logger.Info("正在启动...");
         }
 
     }

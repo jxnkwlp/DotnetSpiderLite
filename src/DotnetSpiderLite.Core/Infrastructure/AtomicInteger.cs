@@ -4,10 +4,7 @@ using System.Text;
 using System.Threading;
 
 namespace DotnetSpiderLite.Infrastructure
-{
-    /// <summary>
-    ///  thraed safe change value 
-    /// </summary>
+{ 
     public class AtomicInteger
     {
         private int _value;

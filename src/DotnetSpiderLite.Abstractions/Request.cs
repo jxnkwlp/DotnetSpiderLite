@@ -8,7 +8,7 @@ using System.Text;
 namespace DotnetSpiderLite
 {
     /// <summary>
-    ///  http request 
+    ///  表示 HTTP 请求
     /// </summary>
     public class Request
     {
@@ -21,12 +21,18 @@ namespace DotnetSpiderLite
         public string ContentType { get; set; } = "text/html; charset=utf-8";
 
         /// <summary>
-        ///  default UTF8
+        ///  编码。默认 UTF8
         /// </summary>
         public Encoding Encoding { get; set; } = Encoding.UTF8;
 
+        /// <summary>
+        ///  默认Get
+        /// </summary>
         public string Method { get; set; } = "GET";
 
+        /// <summary>
+        ///  请求URI
+        /// </summary>
         public Uri Uri { get; }
 
         public byte[] Body { get; set; }

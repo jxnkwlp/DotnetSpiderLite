@@ -5,26 +5,15 @@ using System.Threading.Tasks;
 namespace DotnetSpiderLite.PageProcessor
 {
     /// <summary>
-    ///  页面处理器
+    ///  页面处理器 <see cref="IPageProcessor"/>
     /// </summary>
     public interface IPageProcessor : IDisposable
     {
         ILogger Logger { get; set; }
 
-        //IPageExtraction PageExtraction { get; set; }
-
-        ///// <summary>
-        /////  解析 
-        ///// </summary>
-        ///// <param name="page"></param>
-        ///// <returns></returns>
-        //IEnumerable<Request> ExtractRequest(Page page);
-
         /// <summary>
         ///  处理
-        /// </summary>
-        /// <param name="page"></param>
-        /// <returns></returns>
+        /// </summary> 
         void Process(Page page);
 
     }

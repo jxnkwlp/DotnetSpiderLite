@@ -6,7 +6,7 @@ using System.Text;
 namespace DotnetSpiderLite.Monitor
 {
     /// <summary>
-    ///  Spider Monitor
+    ///  爬虫监控
     /// </summary>
     public interface IMonitor
     {

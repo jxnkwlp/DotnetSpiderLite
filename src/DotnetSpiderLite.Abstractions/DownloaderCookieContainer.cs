@@ -5,9 +5,12 @@ using System.Text;
 
 namespace DotnetSpiderLite
 {
+    /// <summary>
+    ///  默认cookie 容器
+    /// </summary>
     public class DownloaderCookieContainer : CookieContainer
     {
-        static DownloaderCookieContainer _instance = new DownloaderCookieContainer();
+        private static readonly DownloaderCookieContainer _instance = new DownloaderCookieContainer();
 
         public static DownloaderCookieContainer Instance { get => _instance; }
 

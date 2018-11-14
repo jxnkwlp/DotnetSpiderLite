@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace DotnetSpiderLite.PageProcessor
 {
+    /// <summary>
+    ///  页面处理器抽象类
+    /// </summary>
     public abstract class BasePageProcessor : IPageProcessor
     {
         public ILogger Logger { get; set; }
@@ -14,11 +17,11 @@ namespace DotnetSpiderLite.PageProcessor
 
         public void Process(Page page)
         {
-            Logger?.Trace("Start Process...");
+            Logger?.Trace("开始处理页面");
 
             HandlePage(page);
 
-            Logger?.Trace("End Process");
+            Logger?.Trace("页面处理完成");
         }
 
 

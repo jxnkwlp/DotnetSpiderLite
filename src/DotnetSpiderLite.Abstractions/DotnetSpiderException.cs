@@ -4,6 +4,9 @@ using System.Text;
 
 namespace DotnetSpiderLite
 {
+    /// <summary>
+    ///  Exception
+    /// </summary>
     public class DotnetSpiderException : Exception
     {
         public DotnetSpiderException() : base()

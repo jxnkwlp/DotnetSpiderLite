@@ -8,7 +8,7 @@ using System.Text;
 namespace DotnetSpiderLite
 {
     /// <summary>
-    ///  http response 
+    ///  表示 HTTP 响应
     /// </summary>
     public class Response
     {
