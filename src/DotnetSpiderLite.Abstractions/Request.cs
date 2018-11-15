@@ -12,6 +12,9 @@ namespace DotnetSpiderLite
     /// </summary>
     public class Request
     {
+        /// <summary>
+        ///  Referer
+        /// </summary>
         public string Referer { get; set; }
         public bool KeepAlive { get; set; } = true;
         public string AcceptLanguage { get; set; } = "zh-CN,zh;q=0.9,en;q=0.8";
@@ -35,15 +38,29 @@ namespace DotnetSpiderLite
         /// </summary>
         public Uri Uri { get; }
 
+        /// <summary>
+        ///  请求BODY，一般用于post等请求
+        /// </summary>
         public byte[] Body { get; set; }
 
+        /// <summary>
+        ///  header 头
+        /// </summary>
         public Dictionary<string, string> Headers { get; private set; } = new Dictionary<string, string>();
 
+        /// <summary>
+        ///  扩展
+        /// </summary>
         public Dictionary<string, string> Extra { get; private set; } = new Dictionary<string, string>();
 
-
+        /// <summary>
+        ///  Cookies 集合容器
+        /// </summary>
         public CookieContainer CookieContainer { get; private set; }
 
+        /// <summary>
+        ///  CookieHeader
+        /// </summary>
         public string CookieHeader
         {
             get
@@ -63,12 +80,17 @@ namespace DotnetSpiderLite
             this.CookieContainer = DownloaderCookieContainer.Instance;
         }
 
-
+        /// <summary>
+        ///  添加 cookie
+        /// </summary> 
         public void AddCookie(string name, string value)
         {
             CookieContainer.Add(this.Uri, new Cookie(name, value));
         }
 
+        /// <summary>
+        ///  添加 cookie
+        /// </summary> 
         public void AddCookie(Cookie cookie)
         {
             CookieContainer.Add(this.Uri, cookie);

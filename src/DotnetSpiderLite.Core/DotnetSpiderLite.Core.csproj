@@ -10,6 +10,10 @@
 		<Version>$(AssemblyVersion)</Version>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+	  <DocumentationFile></DocumentationFile>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<ProjectReference Include="..\DotnetSpiderLite.Abstractions\DotnetSpiderLite.Abstractions.csproj" />
 	</ItemGroup>

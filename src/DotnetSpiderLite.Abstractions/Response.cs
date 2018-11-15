@@ -12,23 +12,44 @@ namespace DotnetSpiderLite
     /// </summary>
     public class Response
     {
+        /// <summary>
+        ///  HTTP 请求
+        /// </summary>
         public Request Request { get; private set; }
 
+        /// <summary>
+        ///  响应URI
+        /// </summary>
         public Uri ResponseUri { get; set; }
 
+        /// <summary>
+        ///  响应 body 体
+        /// </summary>
         public Stream Body { get; set; }
 
+        /// <summary>
+        ///  ContentType
+        /// </summary>
         public string ContentType { get; set; }
 
+        /// <summary>
+        ///  响应状态码
+        /// </summary>
         public int StatusCode { get; set; }
 
+        /// <summary>
+        ///  响应内容长度
+        /// </summary>
         public long ContentLength { get; set; }
 
+        /// <summary>
+        ///  扩展
+        /// </summary>
         public Dictionary<string, string> Extra { get; private set; } = new Dictionary<string, string>();
 
-
-       // public string ResponseCookie { get; set; }
-
+        /// <summary>
+        ///  响应 cookies 集合
+        /// </summary>
         public CookieCollection ResponseCookies { get; set; }
 
         public Response(Request request)

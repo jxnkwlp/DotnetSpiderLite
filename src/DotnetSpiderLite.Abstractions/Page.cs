@@ -16,6 +16,9 @@ namespace DotnetSpiderLite
         /// </summary>
         public IHtmlElementSelector Selector { get; private set; }
 
+        /// <summary>
+        ///  HTTP 响应
+        /// </summary>
         public Response Response { get; private set; }
 
         /// <summary>

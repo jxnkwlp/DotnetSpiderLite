@@ -29,7 +29,7 @@ namespace DotnetSpiderLite
         private int _exitWaitInterval = 10 * 1000;
         private int _waitCountLimit = 1000;
 
-        private ConcurrentBag<ResultItems> _cacheResultItems = new ConcurrentBag<ResultItems>();
+        private List<ResultItems> _cacheResultItems = new List<ResultItems>();
 
         private long _downloaderCounts = 0;  // 次数
         private long _downloaderCostTimes = 0; // 总时间
@@ -51,19 +51,20 @@ namespace DotnetSpiderLite
         // private Thread _thread;
 
         private bool _useHttpClientDownloader = false;
+        private readonly object _lockObject = new object();
 
         /// <summary> 
-        ///  sleep interval before request new url. default 100ms
+        ///  新请求前暂停时间(毫秒)，默认 100ms
         /// </summary>
         public int NewRequestSleepInterval { get; set; } = 100;
 
         /// <summary>
-        ///  wait interval before exit . default 15s
+        ///  退出前，等待时间(毫秒)，默认15s
         /// </summary>
         public int ExitWaitInterval { get; set; } = 15 * 1000;
 
         /// <summary>
-        ///  running status
+        ///  爬虫运行状态
         /// </summary>
         public SpiderStatus Status
         {
@@ -75,9 +76,29 @@ namespace DotnetSpiderLite
             }
         }
 
+        /// <summary>
+        ///  Identity
+        /// </summary>
         public string Identity { get; set; }
 
-        public int ThreadNumber { get => _threadNumber; set => _threadNumber = value; }
+        /// <summary>
+        ///  线程数
+        /// </summary>
+        public int ThreadNumber
+        {
+            get => _threadNumber;
+            set
+            {
+                if (_spiderStatus == SpiderStatus.Init)
+                {
+                    _threadNumber = value;
+                }
+                else
+                {
+                    throw new SpiderException("当前状态不允许设置");
+                }
+            }
+        }
 
         public ILogger Logger { get => _logger; private set => _logger = value; }
 
@@ -93,20 +114,44 @@ namespace DotnetSpiderLite
         public IHtmlElementSelectorFactory SelectorFactory { get; private set; }
 
 
+        /// <summary>
+        ///  数据结果缓冲数量大小
+        /// </summary>
+        public int ResultItemsCacheCount
+        {
+            get => _resultItemsCacheCount;
+            set
+            {
+                _resultItemsCacheCount = value;
+            }
+        }
 
-        public int ResultItemsCacheCount { get => _resultItemsCacheCount; set => _resultItemsCacheCount = value; }
-
-
+        /// <summary>
+        ///  监控程序
+        /// </summary>
         public IMonitor Monitor { get; private set; }
 
+        /// <summary>
+        ///  队列监控程序
+        /// </summary>
         public ISchedulerMonitor SchedulerMonitor { get; private set; }
 
 
         #region event
 
+        /// <summary>
+        ///  当关闭的时候
+        /// </summary>
         public event Action<Spider> OnClosed;
+        /// <summary>
+        ///  当状态发生改变的时候
+        /// </summary>
         public event Action<Spider, SpiderStatus> OnStatusChanged;
+        /// <summary>
+        ///  当启动的时候
+        /// </summary>
         public event Action<Spider> OnStarted;
+
 
         public event Action<Spider, Type> OnError;
         public event Action<Spider, Type> OnSuccess;
@@ -116,10 +161,16 @@ namespace DotnetSpiderLite
 
         #region ctor
 
+        /// <summary>
+        /// ctor
+        /// </summary>
         protected Spider() : this(null, null, null)
         {
         }
 
+        /// <summary>
+        ///  爬虫
+        /// </summary> 
         public Spider(string identity, IEnumerable<IPageProcessor> pageProcessors, IEnumerable<IPipeline> pipelines)
         {
             this.Identity = identity ?? Guid.NewGuid().ToString();
@@ -138,6 +189,10 @@ namespace DotnetSpiderLite
 
         #region Public Methods
 
+
+        /// <summary>
+        ///  新建
+        /// </summary> 
         public static Spider Create(Uri uri)
         {
             var spider = new Spider(null, null, null);
@@ -146,23 +201,35 @@ namespace DotnetSpiderLite
             return spider;
         }
 
+        /// <summary>
+        ///  新建
+        /// </summary> 
         public static Spider Create(string url)
         {
             return Create(new Uri(url));
         }
 
+        /// <summary>
+        ///  添加请求
+        /// </summary> 
         public Spider AddRequest(string url, string referer = null, Dictionary<string, string> exts = null)
         {
             this.Scheduler.Push(new Request(new Uri(url)) { Referer = referer });
             return this;
         }
 
+        /// <summary>
+        ///  添加请求
+        /// </summary> 
         public Spider AddRequest(Uri uri, string referer = null, Dictionary<string, string> exts = null)
         {
             this.Scheduler.Push(new Request(uri) { Referer = referer });
             return this;
         }
 
+        /// <summary>
+        ///  添加数据处理管道
+        /// </summary> 
         public Spider AddPipelines(IPipeline pipeline)
         {
             pipeline.Logger = this.Logger;
@@ -171,6 +238,9 @@ namespace DotnetSpiderLite
             return this;
         }
 
+        /// <summary>
+        ///  添加页面处理程序
+        /// </summary> 
         public Spider AddPageProcessors(IPageProcessor pageProcessor)
         {
             pageProcessor.Logger = this.Logger;
@@ -179,12 +249,18 @@ namespace DotnetSpiderLite
             return this;
         }
 
+        /// <summary>
+        ///  设置日志输出程序
+        /// </summary> 
         public Spider SetLogFactory(ILoggerFactory loggerFactory)
         {
             this.Logger = loggerFactory.GetLogger(typeof(Spider));
             return this;
         }
 
+        /// <summary>
+        ///  设置队列
+        /// </summary> 
         public Spider SetScheduler(IScheduler scheduler, ISchedulerMonitor schedulerMonitor = null)
         {
             this.Scheduler = scheduler;
@@ -192,18 +268,27 @@ namespace DotnetSpiderLite
             return this;
         }
 
+        /// <summary>
+        ///  设置队列
+        /// </summary> 
         public Spider SetScheduler(IMonitor monitor)
         {
             this.Monitor = monitor;
             return this;
         }
 
+        /// <summary>
+        ///  设置下载器
+        /// </summary> 
         public Spider SetDownloader(IDownloader downloader)
         {
             this.Downloader = downloader;
             return this;
         }
 
+        /// <summary>
+        ///  设置下载前置程序
+        /// </summary> 
         public Spider AddDownloadBeforeHandle(IDownloadBeforeHandle handle)
         {
             if (this.Downloader != null)
@@ -213,6 +298,9 @@ namespace DotnetSpiderLite
             return this;
         }
 
+        /// <summary>
+        ///  设置下载后置程序
+        /// </summary> 
         public Spider AddDownloadAfterHandle(IDownloadAfterHandle handle)
         {
             if (this.Downloader != null)
@@ -222,13 +310,19 @@ namespace DotnetSpiderLite
             return this;
         }
 
-        public Spider UseHttpClientDownloader()
+        /// <summary>
+        ///  使用HttpClient下载器
+        /// </summary> 
+        public Spider UseHttpClientDownloader(bool value = true)
         {
-            this._useHttpClientDownloader = true;
+            this._useHttpClientDownloader = value;
 
             return this;
         }
 
+        /// <summary>
+        ///  设置最大线程数
+        /// </summary> 
         public Spider SetMaxThreadNumber(int value)
         {
             this.ThreadNumber = value;
@@ -239,22 +333,34 @@ namespace DotnetSpiderLite
 
 
 
-
+        /// <summary>
+        ///  启动爬虫，但不占用当前进程
+        /// </summary>
         public void Start()
         {
+            if (Status != SpiderStatus.Init)
+            {
+                this.Logger.Warn("当前已启动，无需再次启动");
+                return;
+            }
+
             Task.Factory.StartNew(Run);
         }
 
+        /// <summary>
+        ///  在当前进程启动爬虫
+        /// </summary>
         public void Run()
         {
             if (Status == SpiderStatus.Running)
             {
+                this.Logger.Warn("当前已启动，无需再次启动");
                 return;
             }
 
             InitStartBefore();
 
-            this.Logger.Info("已启动");
+            this.Logger.Info("已启动爬虫");
 
             this.OnStarted?.Invoke(this);
 
@@ -359,7 +465,9 @@ namespace DotnetSpiderLite
             }
         }
 
-
+        /// <summary>
+        ///  停止
+        /// </summary>
         public void Stop()
         {
             if (this.Status == SpiderStatus.Running || this.Status == SpiderStatus.Paused)
@@ -581,18 +689,27 @@ namespace DotnetSpiderLite
 
         private void HandlePipelines(Page page)
         {
+            var list = new List<ResultItems>();
+
             if (this._resultItemsCacheCount > 0)
             {
-                if (_cacheResultItems.Count < this._resultItemsCacheCount)
+                lock (_lockObject)
                 {
-                    _cacheResultItems.Add(page.ResutItems);
-                    return;
+                    if (_cacheResultItems.Count < this._resultItemsCacheCount)
+                    {
+                        _cacheResultItems.Add(page.ResutItems);
+                        return;
+                    }
+                    else
+                    {
+                        list.AddRange(_cacheResultItems);
+                        _cacheResultItems.Clear();
+                    }
                 }
             }
             else
             {
-                _cacheResultItems.Add(page.ResutItems);
-
+                list.Add(page.ResutItems);
             }
 
 
@@ -603,7 +720,7 @@ namespace DotnetSpiderLite
             {
                 try
                 {
-                    pipeline.Process(_cacheResultItems.ToArray());
+                    pipeline.Process(list.ToArray());
 
                     this.OnSuccess?.Invoke(this, pipeline.GetType());
                 }
