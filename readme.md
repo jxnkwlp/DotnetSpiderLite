@@ -23,9 +23,9 @@ PM> install-package DotnetSpiderLite.HtmlAgilityPack
 # Useage
 ~~~ c#
 Spider spider = Spider.Create("https://www.cnblogs.com/");
-spider.AddPageProcessors(new CNBlogProcessor());
-//spider.AddPipelines(new FilePipeline());
-//spider.AddPipelines(new JsonFilePipeline()); 
+spider.AddPageProcessor(new CNBlogProcessor());
+//spider.AddPipeline(new FilePipeline());
+//spider.AddPipeline(new JsonFilePipeline()); 
 //spider.ThreadNumber = 10;
 spider.Run();
  
