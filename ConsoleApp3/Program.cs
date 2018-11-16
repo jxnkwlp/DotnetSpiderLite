@@ -57,6 +57,11 @@ namespace ConsoleApp3
 
     public class Processor2 : BasePageProcessor
     {
+        public override bool CanProcess(Page page)
+        {
+            return base.CanProcess(page);
+        }
+
         public override void HandlePage(Page page)
         {
             if (page.Response.ResponseUri.AbsolutePath == "/antispider/")

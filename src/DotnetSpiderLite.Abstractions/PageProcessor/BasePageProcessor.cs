@@ -1,4 +1,5 @@
 ﻿using DotnetSpiderLite.Logs;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -19,6 +20,13 @@ namespace DotnetSpiderLite.PageProcessor
         {
             Logger?.Trace("开始处理页面");
 
+            if (!CanProcess(page))
+            {
+                Logger?.Trace("忽略该处理器");
+
+                return;
+            }
+
             HandlePage(page);
 
             Logger?.Trace("页面处理完成");
@@ -26,6 +34,11 @@ namespace DotnetSpiderLite.PageProcessor
 
 
         public abstract void HandlePage(Page page);
+
+        public virtual bool CanProcess(Page page)
+        {
+            return true;
+        }
 
     }
 }
