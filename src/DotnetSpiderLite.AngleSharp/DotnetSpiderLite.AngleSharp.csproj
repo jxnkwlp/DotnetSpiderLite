@@ -1,32 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
+	<PropertyGroup>
 		<TargetFramework></TargetFramework>
 		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
 		<AssemblyName>DotnetSpiderLite.AngleSharp</AssemblyName>
 		<RootNamespace>DotnetSpiderLite.AngleSharps</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<AssemblyVersion>1.0.0.8</AssemblyVersion>
+		<AssemblyVersion>0.0.0.1</AssemblyVersion>
 		<Version>$(AssemblyVersion)</Version>
-  </PropertyGroup>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Html\**" />
-    <EmbeddedResource Remove="Html\**" />
-    <None Remove="Html\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Html\**" />
+		<EmbeddedResource Remove="Html\**" />
+		<None Remove="Html\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="AngleSharpHtmlExtracter.cs" />
-    <Compile Remove="AngleSharpHtmlQuery.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="AngleSharpHtmlExtracter.cs" />
+		<Compile Remove="AngleSharpHtmlQuery.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AngleSharp" Version="0.9.10" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AngleSharp" Version="0.9.10" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DotnetSpiderLite.Abstractions\DotnetSpiderLite.Abstractions.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\DotnetSpiderLite.Abstractions\DotnetSpiderLite.Abstractions.csproj" />
+	</ItemGroup>
 
 </Project>

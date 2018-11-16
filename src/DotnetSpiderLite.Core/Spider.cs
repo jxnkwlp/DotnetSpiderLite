@@ -242,7 +242,7 @@ namespace DotnetSpiderLite
         /// <summary>
         ///  添加数据处理管道
         /// </summary> 
-        public Spider AddPipelines(IPipeline pipeline)
+        public Spider AddPipeline(IPipeline pipeline)
         {
             pipeline.Logger = this.Logger;
 
@@ -253,7 +253,7 @@ namespace DotnetSpiderLite
         /// <summary>
         ///  添加页面处理程序
         /// </summary> 
-        public Spider AddPageProcessors(IPageProcessor pageProcessor)
+        public Spider AddPageProcessor(IPageProcessor pageProcessor)
         {
             pageProcessor.Logger = this.Logger;
 

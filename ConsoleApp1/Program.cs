@@ -20,7 +20,7 @@ namespace ConsoleApp1
 
             Spider spider = Spider.Create("https://www.cnblogs.com/");
             spider.UseNLog();
-            spider.AddPageProcessors(new CNBlogProcessor());
+            spider.AddPageProcessor(new CNBlogProcessor());
             //spider.AddPipelines(new FilePipeline());
             //spider.AddPipelines(new JsonFilePipeline()); 
             //spider.ThreadNumber = 10;

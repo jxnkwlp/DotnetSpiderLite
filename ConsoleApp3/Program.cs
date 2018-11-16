@@ -26,7 +26,7 @@ namespace ConsoleApp3
             Spider spider = Spider.Create("https://weixin.sogou.com/");
             //spider.UseNLog();
 
-            spider.AddPageProcessors(new Processor2());
+            spider.AddPageProcessor(new Processor2());
 
             // spider.AddRequest($"https://weixin.sogou.com/weixin?type=2&ie=utf8&query=马云");
 
