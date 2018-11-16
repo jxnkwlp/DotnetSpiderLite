@@ -39,7 +39,7 @@ namespace DotnetSpiderLite
         /// <summary>
         ///  重试最大次数，0始终重试
         /// </summary>
-        public int MaxRetryCount { get; set; }
+        public int MaxRetryTimes { get; set; }
 
         /// <summary>
         ///  结果数据

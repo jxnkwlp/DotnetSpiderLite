@@ -193,9 +193,9 @@ namespace DotnetSpiderLite
         /// <summary>
         ///  新建
         /// </summary> 
-        public static Spider Create(Uri uri)
+        public static Spider Create(Uri uri, params IPageProcessor[] processors)
         {
-            var spider = new Spider(null, null, null);
+            var spider = new Spider(null, processors, null);
             spider.AddRequest(uri);
 
             return spider;
@@ -204,10 +204,22 @@ namespace DotnetSpiderLite
         /// <summary>
         ///  新建
         /// </summary> 
-        public static Spider Create(string url)
+        public static Spider Create(string url, params IPageProcessor[] processors)
         {
-            return Create(new Uri(url));
+            return Create(new Uri(url), processors);
         }
+
+        /// <summary>
+        ///  新建
+        /// </summary> 
+        public static Spider Create(params IPageProcessor[] processors)
+        {
+            var spider = new Spider(null, processors, null);
+            return spider;
+        }
+
+
+
 
         /// <summary>
         ///  添加请求
@@ -635,7 +647,7 @@ namespace DotnetSpiderLite
             // 重试处理
             if (page.Retry)
             {
-                if (page.MaxRetryCount > 0 && request.GetRetryCount() > page.MaxRetryCount)
+                if (page.MaxRetryTimes > 0 && request.GetRetryCount() > page.MaxRetryTimes)
                 {
                     return;
                 }
