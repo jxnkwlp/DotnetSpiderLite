@@ -434,8 +434,12 @@ namespace DotnetSpiderLite
 
             }
 
+            // 清空缓存结果
+            FlushResultItemsCache();
 
+            // 上报状态
             ReportMonitorStatus();
+
 
             if (Status == SpiderStatus.Finished)
             {
@@ -725,14 +729,30 @@ namespace DotnetSpiderLite
             }
 
 
-            var sw = Stopwatch.StartNew();
+            SendToPipelines(list);
 
+        }
+
+        private void FlushResultItemsCache()
+        {
+            if (_cacheResultItems.Count > 0)
+            {
+                SendToPipelines(_cacheResultItems);
+            }
+        }
+
+        private void SendToPipelines(IList<ResultItems> list)
+        {
+            if (list == null || list.Count == 0)
+                return;
+
+            var sw = Stopwatch.StartNew();
 
             foreach (var pipeline in Pipelines)
             {
                 try
                 {
-                    pipeline.Process(list.ToArray());
+                    pipeline.Process(list);
 
                     this.OnSuccess?.Invoke(this, pipeline.GetType());
                 }
@@ -849,6 +869,8 @@ namespace DotnetSpiderLite
             this.Logger.Info("正在停止...");
 
             SafeDestroy();
+
+            this.Logger.Info("已停止");
         }
 
         private void SafeDestroy()

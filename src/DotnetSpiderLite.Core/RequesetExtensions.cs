@@ -17,7 +17,7 @@ namespace DotnetSpiderLite
             {
                 request.Method,
                 request.Uri,
-                request.Encoding,
+                request.Encoding.EncodingName,
                 request.Headers,
                 request.Referer,
                 retryCount,

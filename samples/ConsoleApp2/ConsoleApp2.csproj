@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AssemblyVersion>1.0.0.5</AssemblyVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\ConsoleApp3\CnBlogTest.cs" Link="CnBlogTest.cs" />
+    <Compile Include="..\ConsoleApp3\WeixinSougouTest.cs" Link="WeixinSougouTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DotnetSpiderLite.Abstractions\DotnetSpiderLite.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\DotnetSpiderLite.AngleSharp\DotnetSpiderLite.AngleSharp.csproj" />
+    <ProjectReference Include="..\..\src\DotnetSpiderLite.Core\DotnetSpiderLite.Core.csproj" />
+  </ItemGroup>
+
+</Project>

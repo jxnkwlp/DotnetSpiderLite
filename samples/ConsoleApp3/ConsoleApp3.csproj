@@ -43,28 +43,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CnBlogTest.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WeixinSougouTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\src\DotnetSpiderLite.Abstractions\DotnetSpiderLite.Abstractions.csproj">
+    <ProjectReference Include="..\..\src\DotnetSpiderLite.Abstractions\DotnetSpiderLite.Abstractions.csproj">
       <Project>{8d6d2f56-5cda-434a-9796-a0021a4b03fb}</Project>
       <Name>DotnetSpiderLite.Abstractions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\src\DotnetSpiderLite.AngleSharp\DotnetSpiderLite.AngleSharp.csproj">
+    <ProjectReference Include="..\..\src\DotnetSpiderLite.AngleSharp\DotnetSpiderLite.AngleSharp.csproj">
       <Project>{c87b2694-e320-453d-a599-04fed0c26ace}</Project>
       <Name>DotnetSpiderLite.AngleSharp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\src\DotnetSpiderLite.Core\DotnetSpiderLite.Core.csproj">
+    <ProjectReference Include="..\..\src\DotnetSpiderLite.Core\DotnetSpiderLite.Core.csproj">
       <Project>{1c7b04d9-bbb1-4046-bdca-4b0331c76f00}</Project>
       <Name>DotnetSpiderLite.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\src\DotnetSpiderLite.NLog\DotnetSpiderLite.NLog.csproj">
-      <Project>{1bcea906-b869-4297-870c-2d6b8d695e34}</Project>
-      <Name>DotnetSpiderLite.NLog</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
