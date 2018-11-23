@@ -36,6 +36,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DotnetSpiderLite", "DotnetS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpider-Test", "samples\DotnetSpider-Test\DotnetSpider-Test.csproj", "{37FD3AFB-F920-4A70-9749-85427042B393}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpiderLite.Scheduler.Redis", "src\DotnetSpiderLite.Scheduler.Redis\DotnetSpiderLite.Scheduler.Redis.csproj", "{C32EC4FA-FBB3-4C26-8751-FF0D1FEE709E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpiderLite.Scheduler.StackExchange.Redis", "src\DotnetSpiderLite.Scheduler.StackExchange.Redis\DotnetSpiderLite.Scheduler.StackExchange.Redis.csproj", "{F7D530BA-0943-4FEF-968E-7B7840FF42B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpiderLite.StackExchange.Redis", "src\DotnetSpiderLite.StackExchange.Redis\DotnetSpiderLite.StackExchange.Redis.csproj", "{3A431333-1FE4-41F8-A0F1-AB3E4ABC480F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -86,6 +92,18 @@ Global
 		{37FD3AFB-F920-4A70-9749-85427042B393}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37FD3AFB-F920-4A70-9749-85427042B393}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37FD3AFB-F920-4A70-9749-85427042B393}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C32EC4FA-FBB3-4C26-8751-FF0D1FEE709E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C32EC4FA-FBB3-4C26-8751-FF0D1FEE709E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C32EC4FA-FBB3-4C26-8751-FF0D1FEE709E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C32EC4FA-FBB3-4C26-8751-FF0D1FEE709E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7D530BA-0943-4FEF-968E-7B7840FF42B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7D530BA-0943-4FEF-968E-7B7840FF42B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7D530BA-0943-4FEF-968E-7B7840FF42B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7D530BA-0943-4FEF-968E-7B7840FF42B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A431333-1FE4-41F8-A0F1-AB3E4ABC480F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A431333-1FE4-41F8-A0F1-AB3E4ABC480F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A431333-1FE4-41F8-A0F1-AB3E4ABC480F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A431333-1FE4-41F8-A0F1-AB3E4ABC480F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,6 +118,9 @@ Global
 		{A3D2B5FC-40BF-4730-B238-10966E7C2280} = {9AF7B736-0F55-454B-9C9A-3F3CE8D9AD2D}
 		{BEE9E2F8-6DFD-4D81-BC98-27B019EE686B} = {76FEC557-1617-4E2A-AE7D-227C01F3ACAC}
 		{37FD3AFB-F920-4A70-9749-85427042B393} = {BEE9E2F8-6DFD-4D81-BC98-27B019EE686B}
+		{C32EC4FA-FBB3-4C26-8751-FF0D1FEE709E} = {9AF7B736-0F55-454B-9C9A-3F3CE8D9AD2D}
+		{F7D530BA-0943-4FEF-968E-7B7840FF42B3} = {9AF7B736-0F55-454B-9C9A-3F3CE8D9AD2D}
+		{3A431333-1FE4-41F8-A0F1-AB3E4ABC480F} = {9AF7B736-0F55-454B-9C9A-3F3CE8D9AD2D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {111A217F-E8E4-442F-8B1C-263774BF635F}
