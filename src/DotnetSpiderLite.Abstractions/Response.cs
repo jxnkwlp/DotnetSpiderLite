@@ -23,9 +23,9 @@ namespace DotnetSpiderLite
         public Uri ResponseUri { get; set; }
 
         /// <summary>
-        ///  响应 body 体
+        ///  响应 body 内容
         /// </summary>
-        public Stream Body { get; set; }
+        public byte[] Body { get; set; }
 
         /// <summary>
         ///  ContentType
@@ -40,7 +40,7 @@ namespace DotnetSpiderLite
         /// <summary>
         ///  响应内容长度
         /// </summary>
-        public long ContentLength { get; set; }
+        public long ContentLength { get; set; } = -1;
 
         /// <summary>
         ///  扩展

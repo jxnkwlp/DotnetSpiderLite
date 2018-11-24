@@ -26,8 +26,8 @@ namespace DotnetSpiderLite
         private int _resultItemsCacheCount = 10; // default 10
         private bool _init = false;
         private int _threadNumber = 1;
-        private int _exitWaitInterval = 10 * 1000;
-        private int _waitCountLimit = 1000;
+        private int _waitCountLimit = 100 * 10;  // 100 是一秒
+        private int _exitWaitInterval = 15 * 1000;
 
         private List<ResultItems> _cacheResultItems = new List<ResultItems>();
 
@@ -48,21 +48,35 @@ namespace DotnetSpiderLite
         private IDownloader _downloader;
         private SpiderStatus _spiderStatus = SpiderStatus.Init;
 
+        private IList<IDownloadBeforeHandle> _downloadBeforeHandles = new List<IDownloadBeforeHandle>();
+        private IList<IDownloadAfterHandle> _downloadAfterHandles = new List<IDownloadAfterHandle>();
+
         // private Thread _thread;
 
-        private bool _useHttpClientDownloader = false;
+        private bool _useHttpClientDownloader = true;
+        private int _newRequestSleepInterval = 100;
         private readonly object _lockObject = new object();
 
         /// <summary> 
         ///  新请求前暂停时间(毫秒)，默认 100ms
         /// </summary>
-        public int NewRequestSleepInterval { get; set; } = 100;
-
+        public int NewRequestSleepInterval
+        {
+            get => _newRequestSleepInterval;
+            set
+            {
+                _exitWaitInterval = _newRequestSleepInterval + value;
+                _newRequestSleepInterval = value;
+            }
+        }
         /// <summary>
         ///  退出前，等待时间(毫秒)，默认15s
         /// </summary>
-        public int ExitWaitInterval { get; set; } = 15 * 1000;
-
+        public int ExitWaitInterval
+        {
+            get => _exitWaitInterval;
+            set => _exitWaitInterval = value;
+        }
         /// <summary>
         ///  爬虫运行状态
         /// </summary>
@@ -303,10 +317,8 @@ namespace DotnetSpiderLite
         /// </summary> 
         public Spider AddDownloadBeforeHandle(IDownloadBeforeHandle handle)
         {
-            if (this.Downloader != null)
-            {
-                this.Downloader.AddDownloadBeforeHandle(handle);
-            }
+            this._downloadBeforeHandles.Add(handle);
+
             return this;
         }
 
@@ -315,10 +327,8 @@ namespace DotnetSpiderLite
         /// </summary> 
         public Spider AddDownloadAfterHandle(IDownloadAfterHandle handle)
         {
-            if (this.Downloader != null)
-            {
-                this.Downloader.AddDownloadAfterHandle(handle);
-            }
+            this._downloadAfterHandles.Add(handle);
+
             return this;
         }
 
@@ -542,7 +552,7 @@ namespace DotnetSpiderLite
 
             if (this.Downloader == null)
             {
-                this.Downloader = new DefaultDownloader() { Logger = Logger };
+                this.Downloader = new DefaultHttpClientDownloader() { Logger = Logger };
             }
         }
 
@@ -552,14 +562,49 @@ namespace DotnetSpiderLite
         /// </summary>
         private void InitStartBefore()
         {
+            InitLog();
+
             if (_useHttpClientDownloader)
                 this.Downloader = new DefaultHttpClientDownloader() { Logger = this.Logger };
+
+            if (_downloadBeforeHandles.Count > 0)
+            {
+                foreach (var handle in _downloadBeforeHandles)
+                {
+                    handle.Logger = this.Logger;
+                    this.Downloader.AddDownloadBeforeHandle(handle);
+                }
+            }
+
+            if (_downloadAfterHandles.Count > 0)
+            {
+                foreach (var handle in _downloadAfterHandles)
+                {
+                    handle.Logger = this.Logger;
+                    this.Downloader.AddDownloadAfterHandle(handle);
+                }
+            }
 
             if (this.Pipelines.Count == 0)
                 this.Pipelines.Add(new ConsolePipeline() { Logger = this.Logger });
 
-
             InitHtmlQuery();
+        }
+
+        private void InitLog()
+        {
+            this.Scheduler.Logger = this.Logger;
+            this.Downloader.Logger = this.Logger;
+            this.Monitor.Logger = this.Logger;
+
+            foreach (var pipeline in Pipelines)
+            {
+                pipeline.Logger = this.Logger;
+            }
+            foreach (var processor in PageProcessors)
+            {
+                processor.Logger = this.Logger;
+            }
         }
 
         #region HtmlQuery

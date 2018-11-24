@@ -33,44 +33,46 @@ namespace DotnetSpiderLite.Downloader
 
         public override async Task<Response> HandleDownloadAsync(Request request)
         {
-            HttpResponseMessage responseMessage = null;
-
             SetOptions(request);
 
-            if (request.Method == "GET")
+            var requestMessage = new HttpRequestMessage();
+            requestMessage.Method = (string.Equals(request.Method, "POST", StringComparison.OrdinalIgnoreCase)) ? HttpMethod.Post : HttpMethod.Get;
+            requestMessage.RequestUri = request.Uri;
+
+            if (request.Body != null)
             {
-                responseMessage = await _httpClient.GetAsync(request.Uri);
-            }
-            else
-            {
-                if (request.Body != null)
-                    responseMessage = await _httpClient.PostAsync(request.Uri, new ByteArrayContent(request.Body));
-                else
-                    responseMessage = await _httpClient.PostAsync(request.Uri, null);
+                requestMessage.Content = new ByteArrayContent(request.Body);
             }
 
-            if (responseMessage == null)
+            if (requestMessage.Content != null)
             {
-                throw new DownloaderException();
+                requestMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(request.ContentType);
             }
 
-            this.Logger?.Trace("Download page Http Status : " + responseMessage.StatusCode);
+            HttpResponseMessage responseMessage = null;
 
-            if (!responseMessage.IsSuccessStatusCode)
+            try
             {
-                throw new DownloaderException();
+                responseMessage = await _httpClient.SendAsync(requestMessage);
+            }
+            catch (Exception ex)
+            {
+                throw new DownloaderException($"请求URL失败{request.Uri}", ex);
             }
 
             var response = new Response(request);
 
             response.StatusCode = (int)responseMessage.StatusCode;
-            response.ContentType = responseMessage.Content.Headers.ContentType.ToString();
+            if (responseMessage.Content != null)
+            {
+                response.ContentType = responseMessage.Content.Headers.ContentType.ToString();
+                response.ContentLength = responseMessage.Content.Headers.ContentLength.HasValue ? responseMessage.Content.Headers.ContentLength.Value : -1;
+                response.Body = await responseMessage.Content.ReadAsByteArrayAsync();
+            }
 
-            response.Body = await responseMessage.Content.ReadAsStreamAsync();
             response.ResponseUri = responseMessage.RequestMessage.RequestUri;
-            response.ContentLength = (await responseMessage.Content.ReadAsStringAsync()).Length;
 
-            response.ResponseCookies = _myHttpClientHandler.CookieContainer.GetCookies(request.Uri); 
+            response.ResponseCookies = _myHttpClientHandler.CookieContainer.GetCookies(request.Uri);
 
             return response;
         }
@@ -78,6 +80,23 @@ namespace DotnetSpiderLite.Downloader
 
         private void SetOptions(Request request)
         {
+            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(request.UserAgent);
+            if (!string.IsNullOrEmpty(request.Referer))
+            {
+                _httpClient.DefaultRequestHeaders.Referrer = new Uri(request.Referer);
+            }
+            else
+            {
+                _httpClient.DefaultRequestHeaders.Referrer = null;
+            }
+
+            _httpClient.DefaultRequestHeaders.Accept.ParseAdd(request.Accept);
+            // _httpClient.DefaultRequestHeaders.AcceptEncoding.ParseAdd(request.AcceptEncoding);
+            _httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(request.AcceptLanguage);
+
+
+            _httpClient.DefaultRequestHeaders.ConnectionClose = !request.KeepAlive;
+
             if (request.Headers != null && request.Headers.Count > 0)
             {
                 foreach (var item in request.Headers)
@@ -99,6 +118,8 @@ namespace DotnetSpiderLite.Downloader
         {
             this.UseCookies = true;
             this.CookieContainer = DownloaderCookieContainer.Instance;
+
+
         }
     }
 }

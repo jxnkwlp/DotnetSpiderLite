@@ -64,6 +64,10 @@
       <Project>{1c7b04d9-bbb1-4046-bdca-4b0331c76f00}</Project>
       <Name>DotnetSpiderLite.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\DotnetSpiderLite.NLog\DotnetSpiderLite.NLog.csproj">
+      <Project>{1bcea906-b869-4297-870c-2d6b8d695e34}</Project>
+      <Name>DotnetSpiderLite.NLog</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

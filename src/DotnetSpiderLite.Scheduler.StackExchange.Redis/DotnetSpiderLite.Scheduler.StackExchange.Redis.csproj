@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>DotnetSpiderLite.Scheduler.Redis</RootNamespace>
+    <AssemblyVersion>1.0.6902.2</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

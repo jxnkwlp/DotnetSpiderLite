@@ -11,6 +11,8 @@ namespace DotnetSpiderLite
     /// </summary>
     public class Page
     {
+        private string _htmlString;
+
         /// <summary>
         ///  解析器
         /// </summary>
@@ -22,7 +24,7 @@ namespace DotnetSpiderLite
         public Response Response { get; private set; }
 
         /// <summary>
-        ///  页面 内容
+        ///  页面字符串内容
         /// </summary> 
         public string Content { get; private set; }
 
@@ -73,10 +75,22 @@ namespace DotnetSpiderLite
 
         private void Init()
         {
-            using (StreamReader sr = new StreamReader(Response.Body, this.Response.Request.Encoding))
+            GetResponseString();
+        }
+
+        /// <summary>
+        ///  获取Response的字符串内容
+        /// </summary>
+        /// <returns></returns>
+        public string GetResponseString()
+        {
+            if (string.IsNullOrEmpty(_htmlString))
             {
-                this.Content = sr.ReadToEnd();
+                _htmlString = this.Response.Request.Encoding.GetString(Response.Body);
+                this.Content = _htmlString;
             }
+
+            return _htmlString;
         }
 
         /// <summary>
