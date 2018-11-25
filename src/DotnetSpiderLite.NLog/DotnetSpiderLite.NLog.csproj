@@ -5,7 +5,7 @@
 		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
 		<RootNamespace>DotnetSpiderLite.NLogs</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<AssemblyVersion>0.0.6904.48</AssemblyVersion>
+		<AssemblyVersion>0.0.6904.49</AssemblyVersion>
 		<Version>$(AssemblyVersion)</Version>
 	</PropertyGroup>
 

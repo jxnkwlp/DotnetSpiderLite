@@ -1,6 +1,7 @@
 ﻿using DotnetSpiderLite;
 using DotnetSpiderLite.Html;
 using DotnetSpiderLite.PageProcessor;
+using DotnetSpiderLite.Scheduler;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,18 +21,20 @@ namespace ConsoleApp
 
             // spider.AddRequest($"https://weixin.sogou.com/weixin?type=2&ie=utf8&query=马云");
 
-            for (int i = 1; i <= 3; i++)
+            for (int i = 1; i <= 10; i++)
             {
                 spider.AddRequest($"https://weixin.sogou.com/weixin?type=2&ie=utf8&page={i}&query=马云");
             }
 
-
-
             spider.NewRequestSleepInterval = 2000; // 2s
             // spider.EmptySleepTime = 60; // 60s
 
+            spider.ThreadNumber = 5;
+
+
+            spider.UseRedisScheduler("localhost");
+
             spider.Run();
-            //spider.Start();
 
             spider.OnStatusChanged += Spider_OnStatusChanged;
 
@@ -106,6 +109,7 @@ namespace ConsoleApp
 
                     Console.WriteLine("title:" + titleEle?.InnerText + " href:" + titleEle?.Attributes["href"]);
 
+                    page.AddTargetRequest(titleEle.GetAttribute("href"));
                 }
 
 

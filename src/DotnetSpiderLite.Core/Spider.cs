@@ -650,9 +650,9 @@ namespace DotnetSpiderLite
 
         private void InitLog()
         {
-            this.Scheduler.Logger = this.Logger;
-            this.Downloader.Logger = this.Logger;
-            this.Monitor.Logger = this.Logger;
+            //this.Scheduler.Logger = this.Logger;
+            //this.Downloader.Logger = this.Logger;
+            //this.Monitor.Logger = this.Logger;
 
             foreach (var pipeline in Pipelines)
             {
