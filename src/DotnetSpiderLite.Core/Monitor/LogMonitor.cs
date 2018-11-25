@@ -9,15 +9,15 @@ namespace DotnetSpiderLite.Monitor
     {
         public ILogger Logger { get; set; }
 
-        public void Report(MonitorData monitor)
+        public void Report(MonitorData data)
         {
-            string msg = $"Left: {monitor.Left}, " +
-                $"Success: {monitor.Success}, " +
-                $"Error: {monitor.Error}, " +
-                $"Total: {monitor.Total}, " +
-                $"Dowload: {monitor.AvgDownloadSpeed} ms/per, " +
-                $"Process: {monitor.AvgProcessorSpeed} ms/per, " +
-                $"Pipeline: {monitor.AvgPipelineSpeed} ms/per";
+            string msg = $"Left: {data.Left}, " +
+                $"Success: {data.Success}, " +
+                $"Error: {data.Error}, " +
+                $"Total: {data.Total}, " +
+                $"Dowload: {data.AvgDownloadSpeed} ms/per, " +
+                $"Process: {data.AvgProcessorSpeed} ms/per, " +
+                $"Pipeline: {data.AvgPipelineSpeed} ms/per";
 
             Logger?.Trace(msg);
         }

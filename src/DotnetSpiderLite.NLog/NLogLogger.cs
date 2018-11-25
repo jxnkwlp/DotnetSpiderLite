@@ -6,30 +6,39 @@ namespace DotnetSpiderLite.NLogs
     public class NLogLogger : ILogger
     {
         NLog.Logger _logger = NLog.LogManager.GetLogger("spider");
-         
-        public void Debug(string message)
+
+        public bool IsEnabled(LogLevel logLevel)
         {
-            _logger.Debug(message);
+            return _logger.IsEnabled(GetLogLevel(logLevel));
         }
 
-        public void Error(string message, Exception ex = null)
+        public void Log(LogLevel logLevel, Exception exception, string message, params object[] args)
         {
-            _logger.Error(ex, message);
+            _logger.Log(GetLogLevel(logLevel), message, exception, args);
         }
 
-        public void Info(string message)
+        public void Log(LogLevel logLevel, string message, params object[] args)
         {
-            _logger.Info(message);
+            _logger.Log(GetLogLevel(logLevel), message, args);
         }
 
-        public void Trace(string message)
+        private NLog.LogLevel GetLogLevel(LogLevel logLevel)
         {
-            _logger.Trace(message);
-        }
-
-        public void Warn(string message)
-        {
-            _logger.Warn(message);
+            switch (logLevel)
+            {
+                case LogLevel.Debug:
+                    return NLog.LogLevel.Debug;
+                case LogLevel.Error:
+                    return NLog.LogLevel.Error;
+                case LogLevel.Info:
+                    return NLog.LogLevel.Info;
+                case LogLevel.Trace:
+                    return NLog.LogLevel.Trace;
+                case LogLevel.Warn:
+                    return NLog.LogLevel.Warn;
+                default:
+                    return NLog.LogLevel.Off;
+            }
         }
     }
 }

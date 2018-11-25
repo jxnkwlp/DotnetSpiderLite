@@ -5,9 +5,18 @@ namespace DotnetSpiderLite.NLogs
 {
     public class NLogLoggerFactory : ILoggerFactory
     {
-        public ILogger GetLogger(Type type)
+        public void AddProvider(ILoggerProvider provider)
+        {
+        }
+
+        public ILogger CreateLogger(string categoryName)
         {
             return new NLogLogger();
         }
+
+        public void Dispose()
+        {
+        }
+
     }
 }

@@ -4,13 +4,8 @@ using System.Text;
 
 namespace DotnetSpiderLite.Logs
 {
-    /// <summary>
-    ///  获取 ILogger 
-    /// </summary>
-    public interface ILoggerFactory : IDisposable
+    public interface ILoggerProvider : IDisposable
     {
         ILogger CreateLogger(string categoryName);
-
-        void AddProvider(ILoggerProvider provider);
     }
 }

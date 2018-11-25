@@ -28,6 +28,7 @@ namespace DotnetSpiderLite
         private int _threadNumber = 1;
         private int _waitCountLimit = 100 * 10;  // 100 是一秒
         private int _exitWaitInterval = 15 * 1000;
+        private int _defaultExitWaitInterval = 15 * 1000;
 
         private List<ResultItems> _cacheResultItems = new List<ResultItems>();
 
@@ -51,7 +52,7 @@ namespace DotnetSpiderLite
         private IList<IDownloadBeforeHandle> _downloadBeforeHandles = new List<IDownloadBeforeHandle>();
         private IList<IDownloadAfterHandle> _downloadAfterHandles = new List<IDownloadAfterHandle>();
 
-        // private Thread _thread;
+        private Thread _monitorThread;
 
         private bool _useHttpClientDownloader = true;
         private int _newRequestSleepInterval = 100;
@@ -65,8 +66,8 @@ namespace DotnetSpiderLite
             get => _newRequestSleepInterval;
             set
             {
-                _exitWaitInterval = _newRequestSleepInterval + value;
                 _newRequestSleepInterval = value;
+                _exitWaitInterval = _defaultExitWaitInterval + value;
             }
         }
         /// <summary>
@@ -280,7 +281,7 @@ namespace DotnetSpiderLite
         /// </summary> 
         public Spider SetLogFactory(ILoggerFactory loggerFactory)
         {
-            this.Logger = loggerFactory.GetLogger(typeof(Spider));
+            this.Logger = loggerFactory.CreateLogger(typeof(Spider).Name);
             return this;
         }
 
@@ -328,6 +329,16 @@ namespace DotnetSpiderLite
         public Spider AddDownloadAfterHandle(IDownloadAfterHandle handle)
         {
             this._downloadAfterHandles.Add(handle);
+
+            return this;
+        }
+
+        /// <summary>
+        ///  设置 监控程序
+        /// </summary> 
+        public Spider SetMonitor(IMonitor monitor)
+        {
+            this.Monitor = monitor;
 
             return this;
         }
@@ -387,6 +398,9 @@ namespace DotnetSpiderLite
             this.OnStarted?.Invoke(this);
 
             Status = SpiderStatus.Running;
+
+            // 上报状态
+            ReportMonitorStatus();
 
             while (Status == SpiderStatus.Running || Status == SpiderStatus.Paused)
             {
@@ -499,11 +513,11 @@ namespace DotnetSpiderLite
             if (this.Status == SpiderStatus.Running || this.Status == SpiderStatus.Paused)
             {
                 this.Status = SpiderStatus.Finished;
-                Logger.Trace("正在停止...");
+                Logger.Info("正在停止...");
             }
             else
             {
-                Logger.Trace("已退出。");
+                Logger.Info("已退出。");
             }
         }
 
@@ -589,6 +603,13 @@ namespace DotnetSpiderLite
                 this.Pipelines.Add(new ConsolePipeline() { Logger = this.Logger });
 
             InitHtmlQuery();
+
+            _monitorThread = new Thread(ReportMonitorStatusProcess)
+            {
+                IsBackground = true,
+                Name = "Spider Status Report Thread"
+            };
+            _monitorThread.Start();
         }
 
         private void InitLog()
@@ -682,9 +703,6 @@ namespace DotnetSpiderLite
                 page.Extra["Selector"] = page.Selector.GetType().FullName;
             }
 
-            if (string.IsNullOrEmpty(page.Content))
-                return;
-
 
             // 页面处理程序
             HandlePageProcessors(page);
@@ -741,7 +759,7 @@ namespace DotnetSpiderLite
                 {
                     this.OnError?.Invoke(this, processor.GetType());
 
-                    this.Logger.Error($"处理器'{processor.GetType().FullName}'执行失败。", ex);
+                    this.Logger.Error(ex, $"处理器'{processor.GetType().FullName}'执行失败。");
                 }
             }
 
@@ -805,7 +823,7 @@ namespace DotnetSpiderLite
                 {
                     this.OnError?.Invoke(this, pipeline.GetType());
 
-                    this.Logger.Error($"管道'{pipeline.GetType().FullName}'执行失败。", ex);
+                    this.Logger.Error(ex, $"管道'{pipeline.GetType().FullName}'执行失败。");
                 }
 
             }
@@ -838,13 +856,15 @@ namespace DotnetSpiderLite
             {
                 // TODO 
 
+                this.Logger.Error(ex, $"下载失败。URL：{uri}");
+
                 this.OnError?.Invoke(this, typeof(IDownloader));
 
                 this.SchedulerMonitor?.IncreaseErrorCount();
             }
             catch (Exception ex)
             {
-                this.Logger.Error($"下载失败。URL：{uri}" + ex);
+                this.Logger.Error(ex, $"下载失败。URL：{uri}");
 
                 this.OnError?.Invoke(this, typeof(IDownloader));
 
@@ -880,6 +900,23 @@ namespace DotnetSpiderLite
         }
 
 
+        private void ReportMonitorStatusProcess()
+        {
+            while (true)
+            {
+                if (Status == SpiderStatus.Running)
+                {
+                    // 上报状态
+                    ReportMonitorStatus();
+                }
+
+                Thread.Sleep(TimeSpan.FromSeconds(2));
+            }
+        }
+
+        /// <summary>
+        ///  上报状态
+        /// </summary>
         private void ReportMonitorStatus()
         {
             var data = new MonitorData()
@@ -932,7 +969,7 @@ namespace DotnetSpiderLite
 
             this.Downloader.Dispose();
             this.Scheduler.Dispose();
-
+            _monitorThread?.Abort();
         }
 
 

@@ -6,7 +6,7 @@
 		<RootNamespace>DotnetSpiderLite</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-		<AssemblyVersion>0.0.6902.12</AssemblyVersion>
+		<AssemblyVersion>0.0.6903.22</AssemblyVersion>
 		<Version>$(AssemblyVersion)</Version>
   </PropertyGroup>
 
@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <Compile Include="Extraction\IHtmlExtracter.cs" />
+    <Compile Include="Html\HtmlElementAbstraction.cs" />
     <Compile Include="Html\IHtmlElement.cs" />
     <Compile Include="Html\IHtmlElementSelector.cs" />
     <Compile Include="Html\IHtmlElementSelectorFactory.cs" />

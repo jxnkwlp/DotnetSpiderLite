@@ -11,12 +11,13 @@ namespace DotnetSpiderLite.Downloader
 {
     public class DefaultHttpClientDownloader : BaseDownloader
     {
-        private static MyHttpClientHandler _myHttpClientHandler = new MyHttpClientHandler();
+        private MyHttpClientHandler _myHttpClientHandler = new MyHttpClientHandler();
 
-        private static HttpClient _httpClient = new HttpClient(_myHttpClientHandler);
+        private HttpClient _httpClient;
 
-        static DefaultHttpClientDownloader()
+        public DefaultHttpClientDownloader()
         {
+            _httpClient = new HttpClient(_myHttpClientHandler);
         }
 
         public override IDownloader Clone()
@@ -36,8 +37,13 @@ namespace DotnetSpiderLite.Downloader
             SetOptions(request);
 
             var requestMessage = new HttpRequestMessage();
+
             requestMessage.Method = (string.Equals(request.Method, "POST", StringComparison.OrdinalIgnoreCase)) ? HttpMethod.Post : HttpMethod.Get;
+
             requestMessage.RequestUri = request.Uri;
+
+            if (Uri.TryCreate(request.Referer, UriKind.Absolute, out var refererUrl))
+                requestMessage.Headers.Referrer = refererUrl;
 
             if (request.Body != null)
             {

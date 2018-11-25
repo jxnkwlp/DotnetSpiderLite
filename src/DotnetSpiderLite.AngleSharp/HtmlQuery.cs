@@ -22,7 +22,7 @@ namespace DotnetSpiderLite.AngleSharps
             }
             else
             {
-                throw new NotSupportedException();
+                throw new NotSupportedException($"不支持{pathType}的解析方式");
             }
 
         }
@@ -39,7 +39,7 @@ namespace DotnetSpiderLite.AngleSharps
             }
             else
             {
-                throw new NotSupportedException();
+                throw new NotSupportedException($"不支持{pathType}的解析方式");
             }
         }
 

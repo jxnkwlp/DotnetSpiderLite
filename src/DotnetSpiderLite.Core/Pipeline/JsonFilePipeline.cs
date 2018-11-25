@@ -1,4 +1,5 @@
 ﻿using DotnetSpiderLite;
+using DotnetSpiderLite.Logs;
 using DotnetSpiderLite.Pipeline;
 using Newtonsoft.Json;
 using System;

@@ -30,17 +30,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp3", "samples\Cons
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp2", "samples\ConsoleApp2\ConsoleApp2.csproj", "{05157CEB-725D-4979-BD96-61258C06E146}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpiderLite.Redis.Abstractions", "src\DotnetSpiderLite.Redis.Abstractions\DotnetSpiderLite.Redis.Abstractions.csproj", "{A3D2B5FC-40BF-4730-B238-10966E7C2280}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSpiderLite.Redis.Abstractions", "src\DotnetSpiderLite.Redis.Abstractions\DotnetSpiderLite.Redis.Abstractions.csproj", "{A3D2B5FC-40BF-4730-B238-10966E7C2280}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DotnetSpiderLite", "DotnetSpiderLite", "{BEE9E2F8-6DFD-4D81-BC98-27B019EE686B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpider-Test", "samples\DotnetSpider-Test\DotnetSpider-Test.csproj", "{37FD3AFB-F920-4A70-9749-85427042B393}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSpider-Test", "samples\DotnetSpider-Test\DotnetSpider-Test.csproj", "{37FD3AFB-F920-4A70-9749-85427042B393}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpiderLite.Scheduler.Redis", "src\DotnetSpiderLite.Scheduler.Redis\DotnetSpiderLite.Scheduler.Redis.csproj", "{C32EC4FA-FBB3-4C26-8751-FF0D1FEE709E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSpiderLite.Scheduler.Redis", "src\DotnetSpiderLite.Scheduler.Redis\DotnetSpiderLite.Scheduler.Redis.csproj", "{C32EC4FA-FBB3-4C26-8751-FF0D1FEE709E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpiderLite.Scheduler.StackExchange.Redis", "src\DotnetSpiderLite.Scheduler.StackExchange.Redis\DotnetSpiderLite.Scheduler.StackExchange.Redis.csproj", "{F7D530BA-0943-4FEF-968E-7B7840FF42B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSpiderLite.Scheduler.StackExchange.Redis", "src\DotnetSpiderLite.Scheduler.StackExchange.Redis\DotnetSpiderLite.Scheduler.StackExchange.Redis.csproj", "{F7D530BA-0943-4FEF-968E-7B7840FF42B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpiderLite.StackExchange.Redis", "src\DotnetSpiderLite.StackExchange.Redis\DotnetSpiderLite.StackExchange.Redis.csproj", "{3A431333-1FE4-41F8-A0F1-AB3E4ABC480F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSpiderLite.StackExchange.Redis", "src\DotnetSpiderLite.StackExchange.Redis\DotnetSpiderLite.StackExchange.Redis.csproj", "{3A431333-1FE4-41F8-A0F1-AB3E4ABC480F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpiderLite.Dashboard", "src\DotnetSpiderLite.Dashboard\DotnetSpiderLite.Dashboard.csproj", "{1F979C17-8714-4F6C-B675-07F4191DBFE7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -104,6 +106,10 @@ Global
 		{3A431333-1FE4-41F8-A0F1-AB3E4ABC480F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A431333-1FE4-41F8-A0F1-AB3E4ABC480F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A431333-1FE4-41F8-A0F1-AB3E4ABC480F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F979C17-8714-4F6C-B675-07F4191DBFE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F979C17-8714-4F6C-B675-07F4191DBFE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F979C17-8714-4F6C-B675-07F4191DBFE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F979C17-8714-4F6C-B675-07F4191DBFE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -121,6 +127,7 @@ Global
 		{C32EC4FA-FBB3-4C26-8751-FF0D1FEE709E} = {9AF7B736-0F55-454B-9C9A-3F3CE8D9AD2D}
 		{F7D530BA-0943-4FEF-968E-7B7840FF42B3} = {9AF7B736-0F55-454B-9C9A-3F3CE8D9AD2D}
 		{3A431333-1FE4-41F8-A0F1-AB3E4ABC480F} = {9AF7B736-0F55-454B-9C9A-3F3CE8D9AD2D}
+		{1F979C17-8714-4F6C-B675-07F4191DBFE7} = {9AF7B736-0F55-454B-9C9A-3F3CE8D9AD2D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {111A217F-E8E4-442F-8B1C-263774BF635F}

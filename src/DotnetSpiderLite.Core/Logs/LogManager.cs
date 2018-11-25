@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace DotnetSpiderLite.Logs
 {
+    /// <summary> 
+    ///  LogManager
+    /// </summary>
     public static class LogManager
     {
         private static ILoggerFactory _defaultLoggerFactory = new ConsoleLoggerFactory();
@@ -15,12 +18,17 @@ namespace DotnetSpiderLite.Logs
         public static ILogger GetLogger(Type type)
         {
             var factory = _loggerFactory ?? _defaultLoggerFactory;
-            return factory.GetLogger(type);
+            return factory.CreateLogger(type.Name);
         }
 
         public static void SetLoggerFactory(ILoggerFactory loggerFactory)
         {
             _loggerFactory = loggerFactory;
+        }
+
+        public static void AddLoggerProvider(ILoggerProvider loggerProvider)
+        {
+            _loggerFactory.AddProvider(loggerProvider);
         }
 
     }

@@ -49,5 +49,9 @@ namespace DotnetSpiderLite.Html
         /// </summary>
         Dictionary<string, string> Attributes { get; set; }
 
+        /// <summary>
+        ///  获取属性值
+        /// </summary> 
+        string GetAttribute(string name);
     }
 }

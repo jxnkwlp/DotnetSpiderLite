@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DotnetSpiderLite.AngleSharps
 {
-    public class HtmlElement : IHtmlElement
+    public class HtmlElement : HtmlElementAbstraction
     {
         HtmlQuery _htmlQuery = new HtmlQuery();
 
@@ -11,22 +11,12 @@ namespace DotnetSpiderLite.AngleSharps
         {
         }
 
-        public IEnumerable<IHtmlElement> Children { get; set; }
-
-        public string InnerHtml { get; set; }
-        public string OuterHtml { get; set; }
-        public string InnerText { get; set; }
-        public string TagName { get; set; }
-        public string ClassName { get; set; }
-        public string ID { get; set; }
-        public Dictionary<string, string> Attributes { get; set; }
-
-        public IHtmlElement Selector(string path, HtmlSelectorPathType pathType = HtmlSelectorPathType.XPath)
+        public override IHtmlElement Selector(string path, HtmlSelectorPathType pathType = HtmlSelectorPathType.XPath)
         {
             return _htmlQuery.Selector(InnerHtml, path, pathType);
         }
 
-        public IList<IHtmlElement> SelectorAll(string path, HtmlSelectorPathType pathType = HtmlSelectorPathType.XPath)
+        public override IList<IHtmlElement> SelectorAll(string path, HtmlSelectorPathType pathType = HtmlSelectorPathType.XPath)
         {
             return _htmlQuery.SelectorAll(InnerHtml, path, pathType);
         }

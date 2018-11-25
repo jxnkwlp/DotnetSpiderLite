@@ -4,7 +4,7 @@
 		<TargetFramework></TargetFramework>
 		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<AssemblyVersion>0.0.6902.3</AssemblyVersion>
+		<AssemblyVersion>0.0.6903.5</AssemblyVersion>
 		<Version>$(AssemblyVersion)</Version>
 	</PropertyGroup>
 
