@@ -11,71 +11,85 @@ namespace DotnetSpiderLite.Scheduler.Redis
         private IDatabase Database { get; }
 
 
-        private string _requestkey = "DotnetSpiderLite:Scheduler:RequestCount";
-        private string _successKey = "DotnetSpiderLite:Scheduler:SuccessCount";
-        private string _errorKey = "DotnetSpiderLite:Scheduler:ErrorCount";
-        private string _requestPrefixKey = "DotnetSpiderLite:Scheduler:Request:";
+        //private string _requestkey = "DotnetSpiderLite:Scheduler:RequestCount";
+        private string _successKey = "DotnetSpiderLite:Scheduler:Request:SuccessCount";
+        private string _errorKey = "DotnetSpiderLite:Scheduler:Request:ErrorCount";
+        private string _requestIdentityKey = "DotnetSpiderLite:Scheduler:Request:Identity";
+        private string _requestListKey = "DotnetSpiderLite:Scheduler:Request:List";
 
 
         public RedisStore(string connectString)
         {
             Connection = ConnectionMultiplexer.Connect(connectString);
+
             Database = Connection.GetDatabase();
         }
 
         public bool RequestExist(string identity)
         {
-            throw new NotImplementedException();
-        }
-
-        public bool AddRequest(string identity)
-        {
-            throw new NotImplementedException();
+            return Database.SetContains(_requestIdentityKey, identity);
         }
 
         public bool AddRequest(Request request)
         {
-            throw new NotImplementedException();
+            Database.SetAdd(_requestIdentityKey, request.GetIdentity());
+
+            var json = request.ToJsonStrng();
+
+            Database.ListLeftPush(_requestListKey, json);
+
+            return true;
         }
 
         public long GetTotalRequestCount()
         {
-            throw new NotImplementedException();
+            return Database.SetLength(_requestIdentityKey);
         }
 
         public long GetCurrentRequestCount()
         {
-            throw new NotImplementedException();
+            return Database.ListLength(_requestListKey);
         }
 
         public Request GetOne()
         {
-            throw new NotImplementedException();
+            var json = Database.ListLeftPop(_requestListKey);
+
+            if (string.IsNullOrEmpty(json))
+                return null;
+
+            return json.ToString().ToRequest();
         }
 
         public long GetSuccessCount()
         {
-            throw new NotImplementedException();
+            string value = Database.StringGet(_successKey);
+            if (long.TryParse(value, out long result))
+                return result;
+            return 0;
         }
 
         public long GetErrorCount()
         {
-            throw new NotImplementedException();
+            if (Database.StringGet(_errorKey).TryParse(out long result))
+                return result;
+            return 0;
         }
 
         public void IncrementSuccessCount()
         {
-            throw new NotImplementedException();
+            Database.StringIncrement(_successKey);
         }
 
         public void IncrementErrorCount()
         {
-            throw new NotImplementedException();
+            Database.StringIncrement(_errorKey);
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            //Connection.Close();
+            //Connection.Dispose();
         }
     }
 }

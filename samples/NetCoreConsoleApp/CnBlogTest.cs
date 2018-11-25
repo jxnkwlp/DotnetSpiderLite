@@ -6,8 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DotnetSpiderLite.Scheduler;
 
-namespace ConsoleApp3
+namespace ConsoleApp
 {
     class CnBlogTest
     {
@@ -15,6 +16,10 @@ namespace ConsoleApp3
         {
 
             Spider spider = Spider.Create("https://www.cnblogs.com/", new CNBlogProcessor());
+
+            // spider.UseNLog();
+            spider.UseRedisScheduler("localhost");
+
             spider.Run();
 
 

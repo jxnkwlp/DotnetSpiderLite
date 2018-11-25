@@ -1,8 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyVersion>1.0.6903.4</AssemblyVersion>
+    <TargetFramework></TargetFramework>
+    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+    <AssemblyVersion>1.0.6904.23</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,7 +13,6 @@
   <ItemGroup>
     <ProjectReference Include="..\DotnetSpiderLite.Abstractions\DotnetSpiderLite.Abstractions.csproj" />
     <ProjectReference Include="..\DotnetSpiderLite.Core\DotnetSpiderLite.Core.csproj" />
-    <ProjectReference Include="..\DotnetSpiderLite.Redis.Abstractions\DotnetSpiderLite.Redis.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

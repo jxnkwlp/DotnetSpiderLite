@@ -1,20 +1,19 @@
-﻿using ConsoleApp3;
+﻿using ConsoleApp;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ConsoleApp2
+namespace NetFxConsoleApp
 {
     class Program
     {
         static void Main(string[] args)
         {
-
-
             new CnBlogTest().Run();
 
-
             Console.ReadKey();
-
         }
-
     }
 }

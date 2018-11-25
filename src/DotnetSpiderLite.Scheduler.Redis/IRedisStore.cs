@@ -8,7 +8,7 @@ namespace DotnetSpiderLite.Scheduler.Redis
     {
         bool RequestExist(string identity);
 
-        bool AddRequest(string identity);
+        //bool AddRequest(string identity);
 
         bool AddRequest(Request request);
 

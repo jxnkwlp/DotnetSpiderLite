@@ -58,8 +58,7 @@ namespace DotnetSpiderLite.Scheduler.Redis
             {
                 return;
             }
-
-            _redisStore.AddRequest(requestIdentity);
+             
             _redisStore.AddRequest(request);
         }
 

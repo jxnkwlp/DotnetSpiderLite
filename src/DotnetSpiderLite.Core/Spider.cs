@@ -51,7 +51,7 @@ namespace DotnetSpiderLite
 
         private IList<IDownloadBeforeHandle> _downloadBeforeHandles = new List<IDownloadBeforeHandle>();
         private IList<IDownloadAfterHandle> _downloadAfterHandles = new List<IDownloadAfterHandle>();
-
+        private IList<Request> _initRequest = new List<Request>();
         private Thread _monitorThread;
 
         private bool _useHttpClientDownloader = true;
@@ -241,7 +241,13 @@ namespace DotnetSpiderLite
         /// </summary> 
         public Spider AddRequest(string url, string referer = null, Dictionary<string, string> exts = null)
         {
-            this.Scheduler.Push(new Request(new Uri(url)) { Referer = referer });
+            var request = new Request(new Uri(url)) { Referer = referer };
+
+            if (Scheduler == null)
+                _initRequest.Add(request);
+            else
+                this.Scheduler.Push(request);
+
             return this;
         }
 
@@ -250,7 +256,13 @@ namespace DotnetSpiderLite
         /// </summary> 
         public Spider AddRequest(Uri uri, string referer = null, Dictionary<string, string> exts = null)
         {
-            this.Scheduler.Push(new Request(uri) { Referer = referer });
+            var request = new Request(uri) { Referer = referer };
+
+            if (Scheduler == null)
+                _initRequest.Add(request);
+            else
+                this.Scheduler.Push(request);
+
             return this;
         }
 
@@ -288,19 +300,30 @@ namespace DotnetSpiderLite
         /// <summary>
         ///  设置队列
         /// </summary> 
-        public Spider SetScheduler(IScheduler scheduler, ISchedulerMonitor schedulerMonitor = null)
+        public Spider SetScheduler(IScheduler scheduler, ISchedulerMonitor schedulerMonitor)
         {
-            this.Scheduler = scheduler;
-            this.SchedulerMonitor = schedulerMonitor;
+            SetScheduler(scheduler);
+
+            if (schedulerMonitor != null)
+            {
+                this.SchedulerMonitor = schedulerMonitor;
+            }
+
             return this;
         }
 
         /// <summary>
         ///  设置队列
         /// </summary> 
-        public Spider SetScheduler(IMonitor monitor)
+        public Spider SetScheduler(IScheduler scheduler)
         {
-            this.Monitor = monitor;
+            this.Scheduler = scheduler;
+
+            if (scheduler is ISchedulerMonitor monitor)
+            {
+                this.SchedulerMonitor = monitor;
+            }
+
             return this;
         }
 
@@ -553,13 +576,6 @@ namespace DotnetSpiderLite
         /// </summary>
         private void InitDefaults()
         {
-            if (this.Scheduler == null)
-            {
-                var q = new SampleQueueScheduler() { Logger = this.Logger };
-                this.Scheduler = q;
-                this.SchedulerMonitor = q;
-            }
-
             if (this.Monitor == null)
             {
                 this.Monitor = new LogMonitor() { Logger = Logger };
@@ -578,6 +594,25 @@ namespace DotnetSpiderLite
         private void InitStartBefore()
         {
             InitLog();
+
+            if (this.Scheduler == null)
+            {
+                var q = new SampleQueueScheduler() { Logger = this.Logger };
+                this.Scheduler = q;
+                this.SchedulerMonitor = q;
+            }
+            else
+            {
+                this.Scheduler.Logger = this.Logger;
+            }
+
+            if (_initRequest.Count > 0)
+            {
+                foreach (var request in _initRequest)
+                {
+                    this.Scheduler.Push(request);
+                }
+            }
 
             if (_useHttpClientDownloader)
                 this.Downloader = new DefaultHttpClientDownloader() { Logger = this.Logger };
@@ -970,7 +1005,11 @@ namespace DotnetSpiderLite
 
             this.Downloader.Dispose();
             this.Scheduler.Dispose();
+
+#if !NETSTANDARD
             _monitorThread?.Abort();
+#endif
+
         }
 
 

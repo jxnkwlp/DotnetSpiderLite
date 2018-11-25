@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{01ED3CAF-3131-48E7-BD89-249AB31BB1EA}</ProjectGuid>
+    <ProjectGuid>{81ADAEC7-11F8-4A05-9B16-A5C858497B59}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>ConsoleApp3</RootNamespace>
-    <AssemblyName>ConsoleApp3</AssemblyName>
+    <RootNamespace>NetFxConsoleApp</RootNamespace>
+    <AssemblyName>NetFxConsoleApp</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,10 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CnBlogTest.cs" />
+    <Compile Include="..\NetCoreConsoleApp\CnBlogTest.cs">
+      <Link>CnBlogTest.cs</Link>
+    </Compile>
+    <Compile Include="..\NetCoreConsoleApp\WeixinSougouTest.cs">
+      <Link>WeixinSougouTest.cs</Link>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WeixinSougouTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -67,6 +71,14 @@
     <ProjectReference Include="..\..\src\DotnetSpiderLite.NLog\DotnetSpiderLite.NLog.csproj">
       <Project>{1bcea906-b869-4297-870c-2d6b8d695e34}</Project>
       <Name>DotnetSpiderLite.NLog</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\DotnetSpiderLite.Scheduler.Redis\DotnetSpiderLite.Scheduler.Redis.csproj">
+      <Project>{c32ec4fa-fbb3-4c26-8751-ff0d1fee709e}</Project>
+      <Name>DotnetSpiderLite.Scheduler.Redis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\DotnetSpiderLite.Scheduler.StackExchange.Redis\DotnetSpiderLite.Scheduler.StackExchange.Redis.csproj">
+      <Project>{f7d530ba-0943-4fef-968e-7b7840ff42b3}</Project>
+      <Name>DotnetSpiderLite.Scheduler.StackExchange.Redis</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
