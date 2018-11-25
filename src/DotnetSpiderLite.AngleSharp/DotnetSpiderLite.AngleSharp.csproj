@@ -6,7 +6,7 @@
 		<AssemblyName>DotnetSpiderLite.AngleSharp</AssemblyName>
 		<RootNamespace>DotnetSpiderLite.AngleSharps</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<AssemblyVersion>0.0.6903.19</AssemblyVersion>
+		<AssemblyVersion>0.0.6903.20</AssemblyVersion>
 		<Version>$(AssemblyVersion)</Version>
 	</PropertyGroup>
 

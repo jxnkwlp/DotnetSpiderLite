@@ -371,13 +371,14 @@ namespace DotnetSpiderLite
         /// </summary>
         public void Start()
         {
-            if (Status != SpiderStatus.Init)
+            if (Status == SpiderStatus.Init || Status == SpiderStatus.Exited)
+            {
+                Task.Factory.StartNew(Run);
+            }
+            else
             {
                 this.Logger.Warn("当前已启动，无需再次启动");
-                return;
             }
-
-            Task.Factory.StartNew(Run);
         }
 
         /// <summary>
@@ -385,7 +386,7 @@ namespace DotnetSpiderLite
         /// </summary>
         public void Run()
         {
-            if (Status == SpiderStatus.Running)
+            if (Status != SpiderStatus.Init && Status != SpiderStatus.Exited)
             {
                 this.Logger.Warn("当前已启动，无需再次启动");
                 return;
