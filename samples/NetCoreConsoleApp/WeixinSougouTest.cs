@@ -15,11 +15,7 @@ namespace ConsoleApp
         public void Run()
         {
             Spider spider = Spider.Create("https://weixin.sogou.com/");
-            //spider.UseNLog();
-
             spider.AddPageProcessor(new Processor2());
-
-            // spider.AddRequest($"https://weixin.sogou.com/weixin?type=2&ie=utf8&query=马云");
 
             for (int i = 1; i <= 10; i++)
             {
@@ -31,7 +27,7 @@ namespace ConsoleApp
 
             spider.ThreadNumber = 5;
 
-
+            //spider.UseNLog();
             spider.UseRedisScheduler("localhost");
 
             spider.Run();

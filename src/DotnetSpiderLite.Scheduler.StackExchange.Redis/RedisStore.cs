@@ -10,50 +10,53 @@ namespace DotnetSpiderLite.Scheduler.Redis
         private ConnectionMultiplexer Connection;
         private IDatabase Database { get; }
 
-
-        //private string _requestkey = "DotnetSpiderLite:Scheduler:RequestCount";
-        private string _successKey = "DotnetSpiderLite:Scheduler:Request:SuccessCount";
-        private string _errorKey = "DotnetSpiderLite:Scheduler:Request:ErrorCount";
-        private string _requestIdentityKey = "DotnetSpiderLite:Scheduler:Request:Identity";
-        private string _requestListKey = "DotnetSpiderLite:Scheduler:Request:List";
+        private string _successKey;
+        private string _errorKey;
+        private string _queueIdentityKey;
+        private string _queueKey;
 
 
-        public RedisStore(string connectString)
+        public RedisStore(string identity, string connectString)
         {
             Connection = ConnectionMultiplexer.Connect(connectString);
 
             Database = Connection.GetDatabase();
+
+            _successKey = $"dotnetspiderlite:scheduler:{identity}:request:successcount";
+            _errorKey = $"dotnetspiderlite:scheduler:{identity}:request:errorcount";
+            _queueIdentityKey = $"dotnetspiderlite:scheduler:{identity}:request:queue:identity";
+            _queueKey = $"dotnetspiderlite:scheduler:{identity}:request:queue:list";
         }
 
         public bool RequestExist(string identity)
         {
-            return Database.SetContains(_requestIdentityKey, identity);
+            return Database.SetContains(_queueIdentityKey, identity);
         }
 
         public bool AddRequest(Request request)
         {
-            Database.SetAdd(_requestIdentityKey, request.GetIdentity());
+            Database.SetAdd(_queueIdentityKey, request.GetIdentity());
 
             var json = request.ToJsonStrng();
 
-            Database.ListLeftPush(_requestListKey, json);
+            Database.ListLeftPush(_queueKey, json);
 
             return true;
         }
 
         public long GetTotalRequestCount()
         {
-            return Database.SetLength(_requestIdentityKey);
+            return Database.SetLength(_queueIdentityKey);
         }
 
         public long GetCurrentRequestCount()
         {
-            return Database.ListLength(_requestListKey);
+            return Database.ListLength(_queueKey);
         }
 
         public Request GetOne()
         {
-            var json = Database.ListLeftPop(_requestListKey);
+            var json = Database.ListLeftPop(_queueKey);
 
             if (string.IsNullOrEmpty(json))
                 return null;
@@ -88,8 +91,17 @@ namespace DotnetSpiderLite.Scheduler.Redis
 
         public void Dispose()
         {
-            //Connection.Close();
-            //Connection.Dispose();
+            // 清理
+            this.Database.KeyDelete(_successKey);
+            this.Database.KeyDelete(_errorKey);
+            this.Database.KeyDelete(_queueIdentityKey);
+            this.Database.KeyDelete(_queueKey);
+
+
+            // 关键链接
+            Connection.Close();
+            Connection.Dispose();
+
         }
     }
 }

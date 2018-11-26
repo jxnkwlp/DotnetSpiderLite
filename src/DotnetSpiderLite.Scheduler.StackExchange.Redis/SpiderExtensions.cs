@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotnetSpiderLite.Scheduler 
+namespace DotnetSpiderLite.Scheduler
 {
     /// <summary>
     ///  扩展
@@ -18,7 +18,8 @@ namespace DotnetSpiderLite.Scheduler
         /// <returns></returns>
         public static Spider UseRedisScheduler(this Spider spider, string redisConnectionString)
         {
-            spider.UseRedisScheduler(new RedisStore(redisConnectionString));
+            var identity = spider.Identity;
+            spider.UseRedisScheduler(new RedisStore(identity, redisConnectionString));
             return spider;
         }
     }
