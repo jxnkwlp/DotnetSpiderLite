@@ -103,5 +103,10 @@ namespace DotnetSpiderLite.Scheduler.Redis
             Connection.Dispose();
 
         }
+
+        public void ClearIdentities()
+        {
+            this.Database.KeyDelete(_queueIdentityKey);
+        }
     }
 }

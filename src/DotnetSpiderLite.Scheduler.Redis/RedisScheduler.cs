@@ -6,12 +6,12 @@ using DotnetSpiderLite.Logs;
 
 namespace DotnetSpiderLite.Scheduler.Redis
 {
-    public class RedisScheduler : IScheduler, ISchedulerMonitor
+    public class RedisScheduler : IScheduler, ISchedulerMonitor, ISchedulerDuplicateRemover
     {
         private IRedisStore _redisStore;
 
         private readonly object _lock = new object();
-         
+
         public ILogger Logger { get; set; }
 
 
@@ -58,7 +58,7 @@ namespace DotnetSpiderLite.Scheduler.Redis
             {
                 return;
             }
-             
+
             _redisStore.AddRequest(request);
         }
 
@@ -72,5 +72,16 @@ namespace DotnetSpiderLite.Scheduler.Redis
             _redisStore.IncrementErrorCount();
         }
 
+        public bool IsDuplicate(Request request)
+        {
+            var identity = request.GetIdentity();
+
+            return _redisStore.RequestExist(identity);
+        }
+
+        public void ResetDuplicateCheck()
+        {
+            _redisStore.ClearIdentities();
+        }
     }
 }

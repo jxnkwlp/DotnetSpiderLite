@@ -15,7 +15,7 @@ namespace DotnetSpiderLite.Scheduler
     /// <summary>
     ///  简单队列
     /// </summary>
-    public class SampleQueueScheduler : IScheduler, ISchedulerMonitor
+    public class SampleQueueScheduler : IScheduler, ISchedulerMonitor, ISchedulerDuplicateRemover
     {
         private HashSet<string> _allUrls = new HashSet<string>();
         private ConcurrentQueue<Request> _queue = new ConcurrentQueue<Request>();
@@ -62,7 +62,7 @@ namespace DotnetSpiderLite.Scheduler
         {
             var requestIdentity = request.GetIdentity();
 
-            if (_allUrls.Contains(requestIdentity))
+            if (IsDuplicate(request))
             {
                 return;
             }
@@ -81,6 +81,18 @@ namespace DotnetSpiderLite.Scheduler
         public void IncreaseErrorCount()
         {
             _errorCount.Increment();
+        }
+
+        public bool IsDuplicate(Request request)
+        {
+            var requestIdentity = request.GetIdentity();
+
+            return _allUrls.Contains(requestIdentity);
+        }
+
+        public void ResetDuplicateCheck()
+        {
+            _allUrls.Clear();
         }
     }
 }
