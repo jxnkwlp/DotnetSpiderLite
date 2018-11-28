@@ -1,12 +1,7 @@
 ﻿using DotnetSpiderLite;
+using DotnetSpiderLite.Downloader;
 using DotnetSpiderLite.Html;
 using DotnetSpiderLite.PageProcessor;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DotnetSpiderLite.Scheduler;
 
 namespace ConsoleApp
 {
@@ -18,7 +13,10 @@ namespace ConsoleApp
             Spider spider = Spider.Create("https://www.cnblogs.com/", new CNBlogProcessor());
 
             // spider.UseNLog();
-            spider.UseRedisScheduler("localhost");
+            // spider.UseRedisScheduler("localhost");
+            //spider.UseChromeWebDriverDownloader(@"C:\Users\admin\.nuget\packages\selenium.webdriver.chromedriver\2.44.0\driver\win32\");
+            spider.UseChromeWebDriverDownloader();
+
 
             spider.Run();
 

@@ -614,7 +614,7 @@ namespace DotnetSpiderLite
                 }
             }
 
-            if (_useHttpClientDownloader)
+            if (this.Downloader == null && _useHttpClientDownloader)
                 this.Downloader = new DefaultHttpClientDownloader() { Logger = this.Logger };
 
             if (_downloadBeforeHandles.Count > 0)

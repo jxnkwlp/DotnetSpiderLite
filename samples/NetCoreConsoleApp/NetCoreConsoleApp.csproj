@@ -10,6 +10,8 @@
     <ProjectReference Include="..\..\src\DotnetSpiderLite.Abstractions\DotnetSpiderLite.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\DotnetSpiderLite.AngleSharp\DotnetSpiderLite.AngleSharp.csproj" />
     <ProjectReference Include="..\..\src\DotnetSpiderLite.Core\DotnetSpiderLite.Core.csproj" />
+    <ProjectReference Include="..\..\src\DotnetSpiderLite.Downloader.WebDriver.Chrome\DotnetSpiderLite.Downloader.WebDriver.Chrome.csproj" />
+    <ProjectReference Include="..\..\src\DotnetSpiderLite.Downloader.WebDriver\DotnetSpiderLite.Downloader.WebDriver.csproj" />
     <ProjectReference Include="..\..\src\DotnetSpiderLite.NLog\DotnetSpiderLite.NLog.csproj" />
     <ProjectReference Include="..\..\src\DotnetSpiderLite.Scheduler.Redis\DotnetSpiderLite.Scheduler.Redis.csproj" />
     <ProjectReference Include="..\..\src\DotnetSpiderLite.Scheduler.StackExchange.Redis\DotnetSpiderLite.Scheduler.StackExchange.Redis.csproj" />

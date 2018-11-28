@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework></TargetFramework>
+    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+    <RootNamespace>DotnetSpiderLite.Downloader.WebDriver</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineConstants>_PUBLISH_CHROMEDRIVER</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="2.44.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DotnetSpiderLite.Downloader.WebDriver\DotnetSpiderLite.Downloader.WebDriver.csproj" />
+  </ItemGroup>
+
+</Project>
