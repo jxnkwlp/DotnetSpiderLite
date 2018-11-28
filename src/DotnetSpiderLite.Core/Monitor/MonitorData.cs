@@ -4,8 +4,9 @@ using System.Text;
 
 namespace DotnetSpiderLite.Monitor
 {
+
     /// <summary>
-    ///  监控状态 
+    ///  监控状态数据
     /// </summary>
     public class MonitorData
     {

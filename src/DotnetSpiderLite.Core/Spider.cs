@@ -171,6 +171,11 @@ namespace DotnetSpiderLite
         public event Action<Spider, Type> OnError;
         public event Action<Spider, Type> OnSuccess;
 
+        /// <summary>
+        ///  发送监控状态数据
+        /// </summary>
+        public event Action<Spider, MonitorData> OnMonitorReport;
+
 
         #endregion
 
@@ -955,7 +960,7 @@ namespace DotnetSpiderLite
         /// </summary>
         private void ReportMonitorStatus()
         {
-            var data = new MonitorData()
+            MonitorData data = new MonitorData()
             {
                 Identity = Identity,
                 NodeId = Identity,
@@ -975,7 +980,33 @@ namespace DotnetSpiderLite
                 data.Total = SchedulerMonitor.TotalRequestsCount;
             }
 
-            this.Monitor?.Report(data);
+            if (this.Monitor != null)
+            {
+                try
+                {
+                    this.Monitor?.Report(data);
+                }
+                catch (Exception ex)
+                {
+                    this.OnError?.Invoke(this, Monitor.GetType());
+
+                    this.Logger.Error(ex, "发送当前状态数据失败");
+                }
+            }
+
+            if (this.OnMonitorReport != null)
+            {
+                try
+                {
+                    OnMonitorReport?.Invoke(this, data);
+                }
+                catch (Exception ex)
+                {
+                    this.OnError?.Invoke(this, OnMonitorReport.GetType());
+
+                    this.Logger.Error(ex, "发送当前状态数据失败");
+                }
+            }
         }
 
 
