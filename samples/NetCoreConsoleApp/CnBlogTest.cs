@@ -1,7 +1,11 @@
-﻿using DotnetSpiderLite;
+﻿using System;
+using System.Collections.Generic;
+using DotnetSpiderLite;
 using DotnetSpiderLite.Downloader;
 using DotnetSpiderLite.Html;
 using DotnetSpiderLite.PageProcessor;
+using DotnetSpiderLite.Pipeline;
+using DotnetSpiderLite.Pipeline.Database.Dapper;
 
 namespace ConsoleApp
 {
@@ -15,12 +19,22 @@ namespace ConsoleApp
             // spider.UseNLog();
             // spider.UseRedisScheduler("localhost");
             //spider.UseChromeWebDriverDownloader(@"C:\Users\admin\.nuget\packages\selenium.webdriver.chromedriver\2.44.0\driver\win32\");
-            spider.UseChromeWebDriverDownloader();
-
+            // spider.UseChromeWebDriverDownloader();
+            spider.AddDapperDataBasePipeline(new DapperDatabaseStore()
+            {
+                OnSave = UseDapperStoreSave
+            });
 
             spider.Run();
 
 
+        }
+
+        private bool UseDapperStoreSave(IList<IDictionary<string, object>> data)
+        {
+            // TODO 
+
+            return true;
         }
 
         public class CNBlogProcessor : BasePageProcessor

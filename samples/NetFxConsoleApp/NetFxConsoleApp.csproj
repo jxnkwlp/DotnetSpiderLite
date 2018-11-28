@@ -80,6 +80,14 @@
       <Project>{1bcea906-b869-4297-870c-2d6b8d695e34}</Project>
       <Name>DotnetSpiderLite.NLog</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\DotnetSpiderLite.Pipeline.Database.Abstractions\DotnetSpiderLite.Pipeline.Database.Abstractions.csproj">
+      <Project>{dd3996f8-ecfe-4d39-83ce-5c490651ab29}</Project>
+      <Name>DotnetSpiderLite.Pipeline.Database.Abstractions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\DotnetSpiderLite.Pipeline.Database.Dapper\DotnetSpiderLite.Pipeline.Database.Dapper.csproj">
+      <Project>{4d43679d-698a-4825-a3c3-25708116f8fc}</Project>
+      <Name>DotnetSpiderLite.Pipeline.Database.Dapper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\DotnetSpiderLite.Scheduler.Redis\DotnetSpiderLite.Scheduler.Redis.csproj">
       <Project>{c32ec4fa-fbb3-4c26-8751-ff0d1fee709e}</Project>
       <Name>DotnetSpiderLite.Scheduler.Redis</Name>
