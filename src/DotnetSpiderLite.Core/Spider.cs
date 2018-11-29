@@ -209,6 +209,21 @@ namespace DotnetSpiderLite
 
         #region Public Methods
 
+        /// <summary>
+        ///  新建
+        /// </summary> 
+        public static Spider Create(Uri uri)
+        {
+            return Create(uri, null);
+        }
+
+        /// <summary>
+        ///  新建
+        /// </summary> 
+        public static Spider Create(string url)
+        {
+            return Create(new Uri(url));
+        }
 
         /// <summary>
         ///  新建
@@ -397,7 +412,7 @@ namespace DotnetSpiderLite
         /// <summary>
         ///  启动爬虫，但不占用当前进程
         /// </summary>
-        public void Start()
+        public virtual void Start()
         {
             if (Status == SpiderStatus.Init || Status == SpiderStatus.Exited)
             {
@@ -412,7 +427,7 @@ namespace DotnetSpiderLite
         /// <summary>
         ///  在当前进程启动爬虫
         /// </summary>
-        public void Run()
+        public virtual void Run()
         {
             if (Status != SpiderStatus.Init && Status != SpiderStatus.Exited)
             {
@@ -420,7 +435,7 @@ namespace DotnetSpiderLite
                 return;
             }
 
-            InitStartBefore();
+            RunBefore();
 
             this.Logger.Info("已启动爬虫");
 
@@ -505,7 +520,7 @@ namespace DotnetSpiderLite
         /// <summary>
         ///  继续
         /// </summary>
-        public void Contiune()
+        public virtual void Contiune()
         {
             if (Status != SpiderStatus.Paused)
             {
@@ -521,7 +536,7 @@ namespace DotnetSpiderLite
         /// <summary>
         ///  暂停
         /// </summary>
-        public void Pause()
+        public virtual void Pause()
         {
             if (Status != SpiderStatus.Running)
             {
@@ -537,7 +552,7 @@ namespace DotnetSpiderLite
         /// <summary>
         ///  停止
         /// </summary>
-        public void Stop()
+        public virtual void Stop()
         {
             if (this.Status == SpiderStatus.Running || this.Status == SpiderStatus.Paused)
             {
@@ -594,9 +609,9 @@ namespace DotnetSpiderLite
 
 
         /// <summary>
-        ///  启动预处理
+        ///  运行前
         /// </summary>
-        private void InitStartBefore()
+        private void RunBefore()
         {
             InitLog();
 
@@ -651,7 +666,13 @@ namespace DotnetSpiderLite
                 Name = "Spider Status Report Thread"
             };
             _monitorThread.Start();
+
+            OnRunBefore();
         }
+
+
+        protected virtual void OnRunBefore()
+        { }
 
         private void InitLog()
         {
@@ -788,6 +809,8 @@ namespace DotnetSpiderLite
         {
             var sw = Stopwatch.StartNew();
 
+            OnPageProcessor(page);
+
             foreach (var processor in PageProcessors)
             {
                 try
@@ -805,6 +828,11 @@ namespace DotnetSpiderLite
             }
 
             CalculateProcessorSpeed(sw.ElapsedMilliseconds);
+        }
+
+        protected virtual void OnPageProcessor(Page page)
+        {
+
         }
 
         private void HandlePipelines(Page page)

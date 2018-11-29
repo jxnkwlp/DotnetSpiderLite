@@ -6,23 +6,70 @@ using System.Text;
 
 namespace DotnetSpiderLite.Entity
 {
-    public class EntitySpider
+    public class EntitySpider : Spider
     {
+        private IList<IEntity> _entities = new List<IEntity>();
+        private IEntityInterpreter _entityExtraction = new EntityInterpreter();
+        private IPageEntityProcessor _pageEntityProcessor = new PageEntityProcessor();
+        private IList<EntityDefine> _entityDefines = new List<EntityDefine>();
 
 
+        public IList<IEntity> Entities { get => _entities; }
 
-        public EntitySpider AddPageModel<T>()
+        protected EntitySpider(params IEntity[] entities) : base()
         {
+        }
+
+        public static EntitySpider Create<TEntity>(string url, string referer = null, Dictionary<string, string> exts = null) where TEntity : IEntity
+        {
+            EntitySpider entitySpider = new EntitySpider();
+
+            entitySpider.AddRequest(url, referer, exts);
+
+            entitySpider.Entities.Add(Activator.CreateInstance<TEntity>());
+
+            return entitySpider;
+        }
+
+        public EntitySpider AddEntity<TEntity>() where TEntity : IEntity
+        {
+            Entities.Add(Activator.CreateInstance<TEntity>());
 
             return this;
         }
 
-        public EntitySpider AddModelPipeline<T>(IModelPipeline<T> pipeline)
+        //public EntitySpider AddModelPipeline<T>(IModelPipeline<T> pipeline)
+        //{ 
+        //    return this;
+        //}
+
+
+        protected override void OnRunBefore()
         {
+            PrepareEntities();
 
-
-            return this;
         }
 
+        protected void PrepareEntities()
+        {
+            var entityDefines = new List<EntityDefine>();
+
+            foreach (var entity in _entities)
+            {
+                var result = _entityExtraction.Handle(entity);
+                entityDefines.Add(result);
+            }
+
+            _entityDefines = entityDefines;
+        }
+
+        protected override void OnPageProcessor(Page page)
+        {
+            foreach (var define in _entityDefines)
+            {
+                var entity = _pageEntityProcessor.Process(define.Entity, define, page);
+
+            }
+        }
     }
 }

@@ -4,8 +4,12 @@ using System.Text;
 
 namespace DotnetSpiderLite.Entity
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class HelperUrlAttribute : Attribute
+    public enum SelectorMatch
     {
+        InnerText = 0,
+
+        InnerHtml = 1,
+
+        OuterHtml = 2, 
     }
 }

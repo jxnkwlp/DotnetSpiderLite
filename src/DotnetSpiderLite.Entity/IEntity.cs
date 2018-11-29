@@ -4,8 +4,7 @@ using System.Text;
 
 namespace DotnetSpiderLite.Entity
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class TargetUrlAttribute : Attribute
+    public interface IEntity
     {
     }
 }

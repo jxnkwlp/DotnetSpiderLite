@@ -3,11 +3,14 @@
   <PropertyGroup>
 		<TargetFramework></TargetFramework>
 		<TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-		<RootNamespace>DotnetSpiderLite</RootNamespace>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<RootNamespace>DotnetSpiderLite</RootNamespace> 
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-		<AssemblyVersion>0.0.6904.30</AssemblyVersion>
+		<AssemblyVersion>0.0.6907.2</AssemblyVersion>
 		<Version>$(AssemblyVersion)</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

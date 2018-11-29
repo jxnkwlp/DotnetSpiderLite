@@ -64,11 +64,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSpiderLite.Downloader
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{8D92E549-E27D-4A19-AA4F-06ADB3FE014E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpiderLite.Pipeline.Database.Abstractions", "src\DotnetSpiderLite.Pipeline.Database.Abstractions\DotnetSpiderLite.Pipeline.Database.Abstractions.csproj", "{DD3996F8-ECFE-4D39-83CE-5C490651AB29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSpiderLite.Pipeline.Database.Abstractions", "src\DotnetSpiderLite.Pipeline.Database.Abstractions\DotnetSpiderLite.Pipeline.Database.Abstractions.csproj", "{DD3996F8-ECFE-4D39-83CE-5C490651AB29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpiderLite.Pipeline.Database.Dapper", "src\DotnetSpiderLite.Pipeline.Database.Dapper\DotnetSpiderLite.Pipeline.Database.Dapper.csproj", "{4D43679D-698A-4825-A3C3-25708116F8FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSpiderLite.Pipeline.Database.Dapper", "src\DotnetSpiderLite.Pipeline.Database.Dapper\DotnetSpiderLite.Pipeline.Database.Dapper.csproj", "{4D43679D-698A-4825-A3C3-25708116F8FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpiderLite.Pipeline.Database.EntityFrameworkCore", "src\DotnetSpiderLite.Pipeline.Database.EntityFrameworkCore\DotnetSpiderLite.Pipeline.Database.EntityFrameworkCore.csproj", "{4FBB240D-AC48-4CE6-AA4F-34F2722D83AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSpiderLite.Pipeline.Database.EntityFrameworkCore", "src\DotnetSpiderLite.Pipeline.Database.EntityFrameworkCore\DotnetSpiderLite.Pipeline.Database.EntityFrameworkCore.csproj", "{4FBB240D-AC48-4CE6-AA4F-34F2722D83AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntitySpiderNetCoreConsoleApp", "samples\EntitySpiderNetCoreConsoleApp\EntitySpiderNetCoreConsoleApp.csproj", "{E00C3CC7-6A57-4C87-9EFF-6C41AC5D33BF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -156,6 +158,10 @@ Global
 		{4FBB240D-AC48-4CE6-AA4F-34F2722D83AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FBB240D-AC48-4CE6-AA4F-34F2722D83AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FBB240D-AC48-4CE6-AA4F-34F2722D83AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E00C3CC7-6A57-4C87-9EFF-6C41AC5D33BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E00C3CC7-6A57-4C87-9EFF-6C41AC5D33BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E00C3CC7-6A57-4C87-9EFF-6C41AC5D33BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E00C3CC7-6A57-4C87-9EFF-6C41AC5D33BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -187,6 +193,7 @@ Global
 		{DD3996F8-ECFE-4D39-83CE-5C490651AB29} = {8D92E549-E27D-4A19-AA4F-06ADB3FE014E}
 		{4D43679D-698A-4825-A3C3-25708116F8FC} = {8D92E549-E27D-4A19-AA4F-06ADB3FE014E}
 		{4FBB240D-AC48-4CE6-AA4F-34F2722D83AF} = {8D92E549-E27D-4A19-AA4F-06ADB3FE014E}
+		{E00C3CC7-6A57-4C87-9EFF-6C41AC5D33BF} = {76FEC557-1617-4E2A-AE7D-227C01F3ACAC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {111A217F-E8E4-442F-8B1C-263774BF635F}
