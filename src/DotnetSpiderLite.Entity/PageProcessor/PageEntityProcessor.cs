@@ -62,6 +62,25 @@ namespace DotnetSpiderLite.Entity.PageProcessor
             if (entityDefine.TargetUrls == null || entityDefine.TargetUrls.Length == 0)
                 return entity;
 
+
+            foreach (var url in entityDefine.TargetUrls)
+            {
+                foreach (var link in links)
+                {
+                    if (url == link)
+                    {
+                        continue;
+                    }
+
+                    Regex regex = new Regex(url);
+
+                    if (regex.IsMatch(link))
+                    {
+                        page.AddTargetRequest(link, page.Response.Request.Uri.ToString());
+                    }
+                }
+            }
+
             // 匹配内容
 
             var requestUrl = page.Response.Request.Uri.ToString();

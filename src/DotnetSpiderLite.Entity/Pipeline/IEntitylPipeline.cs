@@ -5,11 +5,11 @@ using System.Text;
 
 namespace DotnetSpiderLite.Entity.Pipeline
 {
-    public interface IModelPipeline<T> : IDisposable
+    public interface IEntitylPipeline<TEntity> : IDisposable where TEntity : IEntity
     {
         ILogger Logger { get; set; }
 
-        void Process(T instance);
+        void Process(TEntity instance);
 
     }
 }

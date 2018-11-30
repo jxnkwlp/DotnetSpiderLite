@@ -18,7 +18,7 @@ namespace EntitySpiderNetCoreConsoleApp
             Console.ReadKey();
         }
 
-        [HelperUrl("https://www.cnblogs.com/")]
+
         [TargetUrl("https://www.cnblogs.com/*")]
         public class CnblogsArticleModel : IEntity
         {

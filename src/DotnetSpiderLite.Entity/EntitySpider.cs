@@ -13,6 +13,7 @@ namespace DotnetSpiderLite.Entity
         private IPageEntityProcessor _pageEntityProcessor = new PageEntityProcessor();
         private IList<EntityDefine> _entityDefines = new List<EntityDefine>();
 
+        public IList<IEntitylPipeline<IEntity>> EntitylPipelines { get; } = new List<IEntitylPipeline<IEntity>>();
 
         public IList<IEntity> Entities { get => _entities; }
 
@@ -38,10 +39,12 @@ namespace DotnetSpiderLite.Entity
             return this;
         }
 
-        //public EntitySpider AddModelPipeline<T>(IModelPipeline<T> pipeline)
-        //{ 
-        //    return this;
-        //}
+        public EntitySpider AddEntitylPipeline(IEntitylPipeline<IEntity> pipeline)
+        {
+            this.EntitylPipelines.Add(pipeline);
+
+            return this;
+        }
 
 
         protected override void OnRunBefore()
