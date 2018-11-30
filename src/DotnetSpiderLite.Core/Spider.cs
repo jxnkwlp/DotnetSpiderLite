@@ -117,9 +117,9 @@ namespace DotnetSpiderLite
 
         public ILogger Logger { get => _logger; private set => _logger = value; }
 
-        public IList<IPipeline> Pipelines { get; private set; } = new List<IPipeline>();
+        public IList<IPipeline> Pipelines { get; } = new List<IPipeline>();
 
-        public IList<IPageProcessor> PageProcessors { get; private set; } = new List<IPageProcessor>();
+        public IList<IPageProcessor> PageProcessors { get; } = new List<IPageProcessor>();
 
         public IScheduler Scheduler { get => _scheduler; private set => _scheduler = value; }
 
@@ -150,6 +150,10 @@ namespace DotnetSpiderLite
         ///  队列监控程序
         /// </summary>
         public ISchedulerMonitor SchedulerMonitor { get; private set; }
+
+
+
+        public Func<Request, Response> OnHandleRequestDownload { get; set; }
 
 
         #region event
@@ -184,7 +188,7 @@ namespace DotnetSpiderLite
         /// <summary>
         /// ctor
         /// </summary>
-        protected Spider() : this(null, null, null)
+        public Spider() : this(null, null, null)
         {
         }
 
@@ -195,14 +199,21 @@ namespace DotnetSpiderLite
         {
             this.Identity = identity ?? Guid.NewGuid().ToString();
 
-            Init();
-
             if (pageProcessors != null)
-                this.PageProcessors = new List<IPageProcessor>(pageProcessors);
+                foreach (var item in pageProcessors)
+                {
+                    this.PageProcessors.Add(item);
+                }
+
 
             if (pipelines != null)
-                this.Pipelines = new List<IPipeline>(pipelines);
+                foreach (var item in pipelines)
+                {
+                    this.Pipelines.Add(item);
+                }
 
+
+            Init();
         }
 
         #endregion
@@ -446,61 +457,7 @@ namespace DotnetSpiderLite
             // 上报状态
             ReportMonitorStatus();
 
-            while (Status == SpiderStatus.Running || Status == SpiderStatus.Paused)
-            {
-                if (Status == SpiderStatus.Paused)
-                {
-                    Thread.Sleep(10);
-                    continue;
-                };
-
-                Parallel.For(0, _threadNumber, new ParallelOptions() { MaxDegreeOfParallelism = _threadNumber },
-                    (index) =>
-                {
-                    int waitCount = 1;
-
-                    while (Status == SpiderStatus.Running)
-                    {
-                        // 取出 
-                        var request = Scheduler.Pull();
-
-                        if (request == null)
-                        {
-                            // 等待超时，退出
-                            if (waitCount > _waitCountLimit)
-                            {
-                                Status = SpiderStatus.Finished;
-                                break;
-                            }
-
-                            // 等待
-                            WaitNewRequest(ref waitCount);
-
-                        }
-                        else
-                        {
-                            waitCount = 1;
-
-                            try
-                            {
-                                var downloader = this.Downloader.Clone();
-
-                                // 
-                                HandleRequestAsync(request, downloader).Wait();
-
-                                Thread.Sleep(NewRequestSleepInterval);
-                            }
-                            catch
-                            {
-                            }
-
-                        }
-                    }
-
-                });
-
-
-            }
+            RunCore();
 
             // 清空缓存结果
             FlushResultItemsCache();
@@ -746,8 +703,79 @@ namespace DotnetSpiderLite
         #endregion
 
 
+        private void RunCore()
+        {
+            while (Status == SpiderStatus.Running || Status == SpiderStatus.Paused)
+            {
+                if (Status == SpiderStatus.Paused)
+                {
+                    Thread.Sleep(10);
+                    continue;
+                };
+
+                Parallel.For(0,
+                    _threadNumber,
+                    new ParallelOptions() { MaxDegreeOfParallelism = _threadNumber },
+                    (_) =>
+                    {
+                        int waitCount = 1;
+
+                        while (Status == SpiderStatus.Running)
+                        {
+                            // 取出 
+                            var request = Scheduler.Pull();
+
+                            if (request == null)
+                            {
+                                // 等待超时，退出
+                                if (waitCount > _waitCountLimit)
+                                {
+                                    Status = SpiderStatus.Finished;
+                                    break;
+                                }
+
+                                // 等待
+                                WaitNewRequest(ref waitCount);
+
+                            }
+                            else
+                            {
+                                waitCount = 1;
+
+                                try
+                                {
+                                    var downloader = this.Downloader.Clone();
+
+                                    // 
+                                    HandleRequestAsync(request, downloader).Wait();
+
+                                    Thread.Sleep(NewRequestSleepInterval);
+                                }
+                                catch
+                                {
+                                }
+
+                            }
+                        }
+
+                    });
+
+            }
+
+        }
+
+        protected virtual bool OnHandleRequesting(Request request, IDownloader downloader)
+        {
+            return true;
+        }
+
         private async Task HandleRequestAsync(Request request, IDownloader downloader)
         {
+            if (!OnHandleRequesting(request, downloader))
+            {
+                return;
+            }
+
             // 下载页面 
             var response = await HandleDownloadAsync(request, downloader);
 
@@ -805,11 +833,68 @@ namespace DotnetSpiderLite
             HandlePipelines(page);
         }
 
+        protected virtual void OnHandleDownloading(Request request, IDownloader downloader) { }
+
+
+        private async Task<Response> HandleDownloadAsync(Request request, IDownloader downloader)
+        {
+            var uri = request.Uri;
+            this.Logger.Trace($"下载器开始请求URL：{uri} ");
+
+            try
+            {
+                var sw = Stopwatch.StartNew();
+
+                if (OnHandleRequestDownload != null)
+                {
+                    return OnHandleRequestDownload.Invoke(request);
+                }
+                else
+                {
+
+                    var response = await downloader.DownloadAsync(request);
+
+                    sw.Stop();
+                    CalculateDownloadSpeed(sw.ElapsedMilliseconds);
+
+                    this.SchedulerMonitor?.IncreaseSuccessCount();
+                    this.OnSuccess?.Invoke(this, typeof(IDownloader));
+
+                    return response;
+                }
+            }
+            catch (DownloaderException ex)
+            {
+                // TODO 
+
+                this.Logger.Error(ex, $"下载失败。URL：{uri}");
+
+                this.OnError?.Invoke(this, typeof(IDownloader));
+
+                this.SchedulerMonitor?.IncreaseErrorCount();
+            }
+            catch (Exception ex)
+            {
+                this.Logger.Error(ex, $"下载失败。URL：{uri}");
+
+                this.OnError?.Invoke(this, typeof(IDownloader));
+
+                this.SchedulerMonitor?.IncreaseErrorCount();
+            }
+
+            return null;
+        }
+
+
+        protected virtual void OnHandlePageProcessorsing(Page page)
+        {
+        }
+
         private void HandlePageProcessors(Page page)
         {
             var sw = Stopwatch.StartNew();
 
-            OnPageProcessor(page);
+            OnHandlePageProcessorsing(page);
 
             foreach (var processor in PageProcessors)
             {
@@ -830,9 +915,9 @@ namespace DotnetSpiderLite
             CalculateProcessorSpeed(sw.ElapsedMilliseconds);
         }
 
-        protected virtual void OnPageProcessor(Page page)
-        {
 
+        protected virtual void OnHandlePipelineing(IList<ResultItems> items)
+        {
         }
 
         private void HandlePipelines(Page page)
@@ -860,7 +945,6 @@ namespace DotnetSpiderLite
                 list.Add(page.ResutItems);
             }
 
-
             SendToPipelines(list);
 
         }
@@ -879,6 +963,8 @@ namespace DotnetSpiderLite
                 return;
 
             var sw = Stopwatch.StartNew();
+
+            OnHandlePipelineing(list);
 
             foreach (var pipeline in Pipelines)
             {
@@ -902,46 +988,8 @@ namespace DotnetSpiderLite
 
         }
 
-        private async Task<Response> HandleDownloadAsync(Request request, IDownloader downloader)
-        {
-            var uri = request.Uri;
-            this.Logger.Trace($"下载器开始请求URL：{uri} ");
 
-            try
-            {
-                var sw = Stopwatch.StartNew();
 
-                var response = await downloader.DownloadAsync(request);
-
-                sw.Stop();
-                CalculateDownloadSpeed(sw.ElapsedMilliseconds);
-
-                this.SchedulerMonitor?.IncreaseSuccessCount();
-                this.OnSuccess?.Invoke(this, typeof(IDownloader));
-
-                return response;
-            }
-            catch (DownloaderException ex)
-            {
-                // TODO 
-
-                this.Logger.Error(ex, $"下载失败。URL：{uri}");
-
-                this.OnError?.Invoke(this, typeof(IDownloader));
-
-                this.SchedulerMonitor?.IncreaseErrorCount();
-            }
-            catch (Exception ex)
-            {
-                this.Logger.Error(ex, $"下载失败。URL：{uri}");
-
-                this.OnError?.Invoke(this, typeof(IDownloader));
-
-                this.SchedulerMonitor?.IncreaseErrorCount();
-            }
-
-            return null;
-        }
 
 
         [MethodImpl(MethodImplOptions.Synchronized)]
