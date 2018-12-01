@@ -66,7 +66,7 @@ namespace DotnetSpiderLite.Entity
             _entityDefines = entityDefines;
         }
 
-        protected override void OnPageProcessor(Page page)
+        protected override void OnHandlePageProcessorsing(Page page)
         {
             foreach (var define in _entityDefines)
             {
@@ -74,5 +74,6 @@ namespace DotnetSpiderLite.Entity
 
             }
         }
+
     }
 }

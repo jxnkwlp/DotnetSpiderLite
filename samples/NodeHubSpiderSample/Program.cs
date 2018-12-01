@@ -6,14 +6,14 @@ using System;
 namespace NodeHubSpiderSample
 {
     class Program
-    { 
+    {
 
         static void Main(string[] args)
-        { 
+        {
 
             Spider spider = Spider.Create("https://www.cnblogs.com/", new CNBlogProcessor());
 
-            var hubSpider = spider.AsNodeHubSpider();
+            // var hubSpider = spider.AsNodeHubSpider();
 
 
         }

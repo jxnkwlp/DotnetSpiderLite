@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework></TargetFramework>
 		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks> 
-		<AssemblyVersion>0.0.6909.0</AssemblyVersion>
+		<AssemblyVersion>0.0.6910.1</AssemblyVersion>
 		<Version>$(AssemblyVersion)</Version>
 	</PropertyGroup>
 

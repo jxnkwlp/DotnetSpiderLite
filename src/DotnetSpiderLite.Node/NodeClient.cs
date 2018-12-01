@@ -1,10 +1,12 @@
 ﻿using DotnetSpiderLite.Downloader;
 using DotnetSpiderLite.Node.Downloader;
+using DotnetSpiderLite.Node.Model;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace DotnetSpiderLite.Node
 {
@@ -13,10 +15,13 @@ namespace DotnetSpiderLite.Node
         private IDownloader _downloader = new DefaultHttpClientDownloader();
         private NodeClientStatus _status = NodeClientStatus.Exited;
 
+        private bool _handleRequested = false;
         private HttpClient _hubHttpClient = new HttpClient();
 
-        private string _hubAliveEndPoint;
-        private string _hubDataEndPoint;
+        private string _hubHeartbeatEndPoint = "{0}/api/node/{1}/ping"; // post
+        private string _hubTaskEndPoint = "{0}/api/node/{1}/task"; // get 
+        // private string _hubDataEndPoint = "{0}/api/node/{1}/pushdata"; // post 
+        private string _hubControlEndPoint = "{0}/api/node/{1}/control"; // get 
 
         public IDownloader Downloader => _downloader;
 
@@ -28,8 +33,10 @@ namespace DotnetSpiderLite.Node
 
         public NodeClient(string hubAddress)
         {
-            _hubAliveEndPoint = string.Format("node/live", hubAddress);
-            _hubDataEndPoint = string.Format("node/data", hubAddress);
+            _hubHeartbeatEndPoint = string.Format(_hubHeartbeatEndPoint, hubAddress, this.NodeId);
+            _hubTaskEndPoint = string.Format(_hubTaskEndPoint, hubAddress, this.NodeId);
+            // _hubDataEndPoint = string.Format(_hubDataEndPoint, hubAddress, this.NodeId);
+            _hubControlEndPoint = string.Format(_hubControlEndPoint, hubAddress, this.NodeId);
 
         }
 
@@ -57,7 +64,7 @@ namespace DotnetSpiderLite.Node
                     DoWork();
                 }
 
-                Thread.Sleep(100);
+                Thread.Sleep(1000); // 1s
             }
 
         }
@@ -71,47 +78,116 @@ namespace DotnetSpiderLite.Node
 
         private void DoWork()
         {
+            SendHeartbeat();
+            PullControl();
+            PullTask();
+        }
+
+        /// <summary>
+        ///  发送心跳
+        /// </summary>
+        private void SendHeartbeat()
+        {
+            var data = new HeartbeatModel()
+            {
+                // NodeId = this.NodeId,
+                Status = this.Status.ToString(),
+            };
+
             try
             {
-                var response = _hubHttpClient.GetStringAsync(_hubAliveEndPoint).Result;
+                var response = _hubHttpClient.PostAsync(_hubHeartbeatEndPoint, new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(data))).Result;
 
-                var command = Newtonsoft.Json.JsonConvert.DeserializeObject<NodeClientCommand>(response);
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception)
+            {
+            }
+        }
 
-                if (command.Command == 10)
+        /// <summary>
+        ///  拉取任务
+        /// </summary>
+        private void PullTask()
+        {
+            if (_handleRequested)
+                return;
+
+            _handleRequested = true;
+
+            try
+            {
+                var response = _hubHttpClient.GetAsync(_hubTaskEndPoint).Result;
+                response.EnsureSuccessStatusCode();
+
+                var json = response.Content.ReadAsStringAsync().Result;
+
+                var task = Newtonsoft.Json.JsonConvert.DeserializeObject<TaskPullModel>(json);
+
+                if (task != null)
                 {
-                    var request = ConventToRequest(command.CommandData);
-                    HandleRequest(request);
+                    var request = ConventToRequest(task.RequestJson);
+
+                    if (!string.IsNullOrEmpty(task.CookieHeader))
+                    {
+                        DownloaderCookieContainer.Instance.SetCookies(request.Uri, task.CookieHeader);
+                    }
+
+                    Task.Run(() => HandleNewRequest(request));
                 }
-                else if (command.Command == 1)
+
+
+            }
+            catch (Exception)
+            {
+            }
+
+            _handleRequested = false;
+
+        }
+
+        private void HandleNewRequest(Request request)
+        {
+            var response = _downloader.DownloadAsync(request).Result;
+
+            var data = new TaskPushModel()
+            {
+                ResponseUrl = response.ResponseUri.ToString(),
+                Response = response.Body,
+            };
+
+            _hubHttpClient.PostAsync(_hubTaskEndPoint, new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(data)));
+        }
+
+        /// <summary>
+        ///  获取控制指令
+        /// </summary>
+        private void PullControl()
+        {
+            try
+            {
+                var response = _hubHttpClient.GetAsync(_hubTaskEndPoint).Result;
+                response.EnsureSuccessStatusCode();
+
+                var json = response.Content.ReadAsStringAsync().Result;
+
+                var data = Newtonsoft.Json.JsonConvert.DeserializeObject<ControlModel>(json);
+
+                if (data != null)
                 {
-                    _status = NodeClientStatus.Exited;
+                    if (data.Command == 1)
+                    {
+                        this._status = NodeClientStatus.Exiting;
+                    }
+
+                    // TODO 其他指令
+                    // 
                 }
 
             }
             catch (Exception)
             {
-
             }
-
-        }
-
-
-        private void HandleRequest(Request request)
-        {
-            var response = _downloader.DownloadAsync(request).Result;
-
-            if (response.Body == null)
-            {
-                return;
-            }
-
-            var data = new
-            {
-                type = 1, // 1:response,
-                data = Convert.ToBase64String(response.Body),
-            };
-
-            _hubHttpClient.PostAsync(_hubDataEndPoint, new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(data)));
         }
 
 

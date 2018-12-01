@@ -2,13 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyVersion>1.0.6910.3</AssemblyVersion>
-    <Description>Hub基本实现</Description>
+    <Description>自托管hub中心，无UI界面</Description>
+    <AssemblyVersion>1.0.6910.2</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DotnetSpiderLite.Abstractions\DotnetSpiderLite.Abstractions.csproj" />
     <ProjectReference Include="..\DotnetSpiderLite.Core\DotnetSpiderLite.Core.csproj" />
+    <ProjectReference Include="..\DotnetSpiderLite.NodeHub\DotnetSpiderLite.NodeHub.csproj" />
   </ItemGroup>
 
 </Project>

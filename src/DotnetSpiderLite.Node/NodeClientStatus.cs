@@ -6,7 +6,8 @@ namespace DotnetSpiderLite.Node
 {
     public enum NodeClientStatus
     {
-        Running,
-        Exited,
+        Running = 0,
+        Exiting = 1,
+        Exited = 2,
     }
 }
