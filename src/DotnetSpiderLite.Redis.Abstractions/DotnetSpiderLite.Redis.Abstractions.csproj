@@ -4,7 +4,7 @@
     <TargetFramework></TargetFramework>
     <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <RootNamespace>DotnetSpiderLite.Redis</RootNamespace>
-    <AssemblyVersion>1.0.6903.2</AssemblyVersion>
+    <AssemblyVersion>1.0.6909.0</AssemblyVersion>
   </PropertyGroup>
 
 </Project>

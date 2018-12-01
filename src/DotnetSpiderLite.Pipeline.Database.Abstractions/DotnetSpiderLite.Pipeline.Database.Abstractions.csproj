@@ -4,6 +4,7 @@
     <TargetFramework></TargetFramework>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <RootNamespace>DotnetSpiderLite.Pipeline.Database</RootNamespace>
+    <AssemblyVersion>1.0.6909.2</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

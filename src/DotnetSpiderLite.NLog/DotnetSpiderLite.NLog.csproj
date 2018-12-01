@@ -4,7 +4,7 @@
     <TargetFramework></TargetFramework>
     <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <RootNamespace>DotnetSpiderLite.NLogs</RootNamespace>
-    <AssemblyVersion>0.0.6904.49</AssemblyVersion>
+    <AssemblyVersion>0.0.6909.5</AssemblyVersion>
     <Version>$(AssemblyVersion)</Version>
   </PropertyGroup>
   
@@ -14,6 +14,11 @@
   
   <ItemGroup>
     <PackageReference Include="NLog" Version="4.5.11" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\DotnetSpiderLite.Abstractions\DotnetSpiderLite.Abstractions.csproj" />
+    <ProjectReference Include="..\DotnetSpiderLite.Core\DotnetSpiderLite.Core.csproj" />
   </ItemGroup>
  
 
