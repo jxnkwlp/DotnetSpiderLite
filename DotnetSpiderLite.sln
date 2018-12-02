@@ -78,7 +78,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NodeHubSpiderSample", "samp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSpiderLite.NodeHub", "src\DotnetSpiderLite.NodeHub\DotnetSpiderLite.NodeHub.csproj", "{7DB8607F-DE98-4877-ADD6-06CC3BDEDECE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetSpiderLite.NodeHub.SelfHost", "src\DotnetSpiderLite.NodeHub.SelfHost\DotnetSpiderLite.NodeHub.SelfHost.csproj", "{889B5700-8E8A-44EB-9B96-BC84A0B50E14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSpiderLite.NodeHub.SelfHost", "src\DotnetSpiderLite.NodeHub.SelfHost\DotnetSpiderLite.NodeHub.SelfHost.csproj", "{889B5700-8E8A-44EB-9B96-BC84A0B50E14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
