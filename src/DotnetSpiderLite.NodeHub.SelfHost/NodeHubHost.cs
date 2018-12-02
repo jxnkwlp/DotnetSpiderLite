@@ -15,6 +15,8 @@ namespace DotnetSpiderLite.NodeHub.SelfHost
 
         private Thread _thread;
 
+        private NodeManager _nodeManager;
+
 
         public NodeHubHost(int port)
         {
@@ -79,9 +81,17 @@ namespace DotnetSpiderLite.NodeHub.SelfHost
             string nodeId = paths[2];
             var r = paths[3];
 
-            if (r.Equals("ping", StringComparison.InvariantCultureIgnoreCase)) { }
-            else if (r.Equals("task", StringComparison.InvariantCultureIgnoreCase)) { }
-            else if (r.Equals("control", StringComparison.InvariantCultureIgnoreCase)) { }
+            if (r.Equals("ping", StringComparison.InvariantCultureIgnoreCase))
+            { 
+            }
+            else if (r.Equals("task", StringComparison.InvariantCultureIgnoreCase))
+            {
+
+            }
+            else if (r.Equals("control", StringComparison.InvariantCultureIgnoreCase))
+            {
+
+            }
 
 
         }

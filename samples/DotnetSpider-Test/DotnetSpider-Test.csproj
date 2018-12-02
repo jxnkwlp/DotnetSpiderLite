@@ -4,11 +4,12 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <RootNamespace>DotnetSpider_Test</RootNamespace>
-    <AssemblyVersion>1.0.6910.2</AssemblyVersion>
+    <AssemblyVersion>1.0.6911.1</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="DotnetSpider.Core" Version="3.0.8" />
+    <PackageReference Include="DotnetSpider.Extension" Version="3.0.8" />
   </ItemGroup>
 
 </Project>

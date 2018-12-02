@@ -90,8 +90,6 @@ namespace DotnetSpiderLite.Node
         {
             var data = new HeartbeatModel()
             {
-                // NodeId = this.NodeId,
-                Status = this.Status.ToString(),
             };
 
             try
