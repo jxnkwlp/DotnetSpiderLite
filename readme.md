@@ -16,7 +16,7 @@
  1. [ ] 完整注释
  2. [ ] UI管理界面
  3. [ ] 支持多机/多节点部署和管理界面
- 4. [ ] 支持使用 Redis 作为队列
+ 4. [x] [使用 Redis 作为队列](#使用redis作为队列程序)
  5. [ ] 数据库 支持
  6. [ ] 支持使用代理
 
@@ -28,7 +28,7 @@ i. 安装包 [DotnetSpiderLite.Core](https://www.nuget.org/packages/DotnetSpider
 PM> install-package DotnetSpiderLite.Core
 ~~~
 
-ii. 安装html解析扩展包（可选，如果需求解析html，则需要安装）
+ii. 安装html解析扩展包（可选，如果需求解析html，则需要安装） 目前实现了 [HtmlAgilityPack](https://www.nuget.org/packages/DotnetSpiderLite.HtmlAgilityPack/) 和 [AngleSharp](https://www.nuget.org/packages/DotnetSpiderLite.AngleSharp/)
 
 ~~~ c#
 PM> install-package DotnetSpiderLite.HtmlAgilityPack
@@ -73,8 +73,34 @@ public class CNBlogProcessor : BasePageProcessor
             var body = page.Selector.Selector("#cnblogs_post_body", HtmlSelectorPathType.Css);
 
             page.AddResultItem("title", title?.InnerText?.Trim());
-            //page.AddResultItem("content", body?.InnerHtml?.Trim()); 
+            //page.AddResultItem("content", body?.InnerHtml?.Trim());
         }
     }
 
 }
+~~~
+
+## 使用redis作为队列程序
+
+安装包 [DotnetSpiderLite.Scheduler.StackExchange.Redis](https://www.nuget.org/packages/DotnetSpiderLite.Scheduler.StackExchange.Redis/)， 这个默认为使用 [StackExchange.Redis](https://www.nuget.org/packages/StackExchange.Redis/) 组件。
+
+~~~ csharp
+Spider spider = Spider.Create("https://www.cnblogs.com/");
+// ...
+spider.UseRedisScheduler("localhost");
+// ...
+spider.Run();
+~~~
+
+如果需要使用其他 redis 组件，可安装包 [DotnetSpiderLite.Scheduler.Redis](https://www.nuget.org/packages/DotnetSpiderLite.Scheduler.Redis/) , 然后实现 IRedisStore 接口。
+
+~~~ csharp
+Spider spider = Spider.Create("https://www.cnblogs.com/");
+// ...
+
+IRedisStore myRedisStore = [YOU REDISSTORE];
+spider.UseRedisScheduler(myRedisStore);
+
+// ...
+spider.Run();
+~~~
