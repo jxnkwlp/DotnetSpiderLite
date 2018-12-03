@@ -4,7 +4,7 @@
 		<TargetFramework></TargetFramework>
 		<TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
 		<RootNamespace>DotnetSpiderLite</RootNamespace>  
-    <AssemblyVersion>0.1.6910.4</AssemblyVersion>
+    <AssemblyVersion>0.1.6911.1</AssemblyVersion>
     <Version>$(AssemblyVersion)</Version>
     <Authors>Passingwind</Authors>
     <Company>Passingwind</Company>

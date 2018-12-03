@@ -13,7 +13,12 @@ namespace DotnetSpiderLite.NodeHub
             _store = store;
         }
 
-        public void AddOrUpdateNode()
+        public void AddOrUpdateNode(Node node)
+        {
+
+        }
+
+        public void RemoveNode(string nodeId)
         {
 
         }

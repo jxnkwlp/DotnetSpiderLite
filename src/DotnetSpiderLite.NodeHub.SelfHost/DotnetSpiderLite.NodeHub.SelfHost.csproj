@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Description>自托管hub中心，无UI界面</Description>
-    <AssemblyVersion>1.0.6910.3</AssemblyVersion>
+    <AssemblyVersion>1.0.6911.1</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

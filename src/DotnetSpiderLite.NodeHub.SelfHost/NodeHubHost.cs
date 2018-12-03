@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace DotnetSpiderLite.NodeHub.SelfHost
 {
-    public class NodeHubHost
+    public class NodeHubHost : IDisposable
     {
         public const int DEFAULTPORT = 10030;
 
@@ -82,19 +82,43 @@ namespace DotnetSpiderLite.NodeHub.SelfHost
             var r = paths[3];
 
             if (r.Equals("ping", StringComparison.InvariantCultureIgnoreCase))
-            { 
+            {
+                ProcessPing(context);
             }
             else if (r.Equals("task", StringComparison.InvariantCultureIgnoreCase))
             {
-
+                ProcessTask(context);
             }
             else if (r.Equals("control", StringComparison.InvariantCultureIgnoreCase))
             {
-
+                ProcessControl(context);
             }
 
 
         }
 
+
+        private void ProcessPing(HttpListenerContext context)
+        {
+            _nodeManager.AddOrUpdateNode(new Node());
+
+        }
+
+        private void ProcessTask(HttpListenerContext context)
+        {
+            context.Response.StatusCode = 200;
+
+        }
+
+        private void ProcessControl(HttpListenerContext context)
+        {
+            context.Response.StatusCode = 200;
+
+        }
+
+        public void Dispose()
+        {
+            _listener?.Stop();
+        }
     }
 }
