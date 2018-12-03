@@ -4,6 +4,8 @@
 
 > 造这个轮子的原因是， DotnetSpider各个之间依赖太强了，本来想简单的采集一些东西，安装后却来了一个全家桶... 我的期望是各个组件之间尽可能的解耦，但需要的时候就安装这个组件。
 
+[![Build Status](https://dev.azure.com/jxnkwlp/DotnetSpiderLite/_apis/build/status/GitHub-CI)](https://dev.azure.com/jxnkwlp/DotnetSpiderLite/_build/latest?definitionId=1)
+
 ## 名词
 
  1. Downloader : 下载器
