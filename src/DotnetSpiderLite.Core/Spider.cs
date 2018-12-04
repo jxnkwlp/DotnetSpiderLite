@@ -9,6 +9,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -53,6 +54,8 @@ namespace DotnetSpiderLite
         private IList<IDownloadAfterHandle> _downloadAfterHandles = new List<IDownloadAfterHandle>();
         private IList<Request> _initRequest = new List<Request>();
         private Thread _monitorThread;
+
+        private IDownloaderProxy _downloaderProxy;
 
         private bool _useHttpClientDownloader = true;
         private int _newRequestSleepInterval = 100;
@@ -154,7 +157,6 @@ namespace DotnetSpiderLite
 
 
         public Func<Request, Response> OnHandleRequestDownload { get; set; }
-
 
         #region event
 
@@ -364,6 +366,39 @@ namespace DotnetSpiderLite
         public Spider SetDownloader(IDownloader downloader)
         {
             this.Downloader = downloader;
+            return this;
+        }
+
+        /// <summary>
+        ///  设置下载器
+        /// </summary> 
+        public Spider SetDownloader(IDownloader downloader, IDownloaderProxy downloaderProxy)
+        {
+            this.Downloader = downloader;
+
+            if (downloaderProxy != null)
+                _downloaderProxy = downloaderProxy;
+
+            return this;
+        }
+
+        /// <summary>
+        ///  设置下载器代理
+        /// </summary> 
+        public Spider SetDownloaderProxy(IDownloaderProxy downloaderProxy)
+        {
+            _downloaderProxy = downloaderProxy;
+
+            return this;
+        }
+
+        /// <summary>
+        ///  设置下载器代理
+        /// </summary> 
+        public Spider SetDownloaderProxy(WebProxy proxy)
+        {
+            _downloaderProxy = new DownloaderProxy(proxy);
+
             return this;
         }
 
@@ -851,8 +886,24 @@ namespace DotnetSpiderLite
                 }
                 else
                 {
+                    WebProxy proxy = null;
+                    if (_downloaderProxy != null)
+                    {
+                        proxy = _downloaderProxy.GetProxy();
+                        if (proxy != null)
+                        {
+                            downloader.Proxy = proxy;
+
+                            Logger.Trace($"使用代理 {proxy.Address}");
+                        }
+                    }
 
                     var response = await downloader.DownloadAsync(request);
+
+                    if (_downloaderProxy != null && proxy != null)
+                    {
+                        _downloaderProxy.RelaseProxy(proxy, response);
+                    }
 
                     sw.Stop();
                     CalculateDownloadSpeed(sw.ElapsedMilliseconds);

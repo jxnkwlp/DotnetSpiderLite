@@ -3,21 +3,25 @@ using DotnetSpiderLite.Downloader;
 using DotnetSpiderLite.Logs;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DotnetSpiderLite.Downloader
 {
+    /// <summary>
+    ///  默认下载器，使用 <see cref="HttpClient"/> 
+    /// </summary>
     public class DefaultHttpClientDownloader : BaseDownloader
     {
-        private MyHttpClientHandler _myHttpClientHandler = new MyHttpClientHandler();
-
+        private MyHttpClientHandler _myHttpClientHandler = new MyHttpClientHandler(null);
         private HttpClient _httpClient;
+        private IWebProxy _lastWebProxy = null;
 
         public DefaultHttpClientDownloader()
         {
-            _httpClient = new HttpClient(_myHttpClientHandler);
+            _httpClient = CreateHttpClient();
         }
 
         public override IDownloader Clone()
@@ -32,8 +36,24 @@ namespace DotnetSpiderLite.Downloader
             _httpClient.Dispose();
         }
 
+        HttpClient CreateHttpClient()
+        {
+            _myHttpClientHandler = new MyHttpClientHandler(Proxy);
+            var httpClient = new HttpClient(_myHttpClientHandler)
+            {
+                Timeout = TimeSpan.FromSeconds(15)  // 15s
+            };
+            return httpClient;
+        }
+
         public override async Task<Response> HandleDownloadAsync(Request request)
         {
+            if ((this.Proxy != null || _lastWebProxy != null) && _lastWebProxy != Proxy)
+            {
+                _httpClient = CreateHttpClient();
+                _lastWebProxy = Proxy;
+            }
+
             SetOptions(request);
 
             var requestMessage = new HttpRequestMessage();
@@ -66,6 +86,8 @@ namespace DotnetSpiderLite.Downloader
                 throw new DownloaderException($"请求URL失败{request.Uri}", ex);
             }
 
+            responseMessage.EnsureSuccessStatusCode();
+
             var response = new Response(request);
 
             response.StatusCode = (int)responseMessage.StatusCode;
@@ -78,7 +100,8 @@ namespace DotnetSpiderLite.Downloader
 
             response.ResponseUri = responseMessage.RequestMessage.RequestUri;
 
-            response.ResponseCookies = _myHttpClientHandler.CookieContainer.GetCookies(request.Uri);
+            if (_myHttpClientHandler != null)
+                response.ResponseCookies = _myHttpClientHandler.CookieContainer.GetCookies(request.Uri);
 
             return response;
         }
@@ -120,12 +143,15 @@ namespace DotnetSpiderLite.Downloader
 
     class MyHttpClientHandler : HttpClientHandler
     {
-        public MyHttpClientHandler()
+        public MyHttpClientHandler(IWebProxy webProxy)
         {
             this.UseCookies = true;
             this.CookieContainer = DownloaderCookieContainer.Instance;
 
+            this.UseProxy = webProxy != null;
+            this.Proxy = webProxy;
 
+            this.UseDefaultCredentials = true;
         }
     }
 }

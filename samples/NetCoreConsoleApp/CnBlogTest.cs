@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using DotnetSpiderLite;
 using DotnetSpiderLite.Downloader;
 using DotnetSpiderLite.Html;
@@ -20,10 +21,26 @@ namespace ConsoleApp
             // spider.UseRedisScheduler("localhost");
             //spider.UseChromeWebDriverDownloader(@"C:\Users\admin\.nuget\packages\selenium.webdriver.chromedriver\2.44.0\driver\win32\");
             // spider.UseChromeWebDriverDownloader();
-            spider.AddDapperDataBasePipeline(new DapperDatabaseStore()
-            {
-                OnSave = UseDapperStoreSave
-            });
+            //spider.AddDapperDataBasePipeline(new DapperDatabaseStore()
+            //{
+            //    OnSave = UseDapperStoreSave
+            //});
+
+
+            //spider.SetDownloaderProxy(new WebProxy("127.0.0.1", 1080));
+            // spider.SetDownloaderProxy(new DownloaderProxy(new WebProxy("127.0.0.1", 1080)));
+            spider.SetDownloaderProxy(new SampleDownloaderProxyPools(
+                new WebProxy("127.0.0.1", 1080),
+                new WebProxy("192.168.1.1", 1080),
+                new WebProxy("192.168.1.2", 1080)
+              ));
+
+            // proxy pools
+            //spider.UseHttpProxyPools(100, 100, new WebProxy("127.0.0.1", 1080)
+            //{
+            //    // Credentials = new NetworkCredential("", "")
+            //});
+
 
             spider.Run();
 

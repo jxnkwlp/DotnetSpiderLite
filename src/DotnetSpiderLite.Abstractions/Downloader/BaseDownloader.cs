@@ -1,7 +1,6 @@
 ﻿using DotnetSpiderLite.Logs;
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace DotnetSpiderLite.Downloader
@@ -14,8 +13,9 @@ namespace DotnetSpiderLite.Downloader
         private IList<IDownloadBeforeHandle> _beforeHandles = new List<IDownloadBeforeHandle>();
         private IList<IDownloadAfterHandle> _afterHandles = new List<IDownloadAfterHandle>();
 
+        public virtual ILogger Logger { get; set; }
 
-        public ILogger Logger { get; set; }
+        public virtual WebProxy Proxy { get; set; }
 
         public virtual void Dispose()
         {
@@ -25,7 +25,7 @@ namespace DotnetSpiderLite.Downloader
         {
             Logger?.Trace($"开始请求 {request.Method} {request.Uri}");
 
-            // before 
+            // before
             if (_beforeHandles?.Count > 0)
             {
                 foreach (var handle in _beforeHandles)
@@ -37,11 +37,10 @@ namespace DotnetSpiderLite.Downloader
             }
 
             Logger?.Trace("执行请求");
-            // handle 
+            // handle
             var response = await HandleDownloadAsync(request);
 
-
-            // after 
+            // after
             if (_afterHandles?.Count > 0)
             {
                 foreach (var handle in _afterHandles)
@@ -63,7 +62,7 @@ namespace DotnetSpiderLite.Downloader
 
         /// <summary>
         ///  添加前置处理
-        /// </summary> 
+        /// </summary>
         public void AddDownloadBeforeHandle(IDownloadBeforeHandle handle)
         {
             handle.Logger = this.Logger;
@@ -72,7 +71,7 @@ namespace DotnetSpiderLite.Downloader
 
         /// <summary>
         ///  添加后置处理
-        /// </summary> 
+        /// </summary>
         public void AddDownloadAfterHandle(IDownloadAfterHandle handle)
         {
             handle.Logger = this.Logger;

@@ -10,7 +10,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <DefineConstants>_PUBLISH_CHROMEDRIVER</DefineConstants>
-    <AssemblyVersion>1.0.6911.0</AssemblyVersion>
+    <AssemblyVersion>1.0.6912.4</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

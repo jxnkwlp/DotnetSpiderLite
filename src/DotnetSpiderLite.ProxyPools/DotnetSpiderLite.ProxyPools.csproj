@@ -2,13 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework></TargetFramework>
-    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
-    <AssemblyVersion>0.1.6912.4</AssemblyVersion>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <AssemblyVersion>0.1.6912.6</AssemblyVersion>
     <Version>$(AssemblyVersion)</Version>
     <Authors>Passingwind</Authors>
     <Company>Passingwind</Company>
-    <Product>DotnetSpiderLite - Scheduler Redis</Product>
+    <Product>DotnetSpiderLite - Proxy</Product>
     <Description>A .NET Standard web crawling library similar to WebMagic. It is a lightweight, modular, efficient and fast high-level web crawling. scraping framework for .NET</Description>
+    <Summary>DotnetSpiderLite Proxy Pools Package</Summary>
     <PackageTags>DotnetSpider, crawler</PackageTags>
     <PackageProjectUrl>https://github.com/jxnkwlp/DotnetSpiderLite</PackageProjectUrl>
     <RepositoryUrl>https://github.com/jxnkwlp/DotnetSpiderLite</RepositoryUrl>
@@ -17,12 +18,8 @@
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <DocumentationFile>bin\DotnetSpiderLite.Scheduler.Redis.xml</DocumentationFile>
+    <DocumentationFile>bin\DotnetSpiderLite.ProxyPools.xml</DocumentationFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.1" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DotnetSpiderLite.Abstractions\DotnetSpiderLite.Abstractions.csproj" />

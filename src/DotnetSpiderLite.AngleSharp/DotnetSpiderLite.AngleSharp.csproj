@@ -5,7 +5,7 @@
 		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
 		<AssemblyName>DotnetSpiderLite.AngleSharp</AssemblyName>
 		<RootNamespace>DotnetSpiderLite.AngleSharps</RootNamespace> 
-		<AssemblyVersion>0.1.6911.0</AssemblyVersion>
+		<AssemblyVersion>0.1.6912.2</AssemblyVersion>
 		<Version>$(AssemblyVersion)</Version>
 		<Authors>Passingwind</Authors>
 		<Company>Passingwind</Company>

@@ -9,7 +9,6 @@
 //        public Request Request { get; set; }
 //        public Response Response { get; set; }
 
-
 //        public static DownloadContext NewContext(Uri uri)
 //        {
 //            var context = new DownloadContext();

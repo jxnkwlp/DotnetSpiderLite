@@ -88,6 +88,10 @@
       <Project>{4d43679d-698a-4825-a3c3-25708116f8fc}</Project>
       <Name>DotnetSpiderLite.Pipeline.Database.Dapper</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\DotnetSpiderLite.ProxyPools\DotnetSpiderLite.ProxyPools.csproj">
+      <Project>{0cc6104a-b01c-4aa6-a596-0bfd1ffd391c}</Project>
+      <Name>DotnetSpiderLite.ProxyPools</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\DotnetSpiderLite.Scheduler.Redis\DotnetSpiderLite.Scheduler.Redis.csproj">
       <Project>{c32ec4fa-fbb3-4c26-8751-ff0d1fee709e}</Project>
       <Name>DotnetSpiderLite.Scheduler.Redis</Name>
