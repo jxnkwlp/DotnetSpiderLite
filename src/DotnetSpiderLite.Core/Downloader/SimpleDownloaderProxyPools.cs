@@ -7,7 +7,7 @@ namespace DotnetSpiderLite.Downloader
     /// <summary>
     ///  简单的代理池，随机使用其中一个代理
     /// </summary>
-    public class SampleDownloaderProxyPools : IDownloaderProxy
+    public class SimpleDownloaderProxyPools : IDownloaderProxy
     {
         private List<WebProxy> _proxies = new List<WebProxy>();
         private Random _random = new Random(Guid.NewGuid().GetHashCode());
@@ -17,7 +17,7 @@ namespace DotnetSpiderLite.Downloader
         ///  简单的代理池，随机使用其中一个代理
         /// </summary>
         /// <param name="proxies">指定一些代理</param>
-        public SampleDownloaderProxyPools(params WebProxy[] proxies)
+        public SimpleDownloaderProxyPools(params WebProxy[] proxies)
         {
             if (proxies != null && proxies.Length > 0)
             {

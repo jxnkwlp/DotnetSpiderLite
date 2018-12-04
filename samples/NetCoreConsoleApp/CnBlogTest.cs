@@ -27,18 +27,21 @@ namespace ConsoleApp
             //});
 
 
-            //spider.SetDownloaderProxy(new WebProxy("127.0.0.1", 1080));
-            // spider.SetDownloaderProxy(new DownloaderProxy(new WebProxy("127.0.0.1", 1080)));
-            spider.SetDownloaderProxy(new SampleDownloaderProxyPools(
-                new WebProxy("127.0.0.1", 1080),
-                new WebProxy("192.168.1.1", 1080),
-                new WebProxy("192.168.1.2", 1080)
-              ));
+            spider.SetDownloaderProxy(new WebProxy("127.0.0.1", 1080)
+            {
+                // Credentials = new NetworkCredential("[USERNAME]", "[PASSWORD]")
+            });
+            //spider.SetDownloaderProxy(new DownloaderProxy(new WebProxy("127.0.0.1", 1080)));
+            //spider.SetDownloaderProxy(new SimpleDownloaderProxyPools(
+            //    new WebProxy("127.0.0.1", 1080),
+            //    new WebProxy("192.168.1.1", 1080),
+            //    new WebProxy("192.168.1.2", 1080)
+            //  ));
 
             // proxy pools
             //spider.UseHttpProxyPools(100, 100, new WebProxy("127.0.0.1", 1080)
             //{
-            //    // Credentials = new NetworkCredential("", "")
+            //    Credentials = new NetworkCredential("[USERNAME]", "[PASSWORD]")
             //});
 
 

@@ -1,6 +1,6 @@
+rem clear old nuget packages 
+cd /d %~dp0 
+del /q/a/f/s *.nupkg
+
 rem build
 dotnet build DotnetSpiderLite.sln -c Release
-
-rem clear old nuget packages
-for %%i in (*.nupkg) do del /q/a/f/s %%i
-

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework></TargetFramework>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-    <AssemblyVersion>0.1.6912.6</AssemblyVersion>
+    <AssemblyVersion>0.1.6912.1</AssemblyVersion>
     <Version>$(AssemblyVersion)</Version>
     <Authors>Passingwind</Authors>
     <Company>Passingwind</Company>
