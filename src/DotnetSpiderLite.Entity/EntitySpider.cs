@@ -19,6 +19,7 @@ namespace DotnetSpiderLite.Entity
 
         protected EntitySpider(params IEntity[] entities) : base()
         {
+
         }
 
         public static EntitySpider Create<TEntity>(string url, string referer = null, Dictionary<string, string> exts = null) where TEntity : IEntity

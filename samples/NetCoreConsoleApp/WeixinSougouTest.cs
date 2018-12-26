@@ -14,7 +14,8 @@ namespace ConsoleApp
     {
         public void Run()
         {
-            Spider spider = Spider.Create("https://weixin.sogou.com/");
+            Spider spider = SpiderBuilder.CreateBuilder()
+                .AddRequest("https://weixin.sogou.com/").Buid();
             spider.AddPageProcessor(new Processor2());
 
             for (int i = 1; i <= 10; i++)

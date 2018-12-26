@@ -223,51 +223,17 @@ namespace DotnetSpiderLite
         #region Public Methods
 
         /// <summary>
-        ///  新建
+        ///  添加请求
         /// </summary> 
-        public static Spider Create(Uri uri)
+        public Spider AddRequest(Request request)
         {
-            return Create(uri, null);
+            if (Scheduler == null)
+                _initRequest.Add(request);
+            else
+                this.Scheduler.Push(request);
+
+            return this;
         }
-
-        /// <summary>
-        ///  新建
-        /// </summary> 
-        public static Spider Create(string url)
-        {
-            return Create(new Uri(url));
-        }
-
-        /// <summary>
-        ///  新建
-        /// </summary> 
-        public static Spider Create(Uri uri, params IPageProcessor[] processors)
-        {
-            var spider = new Spider(null, processors, null);
-            spider.AddRequest(uri);
-
-            return spider;
-        }
-
-        /// <summary>
-        ///  新建
-        /// </summary> 
-        public static Spider Create(string url, params IPageProcessor[] processors)
-        {
-            return Create(new Uri(url), processors);
-        }
-
-        /// <summary>
-        ///  新建
-        /// </summary> 
-        public static Spider Create(params IPageProcessor[] processors)
-        {
-            var spider = new Spider(null, processors, null);
-            return spider;
-        }
-
-
-
 
         /// <summary>
         ///  添加请求
@@ -276,12 +242,7 @@ namespace DotnetSpiderLite
         {
             var request = new Request(new Uri(url)) { Referer = referer };
 
-            if (Scheduler == null)
-                _initRequest.Add(request);
-            else
-                this.Scheduler.Push(request);
-
-            return this;
+            return AddRequest(request);
         }
 
         /// <summary>

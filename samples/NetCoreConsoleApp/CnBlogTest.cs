@@ -15,7 +15,10 @@ namespace ConsoleApp
         public void Run()
         {
 
-            Spider spider = Spider.Create("https://www.cnblogs.com/", new CNBlogProcessor());
+            Spider spider = SpiderBuilder.CreateBuilder()
+                .AddRequest("https://www.cnblogs.com/")
+                .AddPageProcessor(new CNBlogProcessor())
+                .Buid();
 
             // spider.UseNLog();
             // spider.UseRedisScheduler("localhost");
