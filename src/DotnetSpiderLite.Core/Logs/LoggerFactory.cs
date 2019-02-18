@@ -15,6 +15,18 @@ namespace DotnetSpiderLite.Logs
             lock (_sync)
             {
                 _providers.Add(provider);
+
+                foreach (var existLogger in _loggers)
+                {
+                    var logger = existLogger.Value;
+                    var loggerInformation = logger.Loggers;
+
+                    var newLoggerIndex = loggerInformation.Length;
+                    Array.Resize(ref loggerInformation, loggerInformation.Length + 1);
+                    loggerInformation[newLoggerIndex] = new LoggerInformation(provider, existLogger.Key);
+
+                    logger.MessageLoggers = CreateMessageLogger(loggerInformation);
+                }
             }
         }
 
@@ -28,6 +40,8 @@ namespace DotnetSpiderLite.Logs
                     {
                         Loggers = CreateLoggers(categoryName),
                     };
+
+                    logger.MessageLoggers = CreateMessageLogger(logger.Loggers);
 
                     _loggers[categoryName] = logger;
                 }
@@ -70,5 +84,18 @@ namespace DotnetSpiderLite.Logs
 
             return list;
         }
+
+        private MessageLogger[] CreateMessageLogger(LoggerInformation[] loggers)
+        {
+            var result = new MessageLogger[loggers.Length];
+            for (int i = 0; i < loggers.Length; i++)
+            {
+                var log = loggers[i];
+                result[i] = new MessageLogger(log.Logger, log.Category, log.ProviderType, null, (___, __, _) => true);
+            }
+
+            return result;
+        }
+
     }
 }
