@@ -1,13 +1,11 @@
 ﻿using DotnetSpiderLite.Logs;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace DotnetSpiderLite.Logs
+namespace DotnetSpiderLite.Log4net
 {
-    public class ConsoleLoggerFactory : ILoggerFactory
+    public class Log4LoggerFactory : ILoggerFactory
     {
         public void AddProvider(ILoggerProvider provider)
         {
@@ -15,7 +13,7 @@ namespace DotnetSpiderLite.Logs
 
         public ILogger CreateLogger(string categoryName)
         {
-            return new ConsoleLogger(categoryName);
+            return new Log4Logger();
         }
 
         public void Dispose()

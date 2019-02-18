@@ -11,7 +11,7 @@ namespace DotnetSpiderLite.Logs
 
         public ILogger CreateLogger(string categoryName)
         {
-            return _loggers.GetOrAdd(categoryName, (name) =>
+            return _loggers.GetOrAdd(categoryName, (_) =>
             {
                 return new ConsoleLogger(categoryName);
             });
@@ -19,7 +19,6 @@ namespace DotnetSpiderLite.Logs
 
         public void Dispose()
         {
-            throw new NotImplementedException();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace DotnetSpiderLite
         /// </summary> 
         public static Spider UseNLog(this Spider spider)
         {
-            spider.SetLogFactory(new NLogLoggerFactory());
+            spider.AddLogProvider(new NLogProvider());
 
             return spider;
         }

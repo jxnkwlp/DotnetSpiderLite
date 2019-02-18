@@ -1,4 +1,4 @@
-﻿using DotnetSpiderLite.Logs.DataBase;
+﻿using DotnetSpiderLite.Log4net;
 
 namespace DotnetSpiderLite
 {
@@ -8,14 +8,15 @@ namespace DotnetSpiderLite
     public static class SpiderExtensions
     {
         /// <summary>
-        ///  使用数据库存储日志
+        ///  使用 Log4net 日志组件
         /// </summary> 
-        public static Spider UseDataBaseLog(this Spider spider, ILoggerWriter loggerWriter)
+        public static Spider UseLog4net(this Spider spider)
         {
-            spider.AddLogProvider(new Logger())
+            spider.SetLogFactory(new Log4LoggerFactory());
 
             return spider;
         }
+
 
     }
 

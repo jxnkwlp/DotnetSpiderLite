@@ -45,7 +45,7 @@ namespace DotnetSpiderLite
         private long _pipelineCostTimes = 0; // 总时间
         private long _pipelineAvgSpeed = 0; // 速度
 
-        private ILogger _logger = LogManager.GetLogger(typeof(Spider));
+        private ILoggerFactory _loggerFactory = new LoggerFactory();
         private IScheduler _scheduler;
         private IDownloader _downloader;
         private SpiderStatus _spiderStatus = SpiderStatus.Init;
@@ -118,7 +118,7 @@ namespace DotnetSpiderLite
             }
         }
 
-        public ILogger Logger { get => _logger; private set => _logger = value; }
+        public ILogger Logger { get; private set; }
 
         public IList<IPipeline> Pipelines { get; } = new List<IPipeline>();
 
@@ -265,7 +265,7 @@ namespace DotnetSpiderLite
         /// </summary> 
         public Spider AddPipeline(IPipeline pipeline)
         {
-            pipeline.Logger = this.Logger;
+            pipeline.Logger = _loggerFactory.CreateLogger(pipeline.GetType().Name);
 
             this.Pipelines.Add(pipeline);
             return this;
@@ -276,18 +276,30 @@ namespace DotnetSpiderLite
         /// </summary> 
         public Spider AddPageProcessor(IPageProcessor pageProcessor)
         {
-            pageProcessor.Logger = this.Logger;
+            pageProcessor.Logger = _loggerFactory.CreateLogger(pageProcessor.GetType().Name);
 
             this.PageProcessors.Add(pageProcessor);
             return this;
         }
 
         /// <summary>
-        ///  设置日志输出程序
+        ///  设置新的日志工厂
         /// </summary> 
         public Spider SetLogFactory(ILoggerFactory loggerFactory)
         {
-            this.Logger = loggerFactory.CreateLogger(typeof(Spider).Name);
+            this._loggerFactory = loggerFactory;
+            return this;
+        }
+
+        /// <summary>
+        ///  添加 日志 管道
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <returns></returns>
+        public Spider AddLogProvider(ILoggerProvider provider)
+        {
+            _loggerFactory.AddProvider(provider);
+
             return this;
         }
 
@@ -551,12 +563,18 @@ namespace DotnetSpiderLite
         {
             if (this.Monitor == null)
             {
-                this.Monitor = new LogMonitor() { Logger = Logger };
+                this.Monitor = new LogMonitor()
+                {
+                    Logger = _loggerFactory.CreateLogger(typeof(LogMonitor).Name)
+                };
             }
 
             if (this.Downloader == null)
             {
-                this.Downloader = new DefaultHttpClientDownloader() { Logger = Logger };
+                this.Downloader = new DefaultHttpClientDownloader()
+                {
+                    Logger = _loggerFactory.CreateLogger(typeof(DefaultHttpClientDownloader).Name)
+                };
             }
         }
 
@@ -570,13 +588,13 @@ namespace DotnetSpiderLite
 
             if (this.Scheduler == null)
             {
-                var q = new SampleQueueScheduler() { Logger = this.Logger };
+                var q = new SampleQueueScheduler() { Logger = _loggerFactory.CreateLogger(typeof(SampleQueueScheduler).Name) };
                 this.Scheduler = q;
                 this.SchedulerMonitor = q;
             }
             else
             {
-                this.Scheduler.Logger = this.Logger;
+                this.Scheduler.Logger = _loggerFactory.CreateLogger(this.Scheduler.GetType().Name);
             }
 
             if (_initRequest.Count > 0)
@@ -588,13 +606,16 @@ namespace DotnetSpiderLite
             }
 
             if (this.Downloader == null && _useHttpClientDownloader)
-                this.Downloader = new DefaultHttpClientDownloader() { Logger = this.Logger };
+                this.Downloader = new DefaultHttpClientDownloader()
+                {
+                    Logger = _loggerFactory.CreateLogger(typeof(DefaultHttpClientDownloader).Name)
+                };
 
             if (_downloadBeforeHandles.Count > 0)
             {
                 foreach (var handle in _downloadBeforeHandles)
                 {
-                    handle.Logger = this.Logger;
+                    handle.Logger = _loggerFactory.CreateLogger(handle.GetType().Name);
                     this.Downloader.AddDownloadBeforeHandle(handle);
                 }
             }
@@ -603,13 +624,16 @@ namespace DotnetSpiderLite
             {
                 foreach (var handle in _downloadAfterHandles)
                 {
-                    handle.Logger = this.Logger;
+                    handle.Logger = _loggerFactory.CreateLogger(handle.GetType().Name);
                     this.Downloader.AddDownloadAfterHandle(handle);
                 }
             }
 
             if (this.Pipelines.Count == 0)
-                this.Pipelines.Add(new ConsolePipeline() { Logger = this.Logger });
+                this.Pipelines.Add(new ConsolePipeline()
+                {
+                    Logger = _loggerFactory.CreateLogger(typeof(ConsolePipeline).Name)
+                });
 
             InitHtmlQuery();
 
@@ -629,17 +653,15 @@ namespace DotnetSpiderLite
 
         private void InitLog()
         {
-            //this.Scheduler.Logger = this.Logger;
-            //this.Downloader.Logger = this.Logger;
-            //this.Monitor.Logger = this.Logger;
+            this.Logger = _loggerFactory.CreateLogger(typeof(Spider).Name);
 
             foreach (var pipeline in Pipelines)
             {
-                pipeline.Logger = this.Logger;
+                pipeline.Logger = _loggerFactory.CreateLogger(pipeline.GetType().Name);
             }
             foreach (var processor in PageProcessors)
             {
-                processor.Logger = this.Logger;
+                processor.Logger = _loggerFactory.CreateLogger(processor.GetType().Name);
             }
         }
 

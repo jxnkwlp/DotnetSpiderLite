@@ -6,6 +6,8 @@ namespace DotnetSpiderLite.Logs
 {
     public class NullLoggerFactory : ILoggerFactory
     {
+        public static readonly NullLoggerFactory Instance = new NullLoggerFactory();
+
         public void AddProvider(ILoggerProvider provider)
         {
         }
