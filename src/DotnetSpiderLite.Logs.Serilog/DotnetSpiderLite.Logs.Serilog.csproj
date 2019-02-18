@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework></TargetFramework>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <AssemblyVersion>0.1.6912.10</AssemblyVersion>
+    <Version>$(AssemblyVersion)</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DotnetSpiderLite.Abstractions\DotnetSpiderLite.Abstractions.csproj" />
+    <ProjectReference Include="..\DotnetSpiderLite.Core\DotnetSpiderLite.Core.csproj" />
+  </ItemGroup>
+
+</Project>

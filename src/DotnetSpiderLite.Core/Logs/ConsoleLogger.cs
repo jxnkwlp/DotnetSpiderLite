@@ -9,7 +9,7 @@ namespace DotnetSpiderLite.Logs
 {
     public class ConsoleLogger : ILogger
     {
-        string _name;
+        private string _name;
 
         public ConsoleLogger(string name)
         {

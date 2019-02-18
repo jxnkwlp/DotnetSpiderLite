@@ -12,7 +12,7 @@ namespace DotnetSpiderLite
         /// </summary> 
         public static Spider UseDataBaseLog(this Spider spider, ILoggerWriter loggerWriter)
         {
-            spider.SetLogFactory(new LoggerFactory() { LoggerWriter = loggerWriter });
+            spider.AddLogProvider(new LogProvider(loggerWriter));
 
             return spider;
         }

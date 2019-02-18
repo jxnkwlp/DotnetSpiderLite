@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework></TargetFramework>
+    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+    <RootNamespace>DotnetSpiderLite.NLogs</RootNamespace>
+    <AssemblyVersion>0.1.6912.4</AssemblyVersion>
+    <Version>$(AssemblyVersion)</Version>
+    <Authors>Passingwind</Authors>
+    <Company>Passingwind</Company>
+    <Product>DotnetSpiderLite - NLog</Product>
+    <Description>A .NET Standard web crawling library similar to WebMagic. It is a lightweight, modular, efficient and fast high-level web crawling. scraping framework for .NET</Description>
+    <PackageTags>DotnetSpider, crawler</PackageTags>
+    <PackageProjectUrl>https://github.com/jxnkwlp/DotnetSpiderLite</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jxnkwlp/DotnetSpiderLite</RepositoryUrl>
+    <RepositoryType>github</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <DocumentationFile>bin\DotnetSpiderLite.NLog.xml</DocumentationFile>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="NLog" Version="4.5.2" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\DotnetSpiderLite.Abstractions\DotnetSpiderLite.Abstractions.csproj" />
+    <ProjectReference Include="..\DotnetSpiderLite.Core\DotnetSpiderLite.Core.csproj" />
+  </ItemGroup>
+ 
+
+</Project>

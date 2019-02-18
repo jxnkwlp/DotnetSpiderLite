@@ -1,4 +1,4 @@
-﻿using DotnetSpiderLite.NLogs;
+﻿using DotnetSpiderLite.Log4net;
 
 namespace DotnetSpiderLite
 {
@@ -8,11 +8,11 @@ namespace DotnetSpiderLite
     public static class SpiderExtensions
     {
         /// <summary>
-        ///  使用NLog 日志组件
+        ///  使用 Log4net 日志组件
         /// </summary> 
-        public static Spider UseNLog(this Spider spider)
+        public static Spider UseLog4net(this Spider spider)
         {
-            spider.AddLogProvider(new NLogProvider());
+            spider.SetLogFactory(new Log4LoggerFactory());
 
             return spider;
         }
