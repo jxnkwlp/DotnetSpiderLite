@@ -73,6 +73,11 @@ namespace DotnetSpiderLite
                 _exitWaitInterval = _defaultExitWaitInterval + value;
             }
         }
+
+        public bool UseStaticSleepInterval { get; set; } = true;
+
+        public Func<int> NewRequestDynamicSleepInterval { get; set; }
+
         /// <summary>
         ///  退出前，等待时间(毫秒)，默认15s
         /// </summary>
@@ -154,9 +159,8 @@ namespace DotnetSpiderLite
         /// </summary>
         public ISchedulerMonitor SchedulerMonitor { get; private set; }
 
-
-
         public Func<Request, Response> OnHandleRequestDownload { get; set; }
+
 
         #region event
 
@@ -172,6 +176,8 @@ namespace DotnetSpiderLite
         ///  当启动的时候
         /// </summary>
         public event Action<Spider> OnStarted;
+
+        public event Action<Spider, int> OnNewRequesting;
 
 
         public event Action<Spider, Type> OnError;
@@ -561,6 +567,12 @@ namespace DotnetSpiderLite
         /// </summary>
         private void InitDefaults()
         {
+            // add console logs
+            AddLogProvider(new ConsoleLoggerProvider());
+
+            this.Logger = _loggerFactory.CreateLogger(typeof(Spider).Name);
+
+
             if (this.Monitor == null)
             {
                 this.Monitor = new LogMonitor()
@@ -653,8 +665,6 @@ namespace DotnetSpiderLite
 
         private void InitLog()
         {
-            this.Logger = _loggerFactory.CreateLogger(typeof(Spider).Name);
-
             foreach (var pipeline in Pipelines)
             {
                 pipeline.Logger = _loggerFactory.CreateLogger(pipeline.GetType().Name);
@@ -764,13 +774,28 @@ namespace DotnetSpiderLite
                                 {
                                     var downloader = this.Downloader.Clone();
 
+                                    int interval = NewRequestSleepInterval;
+
+                                    if (UseStaticSleepInterval || NewRequestDynamicSleepInterval == null)
+                                    {
+                                        interval = NewRequestSleepInterval;
+                                    }
+                                    else
+                                    {
+                                        interval = NewRequestDynamicSleepInterval();
+                                    }
+
+                                    // on new requesting 
+                                    OnNewRequesting?.Invoke(this, interval);
+
+                                    Thread.Sleep(interval);
+
                                     // 
                                     HandleRequestAsync(request, downloader).Wait();
-
-                                    Thread.Sleep(NewRequestSleepInterval);
                                 }
-                                catch
+                                catch (Exception ex)
                                 {
+                                    this.Logger.Error(ex, "");
                                 }
 
                             }

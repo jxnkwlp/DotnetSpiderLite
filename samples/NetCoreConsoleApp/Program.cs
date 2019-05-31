@@ -1,5 +1,6 @@
 ﻿using ConsoleApp;
 using System;
+using System.Text;
 
 namespace NetCoreConsoleApp
 {
@@ -7,6 +8,8 @@ namespace NetCoreConsoleApp
     {
         static void Main(string[] args)
         {
+             
+
             new CnBlogTest().Run();
 
             Console.ReadKey();

@@ -20,7 +20,8 @@ namespace ConsoleApp
                 .AddPageProcessor(new CNBlogProcessor())
                 .Buid();
 
-            // spider.UseNLog();
+            spider.UseNLog();
+
             // spider.UseRedisScheduler("localhost");
             //spider.UseChromeWebDriverDownloader(@"C:\Users\admin\.nuget\packages\selenium.webdriver.chromedriver\2.44.0\driver\win32\");
             // spider.UseChromeWebDriverDownloader();
@@ -30,10 +31,11 @@ namespace ConsoleApp
             //});
 
 
-            spider.SetDownloaderProxy(new WebProxy("127.0.0.1", 1080)
-            {
-                // Credentials = new NetworkCredential("[USERNAME]", "[PASSWORD]")
-            });
+            //spider.SetDownloaderProxy(new WebProxy("127.0.0.1", 1080)
+            //{
+            //    // Credentials = new NetworkCredential("[USERNAME]", "[PASSWORD]")
+            //});
+
             //spider.SetDownloaderProxy(new DownloaderProxy(new WebProxy("127.0.0.1", 1080)));
             //spider.SetDownloaderProxy(new SimpleDownloaderProxyPools(
             //    new WebProxy("127.0.0.1", 1080),
@@ -47,6 +49,17 @@ namespace ConsoleApp
             //    Credentials = new NetworkCredential("[USERNAME]", "[PASSWORD]")
             //});
 
+            Random random = new Random();
+
+
+            spider.UseStaticSleepInterval = false;
+
+            spider.NewRequestDynamicSleepInterval = () => random.Next(100, 1000);
+
+            spider.OnNewRequesting += (_, interval) =>
+            {
+                Console.WriteLine("sleep:" + interval);
+            };
 
             spider.Run();
 

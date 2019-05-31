@@ -11,7 +11,8 @@ namespace NetFxConsoleApp
     {
         static void Main(string[] args)
         {
-            new WeixinSougouTest().Run();
+            //new WeixinSougouTest().Run();
+            new CnBlogTest().Run();
 
             Console.ReadKey();
         }

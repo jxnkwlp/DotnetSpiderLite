@@ -10,8 +10,8 @@ namespace DotnetSpiderLite.Logs.DataBase
 
         public Logger(string categoryName, ILoggerWriter writer)
         {
-            _writer = writer ?? throw new ArgumentNullException(nameof(writer));
             _categoryName = categoryName;
+            _writer = writer ?? throw new ArgumentNullException(nameof(writer));
         }
 
         public bool IsEnabled(LogLevel logLevel)
