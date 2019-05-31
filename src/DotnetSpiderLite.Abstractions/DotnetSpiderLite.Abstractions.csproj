@@ -1,46 +1,46 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
+	<PropertyGroup>
 		<TargetFramework></TargetFramework>
 		<TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-		<RootNamespace>DotnetSpiderLite</RootNamespace>  
-    <AssemblyVersion>0.1.6912.1</AssemblyVersion>
-    <Version>$(AssemblyVersion)</Version>
-    <Authors>Passingwind</Authors>
-    <Company>Passingwind</Company>
-    <Product>DotnetSpiderLite - Abstractions</Product>
-    <Description>A .NET Standard web crawling library similar to WebMagic. It is a lightweight, modular, efficient and fast high-level web crawling. scraping framework for .NET</Description>
-    <PackageTags>DotnetSpider, crawler</PackageTags>
-    <PackageProjectUrl>https://github.com/jxnkwlp/DotnetSpiderLite</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/jxnkwlp/DotnetSpiderLite</RepositoryUrl>
-    <RepositoryType>github</RepositoryType>
-  </PropertyGroup>
+		<RootNamespace>DotnetSpiderLite</RootNamespace>
+		<AssemblyVersion>0.2.0</AssemblyVersion>
+		<Version>$(AssemblyVersion)</Version>
+		<Authors>Passingwind</Authors>
+		<Company>Passingwind</Company>
+		<Product>DotnetSpiderLite - Abstractions</Product>
+		<Description>A .NET Standard web crawling library similar to WebMagic. It is a lightweight, modular, efficient and fast high-level web crawling. scraping framework for .NET</Description>
+		<PackageTags>DotnetSpider, crawler</PackageTags>
+		<PackageProjectUrl>https://github.com/jxnkwlp/DotnetSpiderLite</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/jxnkwlp/DotnetSpiderLite</RepositoryUrl>
+		<RepositoryType>github</RepositoryType>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <DocumentationFile>bin\DotnetSpiderLite.Abstractions.xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<DocumentationFile>bin\DotnetSpiderLite.Abstractions.xml</DocumentationFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Dom\**" />
-    <Compile Remove="Extraction\**" />
-    <Compile Remove="Html\**" />
-    <EmbeddedResource Remove="Dom\**" />
-    <EmbeddedResource Remove="Extraction\**" />
-    <EmbeddedResource Remove="Html\**" />
-    <None Remove="Dom\**" />
-    <None Remove="Extraction\**" />
-    <None Remove="Html\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Dom\**" />
+		<Compile Remove="Extraction\**" />
+		<Compile Remove="Html\**" />
+		<EmbeddedResource Remove="Dom\**" />
+		<EmbeddedResource Remove="Extraction\**" />
+		<EmbeddedResource Remove="Html\**" />
+		<None Remove="Dom\**" />
+		<None Remove="Extraction\**" />
+		<None Remove="Html\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="Extraction\IHtmlExtracter.cs" />
-    <Compile Include="Html\HtmlElementAbstraction.cs" />
-    <Compile Include="Html\IHtmlElement.cs" />
-    <Compile Include="Html\IHtmlElementSelector.cs" />
-    <Compile Include="Html\IHtmlElementSelectorFactory.cs" />
-    <Compile Include="Html\IHtmlQuery.cs" />
-    <Compile Include="Html\HtmlSelectorPathType.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="Extraction\IHtmlExtracter.cs" />
+		<Compile Include="Html\HtmlElementAbstraction.cs" />
+		<Compile Include="Html\IHtmlElement.cs" />
+		<Compile Include="Html\IHtmlElementSelector.cs" />
+		<Compile Include="Html\IHtmlElementSelectorFactory.cs" />
+		<Compile Include="Html\IHtmlQuery.cs" />
+		<Compile Include="Html\HtmlSelectorPathType.cs" />
+	</ItemGroup>
 
 </Project>

@@ -4,8 +4,8 @@
 		<TargetFramework></TargetFramework>
 		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
 		<AssemblyName>DotnetSpiderLite.AngleSharp</AssemblyName>
-		<RootNamespace>DotnetSpiderLite.AngleSharps</RootNamespace> 
-		<AssemblyVersion>0.1.6912.2</AssemblyVersion>
+		<RootNamespace>DotnetSpiderLite.AngleSharps</RootNamespace>
+		<AssemblyVersion>0.2.0</AssemblyVersion>
 		<Version>$(AssemblyVersion)</Version>
 		<Authors>Passingwind</Authors>
 		<Company>Passingwind</Company>
@@ -16,12 +16,12 @@
 		<RepositoryUrl>https://github.com/jxnkwlp/DotnetSpiderLite</RepositoryUrl>
 		<RepositoryType>github</RepositoryType>
 	</PropertyGroup>
-  
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <DocumentationFile>bin\DotnetSpiderLite.AngleSharp.xml</DocumentationFile>
-  </PropertyGroup>
-   
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<DocumentationFile>bin\DotnetSpiderLite.AngleSharp.xml</DocumentationFile>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<Compile Remove="Html\**" />
 		<EmbeddedResource Remove="Html\**" />

@@ -38,12 +38,12 @@ PM> install-package DotnetSpiderLite.HtmlAgilityPack
 
 ## 使用
 
-~~~ c#
-Spider spider = Spider.Create("https://www.cnblogs.com/");
-spider.AddPageProcessor(new CNBlogProcessor());
-//spider.AddPipeline(new FilePipeline());
-//spider.AddPipeline(new JsonFilePipeline());
-//spider.ThreadNumber = 10;
+~~~ C# 
+Spider spider = SpiderBuilder.CreateBuilder()
+    .AddRequest("https://www.cnblogs.com/")
+    .AddPageProcessor(new CNBlogProcessor())
+    .Buid();
+
 spider.Run();
 ~~~
 
@@ -87,7 +87,10 @@ public class CNBlogProcessor : BasePageProcessor
 安装包 [DotnetSpiderLite.Scheduler.StackExchange.Redis](https://www.nuget.org/packages/DotnetSpiderLite.Scheduler.StackExchange.Redis/)， 这个默认为使用 [StackExchange.Redis](https://www.nuget.org/packages/StackExchange.Redis/) 组件。
 
 ~~~ csharp
-Spider spider = Spider.Create("https://www.cnblogs.com/");
+Spider spider = SpiderBuilder.CreateBuilder()
+    .AddRequest("https://www.cnblogs.com/")
+    .AddPageProcessor(new CNBlogProcessor())
+    .Buid();
 // ...
 spider.UseRedisScheduler("localhost");
 // ...
@@ -97,7 +100,10 @@ spider.Run();
 如果需要使用其他 redis 组件，可安装包 [DotnetSpiderLite.Scheduler.Redis](https://www.nuget.org/packages/DotnetSpiderLite.Scheduler.Redis/) , 然后实现 IRedisStore 接口。
 
 ~~~ csharp
-Spider spider = Spider.Create("https://www.cnblogs.com/");
+Spider spider = SpiderBuilder.CreateBuilder()
+    .AddRequest("https://www.cnblogs.com/")
+    .AddPageProcessor(new CNBlogProcessor())
+    .Buid();
 // ...
 
 IRedisStore myRedisStore = [YOU REDISSTORE];

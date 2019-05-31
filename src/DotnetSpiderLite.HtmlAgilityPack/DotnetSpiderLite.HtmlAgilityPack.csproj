@@ -3,25 +3,25 @@
 	<PropertyGroup>
 		<TargetFramework></TargetFramework>
 		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
-    <AssemblyVersion>0.1.6911.0</AssemblyVersion>
-    <Version>$(AssemblyVersion)</Version>
-    <Authors>Passingwind</Authors>
-    <Company>Passingwind</Company>
-    <Product>DotnetSpiderLite - HtmlAgilityPack</Product>
-    <Description>A .NET Standard web crawling library similar to WebMagic. It is a lightweight, modular, efficient and fast high-level web crawling. scraping framework for .NET</Description>
-    <PackageTags>DotnetSpider, crawler</PackageTags>
-    <PackageProjectUrl>https://github.com/jxnkwlp/DotnetSpiderLite</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/jxnkwlp/DotnetSpiderLite</RepositoryUrl>
-    <RepositoryType>github</RepositoryType>
-  </PropertyGroup>
+		<AssemblyVersion>0.2.0</AssemblyVersion>
+		<Version>$(AssemblyVersion)</Version>
+		<Authors>Passingwind</Authors>
+		<Company>Passingwind</Company>
+		<Product>DotnetSpiderLite - HtmlAgilityPack</Product>
+		<Description>A .NET Standard web crawling library similar to WebMagic. It is a lightweight, modular, efficient and fast high-level web crawling. scraping framework for .NET</Description>
+		<PackageTags>DotnetSpider, crawler</PackageTags>
+		<PackageProjectUrl>https://github.com/jxnkwlp/DotnetSpiderLite</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/jxnkwlp/DotnetSpiderLite</RepositoryUrl>
+		<RepositoryType>github</RepositoryType>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <DocumentationFile>bin\DotnetSpiderLite.HtmlAgilityPack.xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<DocumentationFile>bin\DotnetSpiderLite.HtmlAgilityPack.xml</DocumentationFile>
+	</PropertyGroup>
 
-  
-  <ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="HtmlAgilityPack" Version="1.8.9" />
 		<PackageReference Include="HtmlAgilityPack.CssSelectors.NetCore" Version="1.1.1" />
 	</ItemGroup>

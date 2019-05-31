@@ -4,23 +4,23 @@
 		<TargetFramework></TargetFramework>
 		<TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
 		<RootNamespace>DotnetSpiderLite</RootNamespace>
-    <AssemblyVersion>0.1.6912.1</AssemblyVersion>
-    <Version>$(AssemblyVersion)</Version>
-    <Authors>Passingwind</Authors>
-    <Company>Passingwind</Company>
-    <Product>DotnetSpiderLite - Abstractions</Product>
-    <Description>A .NET Standard web crawling library similar to WebMagic. It is a lightweight, modular, efficient and fast high-level web crawling. scraping framework for .NET</Description>
-    <Summary></Summary>
-    <PackageTags>DotnetSpider, crawler</PackageTags>
-    <PackageProjectUrl>https://github.com/jxnkwlp/DotnetSpiderLite</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/jxnkwlp/DotnetSpiderLite</RepositoryUrl>
-    <RepositoryType>github</RepositoryType>
-  </PropertyGroup>
+		<AssemblyVersion>0.2.0</AssemblyVersion>
+		<Version>$(AssemblyVersion)</Version>
+		<Authors>Passingwind</Authors>
+		<Company>Passingwind</Company>
+		<Product>DotnetSpiderLite - Abstractions</Product>
+		<Description>A .NET Standard web crawling library similar to WebMagic. It is a lightweight, modular, efficient and fast high-level web crawling. scraping framework for .NET</Description>
+		<Summary></Summary>
+		<PackageTags>DotnetSpider, crawler</PackageTags>
+		<PackageProjectUrl>https://github.com/jxnkwlp/DotnetSpiderLite</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/jxnkwlp/DotnetSpiderLite</RepositoryUrl>
+		<RepositoryType>github</RepositoryType>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <DocumentationFile>bin\DotnetSpiderLite.Core.xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<DocumentationFile>bin\DotnetSpiderLite.Core.xml</DocumentationFile>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\DotnetSpiderLite.Abstractions\DotnetSpiderLite.Abstractions.csproj" />
